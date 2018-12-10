@@ -1,9 +1,11 @@
 require("dotenv").config()
+const R = require("ramda")
 const express = require("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 const request = require("request")
 const { query } = require("./utils/db")
+const { getConditions, setDataFields, getValues } = require("./utils/fields")
 
 const { HOST, PORT, SPOTIFY_CLIENT_ID, SPOTIFY_SECRET } = process.env
 const app = express()
@@ -100,6 +102,34 @@ app.post("/track", async (req, res) => {
   const dbRes = await query(sql, [trackId, userId, track])
   console.log(dbRes)
   return res.status(200).json(dbRes.rows.length ? dbRes.rows[0] : {})
+})
+
+const trackFields = Object.freeze([
+  ["id", { type: "text", key: true }],
+  ["userId", { key: true }],
+  ["arousal", { type: "int2" }],
+  ["valence", { type: "int2" }],
+  ["depth", { type: "int2" }]
+])
+
+const trackSelect = R.curry((fields, data) => {
+  const dataFields = setDataFields(fields, data)
+  const where = getConditions(dataFields, ">=")
+  const whereStmt = where.length > 0 ? ` where ${where.join(" and ")}` : ""
+  const sql = `select 
+    id, json->'item'->>'name' as name, json->'item'->'artists'->0->>'name' as artist
+  from track  ${whereStmt}`
+  const values = getValues(dataFields)
+  return [sql, values]
+})
+
+const trackSelectStatement = trackSelect(trackFields)
+
+app.get("/tracks", async (req, res) => {
+  const { id: trackId, ...params } = req.query
+  const [sql, values] = trackSelectStatement({ trackId, ...params })
+  const dbRes = await query(sql, values)
+  return res.status(200).json(dbRes.rows.length ? dbRes.rows : [])
 })
 
 // need a get now then we done

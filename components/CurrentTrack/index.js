@@ -21,10 +21,7 @@ function saveLiked(userId, trackId, isLiked) {
   return api({ action: "avd/like", data: { userId, trackId, liked: isLiked } })
 }
 
-let requestTimeout = null
-
 function CurrentTrack({ spotifyService, userId }) {
-  // const [track, setTrack] = useState(null)
   const [track, setTrack] = useState(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [arousal, setArousal] = useState(0)
@@ -32,7 +29,6 @@ function CurrentTrack({ spotifyService, userId }) {
   const [depth, setDepth] = useState(0)
   const [liked, setLiked] = useState(null)
   const timeoutRef = useRef()
-  // const spotifyTrackRef = useRef()
   const trackId = track && track.id
 
   const doRequest = () => {
@@ -128,6 +124,7 @@ function CurrentTrack({ spotifyService, userId }) {
             }}
             onPause={() => {
               setIsPlaying(false)
+              clearTimeout(timeoutRef.current)
               spotifyService("v1/me/player/pause", "PUT")
             }}
           />
