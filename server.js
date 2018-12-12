@@ -112,9 +112,19 @@ const trackFields = Object.freeze([
   ["depth", { type: "int2" }]
 ])
 
-const trackSelect = R.curry((fields, data) => {
+const trackSelect = R.curry((fields, { fuzz = 1, ...data }) => {
   const dataFields = setDataFields(fields, data)
-  const where = getConditions(dataFields, ">=")
+  // const where = getConditions(dataFields, ">=")
+  const fuzzValue = Number(fuzz)
+  const avd = ["arousal", "valence", "depth"]
+  const where = dataFields
+    .filter(([f, o]) => avd.includes(f))
+    .map(([, o]) => {
+      return `( ${o.value} = 0 OR ${o.column} between ${
+        o.paramIndex
+      } -${fuzzValue} and ${o.paramIndex} +${fuzzValue} )`
+    })
+  // const whereStmt = where.length > 0 ? ` where ${where.join(" and ")}` : ""
   const whereStmt = where.length > 0 ? ` where ${where.join(" and ")}` : ""
   const sql = `select 
     id, json->'item'->>'name' as name, json->'item'->'artists'->0->>'name' as artist

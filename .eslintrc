@@ -9,11 +9,15 @@
     "browser": true,
     "jest": true
   },
+  "plugins": [
+   "react-hooks"
+  ],
   "rules": {
     "linebreak-style": ["error", "unix"],
     "no-param-reassign": ["error", { "props": false }],
     "semi": ["error", "never"],
     "no-console": "off",
-    "no-shadow": "error"
+    "no-shadow": "error",
+    "react-hooks/rules-of-hooks": "error"
   }
 }

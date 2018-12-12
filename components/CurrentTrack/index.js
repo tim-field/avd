@@ -22,11 +22,13 @@ function saveLiked(userId, trackId, isLiked) {
 }
 
 function CurrentTrack({ spotifyService, userId }) {
+  const [{ arousal, valence, depth }, setAVD] = useState({
+    arousal: 0,
+    valence: 0,
+    depth: 0
+  })
   const [track, setTrack] = useState(null)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [arousal, setArousal] = useState(0)
-  const [valence, setValence] = useState(0)
-  const [depth, setDepth] = useState(0)
   const [liked, setLiked] = useState(null)
   const timeoutRef = useRef()
   const trackId = track && track.id
@@ -69,12 +71,9 @@ function CurrentTrack({ spotifyService, userId }) {
         console.log("track changed")
         document.title = `AVD - ${track.name}`
         api({ action: `avd?userId=${userId}&trackId=${track.id}` }).then(
-          res => {
-            console.log(res)
-            setArousal(res.arousal || 0)
-            setValence(res.valence || 0)
-            setDepth(res.depth || 0)
-            setLiked(res.liked)
+          ({ liked, arousal = 0, valence = 0, depth = 0 }) => {
+            setAVD({ arousal, valence, depth })
+            setLiked(liked)
           }
         )
         api({
@@ -96,7 +95,7 @@ function CurrentTrack({ spotifyService, userId }) {
         saveAVD({ userId, trackId, arousal, valence, depth })
       }
     },
-    [[arousal, valence, depth].join(",")]
+    [arousal, valence, depth]
   )
 
   return !!track ? (
@@ -144,26 +143,32 @@ function CurrentTrack({ spotifyService, userId }) {
             <Control
               id="arousal"
               label="Arousal"
-              startLabel="Low"
-              endLabel="High"
+              startLabel="Chill"
+              endLabel="Energetic"
               value={arousal}
-              onChange={({ target: { value } }) => setArousal(value)}
+              onChange={({ target: { value } }) =>
+                setAVD({ valence, depth, arousal: value })
+              }
             />
             <Control
               id="valence"
               label="Valence"
-              startLabel="Negative"
+              startLabel="Melancholy"
               endLabel="Positive"
               value={valence}
-              onChange={({ target: { value } }) => setValence(value)}
+              onChange={({ target: { value } }) =>
+                setAVD({ valence: value, depth, arousal })
+              }
             />
             <Control
               id="depth"
               label="Depth"
-              startLabel="Basic"
+              startLabel="Accessible"
               endLabel="Intellectual"
               value={depth}
-              onChange={({ target: { value } }) => setDepth(value)}
+              onChange={({ target: { value } }) =>
+                setAVD({ valence, depth: value, arousal })
+              }
             />
           </div>
         )}

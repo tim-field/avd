@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, Fragment, useRef } from "react"
 import ReactDOM from "react-dom"
 import { library } from "@fortawesome/fontawesome-svg-core"
 import {
@@ -7,10 +7,12 @@ import {
   faPause,
   faPlay,
   faStepBackward,
-  faStepForward
+  faStepForward,
+  faSearch
 } from "@fortawesome/free-solid-svg-icons"
 import request, { fetchToken, AUTH_URL } from "./utils/spotify"
 import CurrentTrack from "./components/CurrentTrack"
+import PlayList from "./components/PlayList"
 
 library.add(
   faThumbsUp,
@@ -18,7 +20,8 @@ library.add(
   faPause,
   faPlay,
   faStepBackward,
-  faStepForward
+  faStepForward,
+  faSearch
 )
 
 function setTokenLocalStorage({ access_token, expires_in, refresh_token }) {
@@ -42,6 +45,8 @@ const spotifyService = request(
 function AVD() {
   const [token, setToken] = useState(localStorage.getItem("access_token"))
   const [userId, setUserId] = useState(localStorage.getItem("userId"))
+  const [playerReady, setPlayerReady] = useState(false)
+  const player = useRef(null)
 
   useEffect(
     () => {
@@ -64,13 +69,39 @@ function AVD() {
     [token]
   )
 
+  useEffect(() => {
+    player.current = new Spotify.Player({
+      name: "AVD Player",
+      getOAuthToken: cb => {
+        cb(localStorage.getItem("access_token"))
+      }
+    })
+    player.current.addListener("ready", ({ device_id }) => {
+      console.log("Ready with Device ID", device_id)
+      setPlayerReady(true)
+    })
+    player.current.addListener("initialization_error", ({ message }) => {
+      console.error(message)
+    })
+    player.current.addListener("authentication_error", ({ message }) => {
+      console.error(message)
+    })
+    player.current.connect()
+  }, [])
+
   return (
     <div className="avd">
       {!token && <a href={AUTH_URL}>Authorize</a>}
       {token && (
         <div>
           {userId && (
-            <CurrentTrack spotifyService={spotifyService} userId={userId} />
+            <Fragment>
+              <CurrentTrack spotifyService={spotifyService} userId={userId} />
+              <PlayList
+                player={player.current}
+                spotifyService={spotifyService}
+              />
+            </Fragment>
           )}
           {!userId && <p>Loading</p>}
         </div>
@@ -79,4 +110,43 @@ function AVD() {
   )
 }
 
-ReactDOM.render(<AVD />, document.getElementById("root"))
+// window.onSpotifyWebPlaybackSDKReady = () => {
+//   const player = new Spotify.Player({
+//     name: "Web Playback SDK Quick Start Player",
+//     getOAuthToken: cb => {
+//       cb(localStorage.getItem("access_token"))
+//     }
+//   })
+//   player.addListener("player_state_changed", state => {
+//     console.log("yeah hmm k", state)
+//   })
+//   player.addListener("initialization_error", ({ message }) => {
+//     console.error(message)
+//   })
+//   player.addListener("authentication_error", ({ message }) => {
+//     console.error(message)
+//   })
+//   player.addListener("account_error", ({ message }) => {
+//     console.error(message)
+//   })
+//   player.addListener("playback_error", ({ message }) => {
+//     console.error(message)
+//   })
+
+//   // Ready
+//   player.addListener("ready", ({ device_id }) => {
+//     console.log("Ready with Device ID", device_id)
+//   })
+
+//   // Not Ready
+//   player.addListener("not_ready", ({ device_id }) => {
+//     console.log("Device ID has gone offline", device_id)
+//   })
+
+//   // Connect to the player!
+//   player.connect()
+// }
+
+window.onSpotifyWebPlaybackSDKReady = () => {
+  ReactDOM.render(<AVD />, document.getElementById("root"))
+}

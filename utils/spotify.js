@@ -10,7 +10,8 @@ export const AUTH_URL =
     client_id: SPOTIFY_CLIENT_ID,
     response_type: "code",
     redirect_uri: location.href,
-    scope: `user-read-playback-state user-modify-playback-state`
+    // scope: `user-read-playback-state user-modify-playback-state`
+    scope: `user-read-playback-state user-modify-playback-state streaming user-read-birthdate user-read-email user-read-private`
   })
 
 const serverURL = `${HOST}:${PORT}` // TODO
