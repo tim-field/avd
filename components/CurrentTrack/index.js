@@ -38,7 +38,7 @@ function CurrentTrack({ spotifyService, userId }) {
       clearTimeout(timeoutRef.current)
     }
 
-    return spotifyService("v1/me/player").then(spotifyTrack => {
+    return spotifyService({ action: "v1/me/player" }).then(spotifyTrack => {
       if (spotifyTrack.item) {
         const {
           item: {
@@ -108,23 +108,28 @@ function CurrentTrack({ spotifyService, userId }) {
           <PlayControls
             isPlaying={isPlaying}
             onPrevious={() =>
-              spotifyService("v1/me/player/previous", "POST").then(() =>
-                doRequest()
-              )
+              spotifyService({
+                action: "v1/me/player/previous",
+                method: "POST"
+              }).then(() => doRequest())
             }
             onNext={() =>
-              spotifyService("v1/me/player/next", "POST").then(() =>
-                doRequest()
-              )
+              spotifyService({
+                action: "v1/me/player/next",
+                method: "POST"
+              }).then(() => doRequest())
             }
             onPlay={() => {
               setIsPlaying(true)
-              spotifyService("v1/me/player/play", "PUT").then(() => doRequest())
+              spotifyService({
+                action: "v1/me/player/play",
+                method: "PUT"
+              }).then(() => doRequest())
             }}
             onPause={() => {
               setIsPlaying(false)
               clearTimeout(timeoutRef.current)
-              spotifyService("v1/me/player/pause", "PUT")
+              spotifyService({ action: "v1/me/player/pause", method: "PUT" })
             }}
           />
           <img className="image" src={track.image.url} />
@@ -164,7 +169,7 @@ function CurrentTrack({ spotifyService, userId }) {
               id="depth"
               label="Depth"
               startLabel="Accessible"
-              endLabel="Intellectual"
+              endLabel="Challenging"
               value={depth}
               onChange={({ target: { value } }) =>
                 setAVD({ valence, depth: value, arousal })
@@ -174,9 +179,7 @@ function CurrentTrack({ spotifyService, userId }) {
         )}
       </div>
     </Fragment>
-  ) : (
-    <p>Loading</p>
-  )
+  ) : null
 }
 
 export default CurrentTrack

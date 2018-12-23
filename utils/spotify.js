@@ -10,8 +10,8 @@ export const AUTH_URL =
     client_id: SPOTIFY_CLIENT_ID,
     response_type: "code",
     redirect_uri: location.href,
-    // scope: `user-read-playback-state user-modify-playback-state`
-    scope: `user-read-playback-state user-modify-playback-state streaming user-read-birthdate user-read-email user-read-private`
+    scope: `user-read-playback-state user-modify-playback-state playlist-modify-public playlist-modify-private`
+    // scope: `user-read-playback-state user-modify-playback-state streaming user-read-birthdate user-read-email user-read-private`
   })
 
 const serverURL = `${HOST}:${PORT}` // TODO
@@ -32,25 +32,28 @@ export async function fetchToken(code, onAuth) {
 
 export default function request(getToken, getRefreshToken, onAuth) {
   let refreshPromise = null
-  const api = async (action, method = "GET", options = {}) =>
+  const api = async ({ action, data, method, options = {} }) =>
     r(`https://api.spotify.com/${action}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${getToken()}`
       },
-      method,
-      ...options
+      method: method ? method : data ? "POST" : "GET",
+      ...options,
+      body: data && JSON.stringify(data)
     }).catch(e => {
       if (e.response && e.response.status === 401) {
         console.log("this is a 401")
         if (refreshPromise) {
-          return refreshPromise.then(() => api(action, method, options))
+          return refreshPromise.then(() =>
+            api({ action, data, method, options })
+          )
         } else {
           const token = getRefreshToken()
           if (token) {
             refreshPromise = refreshToken(token, onAuth).then(() => {
               refreshPromise = null
-              return api(action, method, options)
+              return api({ action, data, method, options })
             })
             return refreshPromise
           }

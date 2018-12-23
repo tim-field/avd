@@ -11,3 +11,14 @@ create table track (
 	"json" jsonb,
 	primary key (id, user_id)
 );
+
+create table playlist (
+	id text not null,
+	user_id text not null,
+	name text not null,
+	arousal smallint not null array[2] default [0,0],
+	valence smallint not null array[2] default [0,0],
+	depth smallint not null array[2] default [0,0],
+	"json" jsonb,
+	primary key (id, user_id)
+);
