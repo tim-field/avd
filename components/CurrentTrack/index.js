@@ -21,7 +21,7 @@ function saveLiked(userId, trackId, isLiked) {
   return api({ action: "avd/like", data: { userId, trackId, liked: isLiked } })
 }
 
-function CurrentTrack({ spotifyService, userId }) {
+function CurrentTrack({ spotifyService, userId, onChange }) {
   const [{ arousal, valence, depth }, setAVD] = useState({
     arousal: 0,
     valence: 0,
@@ -61,19 +61,26 @@ function CurrentTrack({ spotifyService, userId }) {
     })
   }
 
+  function changed() {
+    if (onChange) {
+      onChange({ trackId, arousal, valence, depth, liked })
+    }
+  }
+
   useEffect(() => {
     doRequest()
+    return () => clearTimeout(timeoutRef.current)
   }, [])
 
   useEffect(
     () => {
       if (track) {
-        console.log("track changed")
         document.title = `AVD - ${track.name}`
         api({ action: `avd?userId=${userId}&trackId=${track.id}` }).then(
           ({ liked, arousal = 0, valence = 0, depth = 0 }) => {
             setAVD({ arousal, valence, depth })
             setLiked(liked)
+            changed()
           }
         )
         api({
@@ -84,6 +91,7 @@ function CurrentTrack({ spotifyService, userId }) {
             track: track.raw
           }
         })
+        changed()
       }
     },
     [trackId]
@@ -93,6 +101,7 @@ function CurrentTrack({ spotifyService, userId }) {
     () => {
       if (arousal || valence || depth) {
         saveAVD({ userId, trackId, arousal, valence, depth })
+        changed()
       }
     },
     [arousal, valence, depth]
@@ -152,7 +161,7 @@ function CurrentTrack({ spotifyService, userId }) {
               endLabel="Energetic"
               value={arousal}
               onChange={({ target: { value } }) =>
-                setAVD({ valence, depth, arousal: value })
+                setAVD({ valence, depth, arousal: Number(value) })
               }
             />
             <Control
@@ -162,7 +171,7 @@ function CurrentTrack({ spotifyService, userId }) {
               endLabel="Positive"
               value={valence}
               onChange={({ target: { value } }) =>
-                setAVD({ valence: value, depth, arousal })
+                setAVD({ valence: Number(value), depth, arousal })
               }
             />
             <Control
@@ -172,7 +181,7 @@ function CurrentTrack({ spotifyService, userId }) {
               endLabel="Challenging"
               value={depth}
               onChange={({ target: { value } }) =>
-                setAVD({ valence, depth: value, arousal })
+                setAVD({ valence, depth: Number(value), arousal })
               }
             />
           </div>

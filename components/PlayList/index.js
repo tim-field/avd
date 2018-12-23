@@ -74,7 +74,13 @@ function reducer(state, action) {
   }
 }
 
-export default function PlayList({ spotifyService, userId }) {
+export default function PlayList({
+  spotifyService,
+  userId,
+  currentArousal = 0,
+  currentValence = 0,
+  currentDepth = 0
+}) {
   const [
     { arousal, valence, depth, name, tracks, playlists, activePlaylist, saved },
     dispatch
@@ -204,24 +210,48 @@ export default function PlayList({ spotifyService, userId }) {
   }
 
   function getTracks(arousal, valence, depth) {
+    api({
+      action: `tracks?arousal=${arousal}&valence=${valence}&depth=${depth}`
+    }).then(tracks => {
+      dispatch({ type: "set-tracks", tracks })
+      dispatch({ type: "set-loading", value: false })
+    })
+  }
+
+  function getTracksDebounced(arousal, valence, depth, wait = 400) {
     clearTimeout(getTracksTimeout.current)
     getTracksTimeout.current = setTimeout(
-      () =>
-        api({
-          action: `tracks?arousal=${arousal}&valence=${valence}&depth=${depth}`
-        }).then(tracks => {
-          dispatch({ type: "set-tracks", tracks })
-          dispatch({ type: "set-loading", value: false })
-        }),
-      400
+      () => getTracks(arousal, valence, depth),
+      wait
     )
+  }
+
+  function findSimilar() {
+    dispatch({
+      type: "set-min-max",
+      name: "arousal",
+      min: Math.max(currentArousal - 1, 0),
+      max: Math.min(currentArousal + 1, 11)
+    })
+    dispatch({
+      type: "set-min-max",
+      name: "valence",
+      min: Math.max(currentValence - 1, 0),
+      max: Math.min(currentValence + 1, 11)
+    })
+    dispatch({
+      type: "set-min-max",
+      name: "depth",
+      min: Math.max(currentDepth - 1),
+      max: Math.min(currentDepth + 1, 11)
+    })
   }
 
   useEffect(
     () => {
       if (arousal || valence || depth) {
         dispatch({ type: "set-loading", value: true })
-        getTracks(arousal, valence, depth)
+        getTracksDebounced(arousal, valence, depth)
       }
     },
     [arousal, valence, depth]
@@ -233,6 +263,7 @@ export default function PlayList({ spotifyService, userId }) {
 
   return (
     <div className="playlist">
+      <button onClick={() => findSimilar()}>Find Similar</button>
       <div className="searchControls">
         <Control
           label="Arousal"

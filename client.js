@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from "react"
+import React, { useEffect, Fragment, useReducer } from "react"
 import ReactDOM from "react-dom"
 import { library } from "@fortawesome/fontawesome-svg-core"
 import {
@@ -7,12 +7,12 @@ import {
   faPause,
   faPlay,
   faStepBackward,
-  faStepForward,
-  faSearch
+  faStepForward
 } from "@fortawesome/free-solid-svg-icons"
 import request, { fetchToken, AUTH_URL } from "./utils/spotify"
 import CurrentTrack from "./components/CurrentTrack"
 import PlayList from "./components/PlayList"
+import Loading from "./components/Loading"
 
 library.add(
   faThumbsUp,
@@ -20,9 +20,54 @@ library.add(
   faPause,
   faPlay,
   faStepBackward,
-  faStepForward,
-  faSearch
+  faStepForward
 )
+
+const initialState = {
+  arousal: 0,
+  valence: 0,
+  depth: 0,
+  loading: false,
+  token: localStorage.getItem("access_token"),
+  userId: localStorage.getItem("userId")
+}
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "set-avd": {
+      const { arousal, valence, depth } = action
+      return {
+        ...state,
+        arousal,
+        valence,
+        depth
+      }
+    }
+    case "set-current-track-id": {
+      return {
+        ...state,
+        trackId: action.trackId
+      }
+    }
+    case "set-loading":
+      return {
+        ...state,
+        loading: action.value
+      }
+    case "set-token":
+      return {
+        ...state,
+        token: action.value
+      }
+    case "set-user-id":
+      return {
+        ...state,
+        userId: action.value
+      }
+    default:
+      return state
+  }
+}
 
 function setTokenLocalStorage({ access_token, expires_in, refresh_token }) {
   if (access_token) {
@@ -43,24 +88,29 @@ const spotifyService = request(
 )
 
 function AVD() {
-  const [token, setToken] = useState(localStorage.getItem("access_token"))
-  const [userId, setUserId] = useState(localStorage.getItem("userId"))
+  const [
+    { token, userId, loading, arousal, valence, depth },
+    dispatch
+  ] = useReducer(reducer, initialState)
 
   useEffect(
     () => {
       const url = new URL(location)
       const code = url.searchParams.get("code")
       if (code) {
+        dispatch({ action: "set-loading", value: true })
         fetchToken(code).then(auth => {
           setTokenLocalStorage(auth)
-          setToken(auth.access_token)
+          dispatch({ action: "set-token", value: auth.access_token })
+          dispatch({ action: "set-loading", value: false })
           history.replaceState(null, null, "/")
         })
       }
       if (token) {
+        dispatch({ action: "set-loading", value: true })
         spotifyService({ action: "v1/me" }).then(user => {
-          localStorage.setItem("userId", user.id)
-          setUserId(user.id)
+          dispatch({ action: "set-user-id", value: user.id })
+          dispatch({ action: "set-loading", value: false })
         })
       }
     },
@@ -70,17 +120,23 @@ function AVD() {
   return (
     <div className="avd">
       {!token && <a href={AUTH_URL}>Authorize</a>}
-      {token && (
-        <div>
-          {userId && (
-            <Fragment>
-              <CurrentTrack spotifyService={spotifyService} userId={userId} />
-              <PlayList spotifyService={spotifyService} userId={userId} />
-            </Fragment>
-          )}
-          {!userId && <p>Loading</p>}
-        </div>
+      {token && userId && (
+        <Fragment>
+          <CurrentTrack
+            spotifyService={spotifyService}
+            userId={userId}
+            onChange={values => dispatch({ ...values, type: "set-avd" })}
+          />
+          <PlayList
+            spotifyService={spotifyService}
+            userId={userId}
+            currentArousal={arousal}
+            currentValence={valence}
+            currentDepth={depth}
+          />
+        </Fragment>
       )}
+      {loading && <Loading />}
     </div>
   )
 }
