@@ -75,7 +75,6 @@ function CurrentTrack({ spotifyService, userId, onChange }) {
           ({ liked, arousal = 0, valence = 0, depth = 0 }) => {
             setAVD({ arousal, valence, depth })
             setLiked(liked)
-            changed()
           }
         )
         api({

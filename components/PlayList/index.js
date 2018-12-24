@@ -242,7 +242,7 @@ export default function PlayList({
     dispatch({
       type: "set-min-max",
       name: "depth",
-      min: Math.max(currentDepth - 1),
+      min: Math.max(currentDepth - 1, 0),
       max: Math.min(currentDepth + 1, 11)
     })
   }
