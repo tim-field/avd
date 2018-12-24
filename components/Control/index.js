@@ -13,10 +13,10 @@ function Control({
   max = 11
 }) {
   return (
-    <div className="control">
-      <label htmlFor={id}>
+    <fieldset className="control">
+      <legend>
         {label} {value}
-      </label>
+      </legend>
       {endLabel && (
         <label className="endLabel" htmlFor={id}>
           {endLabel}
@@ -37,7 +37,7 @@ function Control({
         </label>
       )}
       {description && <p>{description}</p>}
-    </div>
+    </fieldset>
   )
 }
 

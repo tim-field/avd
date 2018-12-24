@@ -222,7 +222,7 @@ export default function PlayList({
   function setMin(name, value) {
     const updated = {
       ...avd,
-      [name]: [value, Math.max(value, avd[name][1])]
+      [name]: [Number(value), Math.max(Number(value), avd[name][1])]
     }
     dispatch({ type: "set-avd", avd: updated })
     getTracksDebounced(updated)
@@ -231,7 +231,7 @@ export default function PlayList({
   function setMax(name, value) {
     const updated = {
       ...avd,
-      [name]: [Math.min(avd[name][0], value), value]
+      [name]: [Math.min(avd[name][0], Number(value)), Number(value)]
     }
     dispatch({ type: "set-avd", avd: updated })
     getTracksDebounced(updated)
