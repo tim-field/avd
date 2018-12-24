@@ -3,12 +3,15 @@ server {
     listen [::]:80;
 
     server_name mohiohio.com www.mohiohio.com;
-    root /var/www/avd/current/build;
+    root /var/www/avd/current/dist;
 
     location / {
         try_files $uri $uri/ /index.html;
+    }
+
+    location /index.html {
         add_header 'Cache-Control' 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-	    expires off;
+    	expires off;
     }
 
     location /api {
