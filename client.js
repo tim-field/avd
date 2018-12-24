@@ -100,19 +100,19 @@ function AVD() {
       const url = new URL(location)
       const code = url.searchParams.get("code")
       if (code) {
-        dispatch({ action: "set-loading", value: true })
+        dispatch({ type: "set-loading", value: true })
         fetchToken(code).then(auth => {
           setTokenLocalStorage(auth)
-          dispatch({ action: "set-token", value: auth.access_token })
-          dispatch({ action: "set-loading", value: false })
+          dispatch({ type: "set-token", value: auth.access_token })
+          dispatch({ type: "set-loading", value: false })
           history.replaceState(null, null, "/")
         })
       }
       if (token) {
-        dispatch({ action: "set-loading", value: true })
+        dispatch({ type: "set-loading", value: true })
         spotifyService({ action: "v1/me" }).then(user => {
-          dispatch({ action: "set-user-id", value: user.id })
-          dispatch({ action: "set-loading", value: false })
+          dispatch({ type: "set-user-id", value: user.id })
+          dispatch({ type: "set-loading", value: false })
         })
       }
     },
