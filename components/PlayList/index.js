@@ -5,41 +5,24 @@ import Control from "./Control"
 import "./style.css"
 
 const initialState = {
-  arousal: [0, 0],
-  valence: [0, 0],
-  depth: [0, 0],
   tracks: [],
   playlists: [],
-  name: "AVD",
+  name: "",
   loading: false,
-  saved: false
+  saved: false,
+  avd: {
+    arousal: [0, 0],
+    valence: [0, 0],
+    depth: [0, 0]
+  }
 }
 
 function reducer(state, action) {
   switch (action.type) {
-    case "set-min":
+    case "set-avd":
       return {
         ...state,
-        saved: false,
-        [action.name]: [
-          action.value,
-          Math.max(action.value, state[action.name][1])
-        ]
-      }
-    case "set-max":
-      return {
-        ...state,
-        saved: false,
-        [action.name]: [
-          Math.min(state[action.name][0], action.value),
-          action.value
-        ]
-      }
-    case "set-min-max":
-      return {
-        ...state,
-        saved: false,
-        [action.name]: [action.min, action.max]
+        avd: action.avd
       }
     case "set-name":
       return {
@@ -82,7 +65,7 @@ export default function PlayList({
   currentDepth = 0
 }) {
   const [
-    { arousal, valence, depth, name, tracks, playlists, activePlaylist, saved },
+    { avd, name, tracks, playlists, activePlaylist, saved },
     dispatch
   ] = useReducer(reducer, initialState)
   const getTracksTimeout = useRef()
@@ -114,13 +97,14 @@ export default function PlayList({
 
     api({
       action: "playlists",
-      data: { id: activePlaylist.id, name, userId, arousal, valence, depth }
+      data: { ...avd, id: activePlaylist.id, name, userId },
+      method: "POST"
     })
 
     dispatch({ type: "set-saved", value: true })
   }
 
-  async function createPlaylist(name) {
+  async function createPlaylist() {
     const playlist = await spotifyService({
       action: "v1/me/playlists",
       data: { name }
@@ -167,16 +151,8 @@ export default function PlayList({
   function loadPlaylist(playlistId) {
     if (playlistId) {
       api({ action: `/playlist?id=${playlistId}` }).then(res => {
-        ;["arousal", "valence", "depth"].forEach(name => {
-          if (res[name]) {
-            dispatch({
-              type: "set-min-max",
-              name,
-              min: res[name][0],
-              max: res[name][1]
-            })
-          }
-        })
+        const { arousal, valence, depth } = res
+        dispatch({ type: "set-avd", avd: { arousal, valence, depth } })
       })
 
       spotifyService({
@@ -194,6 +170,10 @@ export default function PlayList({
           type: "set-active-playlist",
           playlist
         })
+        dispatch({
+          type: "set-name",
+          value: playlist.name
+        })
       })
     }
   }
@@ -209,7 +189,7 @@ export default function PlayList({
     })
   }
 
-  function getTracks(arousal, valence, depth) {
+  function getTracks({ arousal, valence, depth }) {
     api({
       action: `tracks?arousal=${arousal}&valence=${valence}&depth=${depth}`
     }).then(tracks => {
@@ -218,48 +198,51 @@ export default function PlayList({
     })
   }
 
-  function getTracksDebounced(arousal, valence, depth, wait = 400) {
+  function getTracksDebounced(avd, wait = 400) {
     clearTimeout(getTracksTimeout.current)
-    getTracksTimeout.current = setTimeout(
-      () => getTracks(arousal, valence, depth),
-      wait
-    )
+    getTracksTimeout.current = setTimeout(() => getTracks(avd), wait)
   }
 
   function findSimilar() {
-    dispatch({
-      type: "set-min-max",
-      name: "arousal",
-      min: Math.max(currentArousal - 1, 0),
-      max: Math.min(currentArousal + 1, 11)
-    })
-    dispatch({
-      type: "set-min-max",
-      name: "valence",
-      min: Math.max(currentValence - 1, 0),
-      max: Math.min(currentValence + 1, 11)
-    })
-    dispatch({
-      type: "set-min-max",
-      name: "depth",
-      min: Math.max(currentDepth - 1, 0),
-      max: Math.min(currentDepth + 1, 11)
-    })
+    const updated = {
+      arousal: [
+        Math.max(currentArousal - 1, 0),
+        Math.min(currentArousal + 1, 11)
+      ],
+      valence: [
+        Math.max(currentValence - 1, 0),
+        Math.min(currentValence + 1, 11)
+      ],
+      depth: [Math.max(currentDepth - 1, 0), Math.min(currentDepth + 1, 11)]
+    }
+    dispatch({ type: "set-avd", avd: updated })
+    getTracks(updated)
   }
 
-  useEffect(
-    () => {
-      if (arousal || valence || depth) {
-        dispatch({ type: "set-loading", value: true })
-        getTracksDebounced(arousal, valence, depth)
-      }
-    },
-    [arousal, valence, depth]
-  )
+  function setMin(name, value) {
+    const updated = (avd = {
+      ...avd,
+      [name]: [value, Math.max(value, avd[name][1])]
+    })
+    dispatch({ type: "set-avd", avd: updated })
+    getTracksDebounced(updated)
+  }
+
+  function setMax(name, value) {
+    const updated = (avd = {
+      ...avd,
+      [name]: [Math.min(avd[name][0], value), value]
+    })
+    dispatch({ type: "set-avd", avd: updated })
+    getTracksDebounced(updated)
+  }
 
   useEffect(() => {
     loadPlaylists()
+    getTracksDebounced(avd)
   }, [])
+
+  const { arousal, valence, depth } = avd
 
   return (
     <div className="playlist">
@@ -269,35 +252,27 @@ export default function PlayList({
           label="Arousal"
           min={arousal[0]}
           max={arousal[1]}
-          setMin={value =>
-            dispatch({ type: "set-min", name: "arousal", value })
-          }
-          setMax={value =>
-            dispatch({ type: "set-max", name: "arousal", value })
-          }
+          setMin={value => setMin("arousal", value)}
+          setMax={value => setMax("arousal", value)}
         />
         <Control
           label="Valence"
           min={valence[0]}
           max={valence[1]}
-          setMin={value =>
-            dispatch({ type: "set-min", name: "valence", value })
-          }
-          setMax={value =>
-            dispatch({ type: "set-max", name: "valence", value })
-          }
+          setMin={value => setMin("valence", value)}
+          setMax={value => setMax("valence", value)}
         />
         <Control
           label="Depth"
           min={depth[0]}
           max={depth[1]}
-          setMin={value => dispatch({ type: "set-min", name: "depth", value })}
-          setMax={value => dispatch({ type: "set-max", name: "depth", value })}
+          setMin={value => setMin("depth", value)}
+          setMax={value => setMax("depth", value)}
         />
       </div>
       {tracks.length > 0 && (
         <div>
-          <label>Playlist Name</label>
+          <label>Playlist Name </label>
           <input
             type="text"
             value={name}
@@ -305,10 +280,8 @@ export default function PlayList({
               dispatch({ type: "set-name", value })
             }
           />
-          {!activePlaylist && (
-            <button onClick={() => createPlaylist(name)}>
-              Create Playlist
-            </button>
+          {!activePlaylist && name && (
+            <button onClick={createPlaylist}>Create Playlist</button>
           )}
           {activePlaylist && (
             <Fragment>
@@ -337,7 +310,10 @@ export default function PlayList({
       )}
       {tracks.length > 0 && (
         <table id="playlistTracks">
-          <caption>{saved ? activePlaylist.name : "Unsaved Playlist"}</caption>
+          <caption>
+            {name}
+            {name && !saved ? "*" : ""}
+          </caption>
           <thead>
             <tr>
               <th />
