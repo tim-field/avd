@@ -15,15 +15,14 @@ server {
 }
 
 server {
-
-    server_name mohiohio.com www.mohiohio.com;
+    server_name www.mohiohio.com;
     root /var/www/avd/current/dist;
 
     listen [::]:443 ssl http2 ipv6only=on;
     listen 443 ssl http2;
 
-    ssl_certificate /etc/letsencrypt/live/mohiohio.com/fullchain.pem; # managed by Certbot
-    ssl_certificate_key /etc/letsencrypt/live/mohiohio.com/privkey.pem; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/www.mohiohio.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/www.mohiohio.com/privkey.pem; # managed by Certbot
     include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 
