@@ -88,10 +88,12 @@ const spotifyService = request(
 )
 
 function AVD() {
-  const [
-    { token, userId, loading, arousal, valence, depth },
-    dispatch
-  ] = useReducer(reducer, initialState)
+  const [state, dispatch] = useReducer(reducer, initialState)
+
+  window.state = state
+  console.log(state)
+
+  const { token, userId, loading, arousal, valence, depth } = state
 
   useEffect(
     () => {
