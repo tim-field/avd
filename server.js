@@ -7,7 +7,7 @@ const { query } = require("./utils/db")
 
 const { PORT, SPOTIFY_CLIENT_ID, SPOTIFY_SECRET } = process.env
 const app = express()
-app.use(cors())
+app.use(cors({ origin: ["https://www.mohiohio.com", "http://localhost:1234"] }))
 app.use(bodyParser.json())
 
 app.get("/authorize", (req, res) => {
