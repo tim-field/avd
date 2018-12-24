@@ -1,8 +1,7 @@
 import r, { urlParamify } from "./request"
 
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID
-const HOST = process.env.HOST
-const PORT = process.env.PORT
+const API_URL = process.env.API_URL
 
 export const AUTH_URL =
   "https://accounts.spotify.com/authorize?" +
@@ -14,18 +13,16 @@ export const AUTH_URL =
     // scope: `user-read-playback-state user-modify-playback-state streaming user-read-birthdate user-read-email user-read-private`
   })
 
-const serverURL = `${HOST}:${PORT}` // TODO
-
 async function refreshToken(token, onAuth) {
   const auth = await r(
-    `${serverURL}/refresh?${urlParamify({ refresh_token: token })}`
+    `${API_URL}/refresh?${urlParamify({ refresh_token: token })}`
   )
   if (onAuth) onAuth(auth)
   return auth
 }
 
 export async function fetchToken(code, onAuth) {
-  const auth = await r(`${serverURL}/authorize?${urlParamify({ code })}`)
+  const auth = await r(`${AUTH_URL}/authorize?${urlParamify({ code })}`)
   if (onAuth) onAuth(auth)
   return auth
 }

@@ -8,11 +8,6 @@ import "./style.css"
 import PlayControls from "../PlayControls"
 import LikeControls from "../LikeControls"
 
-const HOST = process.env.HOST
-const PORT = process.env.PORT
-
-// const serverURL = `${HOST}:${PORT}` // TODO
-
 const saveAVD = debounce(data => {
   return api({ action: "avd/", data })
 }, 300)

@@ -10,14 +10,15 @@ if (!DB_STRING) {
 const getPGConfig = connectionString => {
   const params = url.parse(connectionString)
   const auth = params.auth.split(":")
+  const ssl = params.query && params.query.ssl === "false" ? false : true
 
   return {
     user: auth[0],
     password: auth[1],
     host: params.hostname,
     port: params.port,
-    database: params.pathname.split("/")[1]
-    // ssl: true
+    database: params.pathname.split("/")[1],
+    ssl
   }
 }
 

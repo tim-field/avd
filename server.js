@@ -5,7 +5,7 @@ const cors = require("cors")
 const request = require("request")
 const { query } = require("./utils/db")
 
-const { HOST, PORT, SPOTIFY_CLIENT_ID, SPOTIFY_SECRET } = process.env
+const { PORT, SPOTIFY_CLIENT_ID, SPOTIFY_SECRET } = process.env
 const app = express()
 app.use(cors())
 app.use(bodyParser.json())
@@ -183,4 +183,4 @@ app.post("/playlist", async (req, res) => {
   return res.status(200).json(dbRes.rows.length ? dbRes.rows[0] : {})
 })
 
-app.listen(PORT, () => console.log(`Listening at ${HOST}:${PORT}`))
+app.listen(PORT, () => console.log(`Listening at ${PORT}`))

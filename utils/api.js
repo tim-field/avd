@@ -1,9 +1,6 @@
 import request from "./request"
 
-const HOST = process.env.HOST
-const PORT = process.env.PORT
-
-const serverURL = `${HOST}:${PORT}` // TODO
+const serverURL = process.env.API_URL
 
 export default function api({ action, data, method, options = {} }) {
   return request(`${serverURL}/${action.replace(/^\//, "")}`, {
