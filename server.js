@@ -5,7 +5,7 @@ const cors = require("cors")
 const request = require("request")
 const { query } = require("./utils/db")
 
-const { PORT, SPOTIFY_CLIENT_ID, SPOTIFY_SECRET } = process.env
+const { PORT, URL, SPOTIFY_CLIENT_ID, SPOTIFY_SECRET } = process.env
 const app = express()
 app.use(cors({ origin: ["https://www.mohiohio.com", "http://localhost:1234"] }))
 app.use(bodyParser.json())
@@ -18,7 +18,7 @@ app.get("/authorize", (req, res) => {
       form: {
         grant_type: "authorization_code",
         code: req.query.code,
-        redirect_uri: `http://localhost:1234/`,
+        redirect_uri: URL,
         client_id: SPOTIFY_CLIENT_ID,
         client_secret: SPOTIFY_SECRET
       }
