@@ -1,7 +1,6 @@
 import React from "react"
 
 function minMaxLabel(min, max) {
-  console.log(min, max)
   if (min === 0 || max === 0) {
     return ""
   }
