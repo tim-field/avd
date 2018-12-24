@@ -22,7 +22,7 @@ async function refreshToken(token, onAuth) {
 }
 
 export async function fetchToken(code, onAuth) {
-  const auth = await r(`${AUTH_URL}/authorize?${urlParamify({ code })}`)
+  const auth = await r(`${API_URL}/authorize?${urlParamify({ code })}`)
   if (onAuth) onAuth(auth)
   return auth
 }
