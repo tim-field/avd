@@ -51,8 +51,8 @@ function CurrentTrack({ spotifyService, userId, onChange }) {
           raw: spotifyTrack
         })
         setIsPlaying(spotifyTrack.is_playing)
-        timeoutRef.current = setTimeout(doRequest, 5000)
       }
+      timeoutRef.current = setTimeout(doRequest, 5000)
     })
   }
 

@@ -334,7 +334,7 @@ export default function PlayList({
       {!havePlayer && (
         <div>
           Can't find a Spotify player! Please make sure you've got Spotify open
-          somewhere.
+          and playing somewhere.
         </div>
       )}
       {tracks.length > 0 && (
