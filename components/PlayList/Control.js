@@ -1,13 +1,13 @@
 import React from "react"
 
 function minMaxLabel(min, max) {
-  if (min === 0 || max === 0) {
-    return ""
-  }
-  if (min !== max) {
+  if (min && max && min !== max) {
     return `${min} to ${max}`
   }
-  return `${min}`
+  if (max || min) {
+    return `${Math.max(max, min)}`
+  }
+  return ""
 }
 
 export default function Control({ label, min, max, setMin, setMax }) {

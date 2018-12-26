@@ -109,13 +109,15 @@ const trackSelect = data => {
         .split(",")
         .map(Number)
         .map(n => (isNaN(n) ? 0 : n))
-      if (min || max) {
+      if (min && max && min !== max) {
         return conditions.concat(
           `${field} between ${Math.min(min, max)}::int and ${Math.max(
             min,
             max
           )}::int`
         )
+      } else if (min || max) {
+        return conditions.concat(`${field} = ${Math.max(min, max)}::int`)
       }
     }
     return conditions

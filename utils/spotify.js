@@ -13,6 +13,14 @@ export const AUTH_URL =
     // scope: `user-read-playback-state user-modify-playback-state streaming user-read-birthdate user-read-email user-read-private`
   })
 
+export function isErrorNoActiveDevice(e) {
+  return (
+    e.responseBody &&
+    e.responseBody.error &&
+    e.responseBody.error.reason === "NO_ACTIVE_DEVICE"
+  )
+}
+
 async function refreshToken(token, onAuth) {
   const auth = await r(
     `${API_URL}/refresh?${urlParamify({ refresh_token: token })}`

@@ -43,12 +43,12 @@ function checkStatus(response) {
     return response
   }
 
-  return parseJSON(response).then(RespJSON => {
+  return parseJSON(response).then(body => {
     const error = new Error(response.statusText || `${response.status} error`)
     // eslint-disable-next-line
     error.response = response
     // eslint-disable-next-line
-    error.json = RespJSON
+    error.responseBody = body
     throw error
   })
 }

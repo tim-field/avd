@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import api from "../../utils/api"
 import Control from "./Control"
 import "./style.css"
+import { isErrorNoActiveDevice } from "../../utils/spotify"
 
 const initialState = {
   tracks: [],
@@ -10,6 +11,7 @@ const initialState = {
   name: "",
   loading: false,
   saved: false,
+  havePlayer: true,
   avd: {
     arousal: [0, 0],
     valence: [0, 0],
@@ -52,6 +54,11 @@ function reducer(state, action) {
         saved: true,
         activePlaylist: action.playlist
       }
+    case "set-have-player":
+      return {
+        ...state,
+        havePlayer: action.value
+      }
     default:
       return state
   }
@@ -65,7 +72,7 @@ export default function PlayList({
   currentDepth = 0
 }) {
   const [
-    { avd, name, tracks, playlists, activePlaylist, saved },
+    { avd, name, tracks, playlists, activePlaylist, saved, havePlayer },
     dispatch
   ] = useReducer(reducer, initialState)
   const getTracksTimeout = useRef()
@@ -187,6 +194,22 @@ export default function PlayList({
         offset: { uri: `spotify:track:${trackId}` }
       }
     })
+      .then(() => {
+        if (!havePlayer) {
+          dispatch({
+            type: "set-have-player",
+            value: true
+          })
+        }
+      })
+      .catch(e => {
+        if (isErrorNoActiveDevice(e)) {
+          dispatch({
+            type: "set-have-player",
+            value: false
+          })
+        }
+      })
   }
 
   function getTracks({ arousal, valence, depth }) {
@@ -306,6 +329,12 @@ export default function PlayList({
               </option>
             ))}
           </select>
+        </div>
+      )}
+      {!havePlayer && (
+        <div>
+          Can't find a Spotify player! Please make sure you've got Spotify open
+          somewhere.
         </div>
       )}
       {tracks.length > 0 && (
