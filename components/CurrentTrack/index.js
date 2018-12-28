@@ -33,27 +33,32 @@ function CurrentTrack({ spotifyService, userId, onChange }) {
       clearTimeout(timeoutRef.current)
     }
 
-    return spotifyService({ action: "v1/me/player" }).then(spotifyTrack => {
-      if (spotifyTrack.item) {
-        const {
-          item: {
+    return spotifyService({ action: "v1/me/player" })
+      .then(spotifyTrack => {
+        if (spotifyTrack.item) {
+          const {
+            item: {
+              name,
+              id,
+              artists,
+              album: { images }
+            }
+          } = spotifyTrack
+          setTrack({
             name,
             id,
-            artists,
-            album: { images }
-          }
-        } = spotifyTrack
-        setTrack({
-          name,
-          id,
-          artist: artists.map(({ name }) => name).join(", "),
-          image: images.find(i => i.height === 300) || images[1],
-          raw: spotifyTrack
-        })
-        setIsPlaying(spotifyTrack.is_playing)
-      }
-      timeoutRef.current = setTimeout(doRequest, 5000)
-    })
+            artist: artists.map(({ name }) => name).join(", "),
+            image: images.find(i => i.height === 300) || images[1],
+            raw: spotifyTrack
+          })
+          setIsPlaying(spotifyTrack.is_playing)
+        }
+        timeoutRef.current = setTimeout(doRequest, 5000)
+      })
+      .catch(e => {
+        console.error(e)
+        timeoutRef.current = setTimeout(doRequest, 5000)
+      })
   }
 
   function changed() {

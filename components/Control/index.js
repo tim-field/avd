@@ -14,14 +14,21 @@ function Control({
 }) {
   return (
     <fieldset className="control">
-      <legend>
-        {label} {value}
-      </legend>
+      <legend>{label}</legend>
+      <input
+        type="number"
+        value={value}
+        // id={id}
+        min={min}
+        max={max}
+        onChange={onChange}
+      />
       {endLabel && (
         <label className="endLabel" htmlFor={id}>
           {endLabel}
         </label>
       )}
+
       <input
         type="range"
         value={value}
