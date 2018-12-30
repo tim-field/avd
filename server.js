@@ -83,8 +83,30 @@ app.post("/avd/like", async (req, res) => {
 
 app.get("/avd", async (req, res) => {
   const { trackId, userId } = req.query
-  const sql = `select arousal, valence, depth, liked
-  from track where id = $1 and user_id = $2`
+  const sql = `select 
+    arousal,
+    valence,
+    depth,
+    liked,
+    avg_arousal::numeric::integer,
+    avg_valence::numeric::integer,
+    avg_depth::numeric::integer
+  from 
+  (
+    select 
+      user_id,
+      liked,
+	    arousal,
+      avg(arousal) filter(where arousal > 0) over w as avg_arousal,
+      valence,
+      avg(valence) filter(where valence > 0) over w as avg_valence,
+      depth,
+      avg(depth) filter(where depth > 0) over w as avg_depth
+    from track 
+    where id = $1
+    window w as (partition by id)
+  ) as avd 
+  where avd.user_id = $2`
   const dbRes = await query(sql, [trackId, userId])
   console.log(dbRes)
   return res.status(200).json(dbRes.rows.length ? dbRes.rows[0] : {})
@@ -103,31 +125,39 @@ app.post("/track", async (req, res) => {
 
 const trackSelect = data => {
   const avd = ["arousal", "valence", "depth"]
-  const where = avd.reduce((conditions, field) => {
-    if (data[field] && data[field].indexOf(",")) {
-      const [min, max] = data[field]
-        .split(",")
-        .map(Number)
-        .map(n => (isNaN(n) ? 0 : n))
-      if (min && max && min !== max) {
-        return conditions.concat(
-          `${field} between ${Math.min(min, max)}::int and ${Math.max(
-            min,
-            max
-          )}::int`
-        )
-      } else if (min || max) {
-        return conditions.concat(`${field} = ${Math.max(min, max)}::int`)
+  const where = avd.reduce(
+    (conditions, field) => {
+      if (data[field] && data[field].indexOf(",")) {
+        const [min, max] = data[field]
+          .split(",")
+          .map(Number)
+          .map(n => (isNaN(n) ? 0 : n))
+        if (min && max && min !== max) {
+          return conditions.concat(
+            `${field} between ${Math.min(min, max)}::int and ${Math.max(
+              min,
+              max
+            )}::int`
+          )
+        } else if (min || max) {
+          return conditions.concat(`${field} = ${Math.max(min, max)}::int`)
+        }
       }
-    }
-    return conditions
-  }, [])
+      return conditions
+    },
+    ["(liked is null or liked = true)"]
+  )
 
   if (where.length > 0) {
     const whereStmt = where.length > 0 ? ` where ${where.join(" and ")}` : ""
     const sql = `select
-    id, json->'item'->>'name' as name, json->'item'->'artists'->0->>'name' as artist
-  from track ${whereStmt} order by random() limit 30`
+      id, 
+      arousal,
+      valence,
+      depth,
+      json->'item'->>'name' as name, 
+      json->'item'->'artists'->0->>'name' as artist
+    from track ${whereStmt} order by random() limit 30`
     return sql
   }
 }

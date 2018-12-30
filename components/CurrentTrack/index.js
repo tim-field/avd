@@ -77,9 +77,13 @@ function CurrentTrack({ spotifyService, userId, onChange }) {
       if (track) {
         document.title = `AVD - ${track.name}`
         api({ action: `avd?userId=${userId}&trackId=${track.id}` }).then(
-          ({ liked, arousal = 0, valence = 0, depth = 0 }) => {
-            setAVD({ arousal, valence, depth })
-            setLiked(liked)
+          res => {
+            setAVD({
+              arousal: res.arousal || res.avg_arousal,
+              valence: res.valence || res.avg_valence,
+              depth: res.depth || res.avg_depth
+            })
+            setLiked(res.liked)
           }
         )
         api({
@@ -144,10 +148,9 @@ function CurrentTrack({ spotifyService, userId, onChange }) {
           <LikeControls
             liked={liked}
             setLiked={isLiked => {
-              setLiked(isLiked)
-              saveLiked(userId, trackId, isLiked).then(({ liked }) =>
-                setLiked(liked)
-              )
+              const v = isLiked === liked ? null : isLiked
+              setLiked(v)
+              saveLiked(userId, trackId, v).then(({ liked }) => setLiked(liked))
             }}
           />
         </div>

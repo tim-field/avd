@@ -348,6 +348,15 @@ export default function PlayList({
               <th />
               <th>Title</th>
               <th>Artist</th>
+              <th>
+                <abbr title="Arousal">A</abbr>
+              </th>
+              <th>
+                <abbr title="Valence">V</abbr>
+              </th>
+              <th>
+                <abbr title="Depth">D</abbr>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -361,6 +370,9 @@ export default function PlayList({
                   </td>
                   <td>{track.name}</td>
                   <td>{track.artist}</td>
+                  <td>{track.arousal}</td>
+                  <td>{track.valence}</td>
+                  <td>{track.depth}</td>
                 </tr>
               )
             })}
