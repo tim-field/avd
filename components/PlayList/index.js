@@ -214,7 +214,7 @@ export default function PlayList({
 
   function getTracks({ arousal, valence, depth }) {
     api({
-      action: `tracks?arousal=${arousal}&valence=${valence}&depth=${depth}`
+      action: `tracks?arousal=${arousal}&valence=${valence}&depth=${depth}&userId=${userId}`
     }).then(tracks => {
       dispatch({ type: "set-tracks", tracks })
       dispatch({ type: "set-loading", value: false })
@@ -228,15 +228,15 @@ export default function PlayList({
 
   function findSimilar() {
     const updated = {
-      arousal: [
-        Math.max(currentArousal - 1, 0),
-        Math.min(currentArousal + 1, 11)
-      ],
-      valence: [
-        Math.max(currentValence - 1, 0),
-        Math.min(currentValence + 1, 11)
-      ],
-      depth: [Math.max(currentDepth - 1, 0), Math.min(currentDepth + 1, 11)]
+      arousal: currentArousal
+        ? [Math.max(currentArousal - 1, 0), Math.min(currentArousal + 1, 11)]
+        : [0, 0],
+      valence: currentValence
+        ? [Math.max(currentValence - 1, 0), Math.min(currentValence + 1, 11)]
+        : [0, 0],
+      depth: currentDepth
+        ? [Math.max(currentDepth - 1, 0), Math.min(currentDepth + 1, 11)]
+        : [0, 0]
     }
     dispatch({ type: "set-avd", avd: updated })
     getTracks(updated)

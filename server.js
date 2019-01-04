@@ -49,10 +49,11 @@ app.get("/refresh", (req, res) => {
 
 app.post("/avd", async (req, res) => {
   const { trackId, userId, arousal, valence, depth } = req.body
+
   const sql = `
-  insert into track (id, user_id, arousal, valence, depth) 
+  insert into user_track (track_id, user_id, arousal, valence, depth) 
   values ($1, $2, $3, $4, $5)
-  on conflict (id, user_id)
+  on conflict (track_id, user_id)
   do update set 
     arousal = excluded.arousal,
     valence = excluded.valence,
@@ -61,17 +62,52 @@ app.post("/avd", async (req, res) => {
     last_heard_at = current_timestamp
   returning *
   `
-  console.log(sql)
   const dbResult = await query(sql, [trackId, userId, arousal, valence, depth])
+
+  const avd = ["arousal", "valence", "depth"]
+  const avdSQL = avd.reduce(
+    (a, field) => {
+      const value = req.body[field]
+      if (value) {
+        return {
+          names: a.names.concat(field),
+          values: a.values.concat(value),
+          places: a.places.concat(`$${a.values.length + 1}`),
+          conflicts: a.conflicts.concat(
+            `${field} = (
+                select coalesce( 
+                    ( sum(${field}) + excluded.${field} ) / ( count(${field}) + 1 ), 
+                    excluded.${field}
+                )
+                from user_track where track_id = $1 and user_id != $2)`
+          )
+        }
+      }
+      return a
+    },
+    { names: [], values: [trackId, userId], places: [], conflicts: [] }
+  )
+
+  if (avdSQL.names.length > 0) {
+    const trackSQL = `
+      insert into track (id, ${avdSQL.names.join(", ")}) 
+      values ($1, ${avdSQL.places.join(", ")})
+      on conflict (id)
+      do update set
+      ${avdSQL.conflicts.join(",\n")}
+    `
+    query(trackSQL, avdSQL.values)
+  }
+
   return res.status(200).json(dbResult.rows[0])
 })
 
 app.post("/avd/like", async (req, res) => {
   const { trackId, userId, liked } = req.body
   const sql = `
-  insert into track (id, user_id, liked) 
+  insert into user_track (track_id, user_id, liked) 
   values ($1, $2, $3)
-  on conflict (id, user_id)
+  on conflict (track_id, user_id)
   do update set 
     liked = excluded.liked
   returning *
@@ -83,89 +119,82 @@ app.post("/avd/like", async (req, res) => {
 
 app.get("/avd", async (req, res) => {
   const { trackId, userId } = req.query
-  const sql = `select 
-    arousal,
-    valence,
-    depth,
-    liked,
-    avg_arousal::numeric::integer,
-    avg_valence::numeric::integer,
-    avg_depth::numeric::integer
-  from 
-  (
-    select 
-      user_id,
-      liked,
-	    arousal,
-      avg(arousal) filter(where arousal > 0) over w as avg_arousal,
-      valence,
-      avg(valence) filter(where valence > 0) over w as avg_valence,
-      depth,
-      avg(depth) filter(where depth > 0) over w as avg_depth
-    from track 
-    where id = $1
-    window w as (partition by id)
-  ) as avd 
-  where avd.user_id = $2`
+  const sql = `
+  select
+    user_track.arousal,
+    user_track.valence,
+    user_track.depth,
+    user_track.liked,
+    track.arousal as default_arousal,
+    track.valence as default_valence,
+    track.depth as default_depth
+  from track
+    left join user_track on track.id = user_track.track_id and user_id = $2 
+  where 
+    track.id = $1`
   const dbRes = await query(sql, [trackId, userId])
-  console.log(dbRes)
+  // console.log(dbRes)
   return res.status(200).json(dbRes.rows.length ? dbRes.rows[0] : {})
 })
 
 app.post("/track", async (req, res) => {
-  const { trackId, userId, track } = req.body
-  const sql = `insert into track (id, user_id, "json") 
-  values ($1, $2, $3)
-  on conflict (id, user_id)
+  const { trackId, track } = req.body
+  const sql = `insert into track (id, "json") 
+  values ($1, $2)
+  on conflict (id)
   do update set 
     json = excluded.json`
-  const dbRes = await query(sql, [trackId, userId, track])
+  const dbRes = await query(sql, [trackId, track])
   return res.status(200).json(dbRes.rows.length ? dbRes.rows[0] : {})
 })
 
-const trackSelect = data => {
+app.get("/tracks", async (req, res) => {
+  const { userId, ...data } = req.query
   const avd = ["arousal", "valence", "depth"]
-  const where = avd.reduce(
-    (conditions, field) => {
-      if (data[field] && data[field].indexOf(",")) {
-        const [min, max] = data[field]
-          .split(",")
-          .map(Number)
-          .map(n => (isNaN(n) ? 0 : n))
-        if (min && max && min !== max) {
-          return conditions.concat(
-            `${field} between ${Math.min(min, max)}::int and ${Math.max(
-              min,
-              max
-            )}::int`
-          )
-        } else if (min || max) {
-          return conditions.concat(`${field} = ${Math.max(min, max)}::int`)
-        }
+  const where = avd.reduce((conditions, field) => {
+    if (data[field] && data[field].indexOf(",")) {
+      const [min, max] = data[field]
+        .split(",")
+        .map(Number)
+        .map(n => (isNaN(n) ? 0 : n))
+      if (min && max && min !== max) {
+        return conditions.concat(
+          `coalesce(ut.${field}, t.${field}) between ${Math.min(
+            min,
+            max
+          )}::int and ${Math.max(min, max)}::int`
+        )
+      } else if (min || max) {
+        return conditions.concat(
+          `coalesce(ut.${field}, t.${field}) = ${Math.max(min, max)}::int`
+        )
       }
-      return conditions
-    },
-    ["(liked is null or liked = true)"]
-  )
+    }
+    return conditions
+  }, [])
 
   if (where.length > 0) {
-    const whereStmt = where.length > 0 ? ` where ${where.join(" and ")}` : ""
-    const sql = `select
-      id, 
-      arousal,
-      valence,
-      depth,
-      json->'item'->>'name' as name, 
-      json->'item'->'artists'->0->>'name' as artist
-    from track ${whereStmt} order by random() limit 30`
-    return sql
-  }
-}
-
-app.get("/tracks", async (req, res) => {
-  const sql = trackSelect(req.query)
-  if (sql) {
-    const dbRes = await query(sql)
+    const sql = `
+    select 
+      t.id, 
+      ut.user_id,
+      ut.liked, 
+      coalesce(ut.arousal, t.arousal)::numeric::integer arousal, 
+      coalesce(ut.valence, t.valence)::numeric::integer valence, 
+      coalesce(ut.depth, t.depth)::numeric::integer depth, 
+      t.json->'item'->>'name' as name, 
+      t.json->'item'->'artists'->0->>'name' as artist
+    from 
+      track t
+    left join 
+      user_track ut on ut.track_id = t.id and ut.user_id = $1
+    where 
+      ${where.concat("(ut.liked is null or ut.liked = true)").join(" and ")}
+    order by 
+      ut.user_id nulls first, random()
+    limit 30
+    `
+    const dbRes = await query(sql, [userId])
     return res.status(200).json(dbRes.rows.length ? dbRes.rows : [])
   }
   return res.status(200).json([])
