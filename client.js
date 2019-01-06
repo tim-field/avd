@@ -13,6 +13,7 @@ import request, { fetchToken, AUTH_URL } from "./utils/spotify"
 import CurrentTrack from "./components/CurrentTrack"
 import PlayList from "./components/PlayList"
 import Loading from "./components/Loading"
+import api from './utils/api';
 
 library.add(
   faThumbsUp,
@@ -108,6 +109,7 @@ function AVD() {
       if (token) {
         dispatch({ type: "set-loading", value: true })
         spotifyService({ action: "v1/me" }).then(user => {
+          api({ action: "user", data: { user } })
           dispatch({ type: "set-user-id", value: user.id })
           dispatch({ type: "set-loading", value: false })
         })

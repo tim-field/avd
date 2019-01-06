@@ -47,6 +47,20 @@ app.get("/refresh", (req, res) => {
   )
 })
 
+app.post("/user", async (req, res) => {
+  const { user } = req.body
+  const sql = `
+    insert into "user" (id, json)
+    values ($1, $2)
+    on conflict (id)
+    do update set
+      json = excluded.json
+    returning id
+  `
+  const dbResult = await query(sql, [user.id, user])
+  return res.status(200).json(dbResult.rows[0])
+})
+
 app.post("/avd", async (req, res) => {
   const { trackId, userId, arousal, valence, depth } = req.body
 

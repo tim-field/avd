@@ -9,6 +9,12 @@ create table track (
 	primary key (id)
 );
 
+create table "user" (
+	id text not null,
+	"json" jsonb null,
+	primary key (id)
+);
+
 create table user_track (
 	track_id text not null,
 	user_id text not null, 
@@ -31,3 +37,4 @@ create table playlist (
 	"json" jsonb null,
 	primary key (id, user_id)
 );
+
