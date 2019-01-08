@@ -15,6 +15,12 @@ create table "user" (
 	primary key (id)
 );
 
+create table user_follow (
+	user_id text not null,
+	following_id text not null,
+	primary key (user_id, following_id)
+);
+
 create table user_track (
 	track_id text not null,
 	user_id text not null, 

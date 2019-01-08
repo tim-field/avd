@@ -7,6 +7,7 @@ import api from "../../utils/api"
 import "./style.css"
 import PlayControls from "../PlayControls"
 import LikeControls from "../LikeControls"
+import Listeners from "../Listeners"
 
 const saveAVD = debounce(data => {
   return api({ action: "avd/", data })
@@ -155,38 +156,41 @@ function CurrentTrack({ spotifyService, userId, onChange }) {
           />
         </div>
         {userId && (
-          <div className="controls">
-            <Control
-              id="arousal"
-              label="Arousal"
-              startLabel="Chill"
-              endLabel="Energetic"
-              value={arousal}
-              onChange={({ target: { value } }) =>
-                setAVD({ valence, depth, arousal: Number(value) })
-              }
-            />
-            <Control
-              id="valence"
-              label="Valence"
-              startLabel="Melancholy"
-              endLabel="Positive"
-              value={valence}
-              onChange={({ target: { value } }) =>
-                setAVD({ valence: Number(value), depth, arousal })
-              }
-            />
-            <Control
-              id="depth"
-              label="Depth"
-              startLabel="Accessible"
-              endLabel="Challenging"
-              value={depth}
-              onChange={({ target: { value } }) =>
-                setAVD({ valence, depth: Number(value), arousal })
-              }
-            />
-          </div>
+          <Fragment>
+            <div className="controls">
+              <Control
+                id="arousal"
+                label="Arousal"
+                startLabel="Chill"
+                endLabel="Energetic"
+                value={arousal}
+                onChange={({ target: { value } }) =>
+                  setAVD({ valence, depth, arousal: Number(value) })
+                }
+              />
+              <Control
+                id="valence"
+                label="Valence"
+                startLabel="Melancholy"
+                endLabel="Positive"
+                value={valence}
+                onChange={({ target: { value } }) =>
+                  setAVD({ valence: Number(value), depth, arousal })
+                }
+              />
+              <Control
+                id="depth"
+                label="Depth"
+                startLabel="Accessible"
+                endLabel="Challenging"
+                value={depth}
+                onChange={({ target: { value } }) =>
+                  setAVD({ valence, depth: Number(value), arousal })
+                }
+              />
+            </div>
+            <Listeners trackId={trackId} userId={userId} />
+          </Fragment>
         )}
       </div>
     </Fragment>

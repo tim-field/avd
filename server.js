@@ -61,6 +61,34 @@ app.post("/user", async (req, res) => {
   return res.status(200).json(dbResult.rows[0])
 })
 
+app.post("/user/follow", async (req, res) => {
+  const { userId, followId } = req.body
+  const sql = `
+    insert into user_follow (user_id, following_id)
+    values ($1, $2)
+    on conflict (user_id, following_id)
+    do nothing
+    returning *
+  `
+  const dbResult = await query(sql, [userId, followId])
+  return res.status(200).json(dbResult.rows[0] || {})
+})
+
+app.get("/avd/users", async (req, res) => {
+  const { trackId } = req.query
+  const sql = `
+    select "user".json as "user"
+    from user_track 
+    join "user" on "user".id = user_track.user_id
+    where user_track.track_id = $1 
+    and user_track.arousal is not null
+    and user_track.valence is not null
+    and user_track.depth is not null
+  `
+  const dbResult = await query(sql, [trackId])
+  return res.status(200).json(dbResult.rows.map(r => r.user))
+})
+
 app.post("/avd", async (req, res) => {
   const { trackId, userId, arousal, valence, depth } = req.body
 
