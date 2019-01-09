@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment, useReducer } from "react"
+import React, { useContext, useEffect, Fragment } from "react"
 import ReactDOM from "react-dom"
 import { library } from "@fortawesome/fontawesome-svg-core"
 import {
@@ -13,7 +13,8 @@ import request, { fetchToken, AUTH_URL } from "./utils/spotify"
 import CurrentTrack from "./components/CurrentTrack"
 import PlayList from "./components/PlayList"
 import Loading from "./components/Loading"
-import api from './utils/api';
+import api from "./utils/api"
+import Store, { Provider } from "./store"
 
 library.add(
   faThumbsUp,
@@ -23,52 +24,6 @@ library.add(
   faStepBackward,
   faStepForward
 )
-
-const initialState = {
-  arousal: 0,
-  valence: 0,
-  depth: 0,
-  loading: false,
-  token: localStorage.getItem("access_token"),
-  userId: localStorage.getItem("userId")
-}
-
-function reducer(state, action) {
-  switch (action.type) {
-    case "set-avd": {
-      const { arousal, valence, depth } = action
-      return {
-        ...state,
-        arousal,
-        valence,
-        depth
-      }
-    }
-    case "set-current-track-id": {
-      return {
-        ...state,
-        trackId: action.trackId
-      }
-    }
-    case "set-loading":
-      return {
-        ...state,
-        loading: action.value
-      }
-    case "set-token":
-      return {
-        ...state,
-        token: action.value
-      }
-    case "set-user-id":
-      return {
-        ...state,
-        userId: action.value
-      }
-    default:
-      return state
-  }
-}
 
 function setTokenLocalStorage({ access_token, expires_in, refresh_token }) {
   if (access_token) {
@@ -89,8 +44,7 @@ const spotifyService = request(
 )
 
 function AVD() {
-  const [state, dispatch] = useReducer(reducer, initialState)
-
+  const { state, dispatch } = useContext(Store)
   const { token, userId, loading, arousal, valence, depth } = state
 
   useEffect(
@@ -123,11 +77,7 @@ function AVD() {
       {!token && <a href={AUTH_URL}>Authorize</a>}
       {token && userId && (
         <Fragment>
-          <CurrentTrack
-            spotifyService={spotifyService}
-            userId={userId}
-            onChange={values => dispatch({ ...values, type: "set-avd" })}
-          />
+          <CurrentTrack spotifyService={spotifyService} userId={userId} />
           <PlayList
             spotifyService={spotifyService}
             userId={userId}
@@ -142,4 +92,12 @@ function AVD() {
   )
 }
 
-ReactDOM.render(<AVD />, document.getElementById("root"))
+function App() {
+  return (
+    <Provider>
+      <AVD />
+    </Provider>
+  )
+}
+
+ReactDOM.render(<App />, document.getElementById("root"))

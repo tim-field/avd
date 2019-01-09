@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment, useRef } from "react"
+import React, { useEffect, useContext, useState, Fragment, useRef } from "react"
 // import Controls from "../Controls"
 import debounce from "lodash.debounce"
 import Control from "../Control"
@@ -8,6 +8,7 @@ import "./style.css"
 import PlayControls from "../PlayControls"
 import LikeControls from "../LikeControls"
 import Listeners from "../Listeners"
+import Store from "../../store"
 
 const saveAVD = debounce(data => {
   return api({ action: "avd/", data })
@@ -17,7 +18,8 @@ function saveLiked(userId, trackId, isLiked) {
   return api({ action: "avd/like", data: { userId, trackId, liked: isLiked } })
 }
 
-function CurrentTrack({ spotifyService, userId, onChange }) {
+function CurrentTrack({ spotifyService, userId }) {
+  const { dispatch } = useContext(Store)
   const [{ arousal, valence, depth }, setAVD] = useState({
     arousal: 0,
     valence: 0,
@@ -63,9 +65,7 @@ function CurrentTrack({ spotifyService, userId, onChange }) {
   }
 
   function changed() {
-    if (onChange) {
-      onChange({ trackId, arousal, valence, depth, liked })
-    }
+    dispatch({ type: "set-avd", trackId, arousal, valence, depth, liked })
   }
 
   useEffect(() => {

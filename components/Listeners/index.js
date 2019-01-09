@@ -1,6 +1,7 @@
-import React, { useEffect, useReducer } from "react"
+import React, { useEffect, useReducer, useContext } from "react"
 import api from "../../utils/api"
 import { getImage } from "../../utils/user"
+import Store from "../../store"
 
 function reducer(state, action) {
   switch (action.type) {
@@ -23,13 +24,13 @@ function reducer(state, action) {
 const initialState = { users: [], loading: false }
 
 function Listeners({ trackId, userId }) {
+  const { dispatch: appDispatch } = useContext(Store)
   const [{ users }, dispatch] = useReducer(reducer, initialState)
   useEffect(
     () => {
       if (trackId) {
         dispatch({ type: "set-loading", value: true })
         api({ action: `avd/users?trackId=${trackId}` }).then(res => {
-          console.log(res)
           dispatch({ type: "set-users", users: res })
         })
       }
@@ -38,7 +39,9 @@ function Listeners({ trackId, userId }) {
   )
 
   function followUser(userId, followId) {
-    api({ action: "/user/follow", data: { userId, followId } })
+    api({ action: "/user/follow", data: { userId, followId } }).then(
+      following => appDispatch({ type: "set-following", following })
+    )
   }
 
   return users.length ? (

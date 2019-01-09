@@ -4,6 +4,7 @@ const bodyParser = require("body-parser")
 const cors = require("cors")
 const request = require("request")
 const { query } = require("./utils/db")
+const { followUser, getFollowing } = require("./services/user")
 
 const { PORT, URL, SPOTIFY_CLIENT_ID, SPOTIFY_SECRET } = process.env
 const app = express()
@@ -63,15 +64,15 @@ app.post("/user", async (req, res) => {
 
 app.post("/user/follow", async (req, res) => {
   const { userId, followId } = req.body
-  const sql = `
-    insert into user_follow (user_id, following_id)
-    values ($1, $2)
-    on conflict (user_id, following_id)
-    do nothing
-    returning *
-  `
-  const dbResult = await query(sql, [userId, followId])
-  return res.status(200).json(dbResult.rows[0] || {})
+  await followUser(userId, followId)
+  const following = await getFollowing(userId)
+  return res.status(200).json(following)
+})
+
+app.get("/user/following", async (req, res) => {
+  const { userId } = req.query
+  const following = await getFollowing(userId)
+  return res.status(200).json(following)
 })
 
 app.get("/avd/users", async (req, res) => {
