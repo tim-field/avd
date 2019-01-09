@@ -1,8 +1,6 @@
 import React, { useEffect, useContext, useState, Fragment, useRef } from "react"
-// import Controls from "../Controls"
 import debounce from "lodash.debounce"
 import Control from "../Control"
-// import request from "../../utils/request"
 import api from "../../utils/api"
 import "./style.css"
 import PlayControls from "../PlayControls"
