@@ -15,6 +15,7 @@ import PlayList from "./components/PlayList"
 import Loading from "./components/Loading"
 import api from "./utils/api"
 import Store, { Provider } from "./store"
+import "./style.css"
 
 library.add(
   faThumbsUp,
@@ -72,11 +73,20 @@ function AVD() {
     [token]
   )
 
+  const doLogout = () => {
+    localStorage.removeItem("refresh_token")
+    dispatch({ type: "logout" })
+    localStorage.removeItem("access_token")
+  }
+
   return (
     <div className="avd">
       {!token && <a href={AUTH_URL}>Authorize</a>}
       {token && userId && (
         <Fragment>
+          <button className="logout" onClick={doLogout}>
+            Logout
+          </button>
           <CurrentTrack
             spotifyService={spotifyService}
             userId={userId}

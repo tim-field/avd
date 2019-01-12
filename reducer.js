@@ -45,6 +45,11 @@ export function reducer(state, action) {
         ...state,
         following: action.following
       }
+    case "logout":
+      return {
+        ...initialState,
+        token: null
+      }
     default:
       return state
   }

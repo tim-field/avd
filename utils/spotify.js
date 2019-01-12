@@ -10,7 +10,6 @@ export const AUTH_URL =
     response_type: "code",
     redirect_uri: location.href,
     scope: `user-read-playback-state user-modify-playback-state playlist-modify-public playlist-modify-private`
-    // scope: `user-read-playback-state user-modify-playback-state streaming user-read-birthdate user-read-email user-read-private`
   })
 
 export function isErrorNoActiveDevice(e) {
@@ -48,7 +47,6 @@ export default function request(getToken, getRefreshToken, onAuth) {
       body: data && JSON.stringify(data)
     }).catch(e => {
       if (e.response && e.response.status === 401) {
-        console.log("this is a 401")
         if (refreshPromise) {
           return refreshPromise.then(() =>
             api({ action, data, method, options })
