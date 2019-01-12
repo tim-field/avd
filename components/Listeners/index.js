@@ -38,7 +38,7 @@ function Listeners({ trackId, userId }) {
     [trackId]
   )
 
-  function followUser(userId, followId) {
+  function followUser(followId) {
     if (userId !== followId) {
       api({ action: "/user/follow", data: { userId, followId } }).then(
         following => appDispatch({ type: "set-following", following })
@@ -47,16 +47,21 @@ function Listeners({ trackId, userId }) {
   }
 
   return users.length ? (
-    <ul>
-      {users.map(user => (
-        <li key={user.id}>
-          <button onClick={() => followUser(userId, user.id)}>
-            <UserImage user={user} />
-          </button>
-        </li>
-      ))}
-    </ul>
-  ) : null
+    <div>
+      Listeners
+      <ul>
+        {users.map(user => (
+          <li key={user.id}>
+            <button onClick={() => followUser(user.id)}>
+              <UserImage user={user} />
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ) : (
+    <p>Be the first to rate this track</p>
+  )
 }
 
 export default Listeners

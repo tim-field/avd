@@ -1,8 +1,11 @@
 {
-  "extends": "eslint:recommended",
+  "extends": ["eslint:recommended", "plugin:react/recommended"],
   "parserOptions": {
     "ecmaVersion": 9,
-    "sourceType": "module"
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
   },
   "env": {
     "es6": true,
@@ -10,9 +13,7 @@
     "browser": true,
     "jest": true
   },
-  "plugins": [
-   "react-hooks"
-  ],
+  "plugins": ["react", "react-hooks"],
   "rules": {
     "linebreak-style": ["error", "unix"],
     "no-param-reassign": ["error", { "props": false }],
