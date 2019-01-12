@@ -4,7 +4,13 @@ const bodyParser = require("body-parser")
 const cors = require("cors")
 const request = require("request")
 const { query } = require("./utils/db")
-const { followUser, getFollowing } = require("./services/user")
+const {
+  saveUser,
+  followUser,
+  getFollowing,
+  unFollow
+} = require("./services/user")
+const { getListeners } = require("./services/avd")
 
 const { PORT, URL, SPOTIFY_CLIENT_ID, SPOTIFY_SECRET } = process.env
 const app = express()
@@ -50,16 +56,8 @@ app.get("/refresh", (req, res) => {
 
 app.post("/user", async (req, res) => {
   const { user } = req.body
-  const sql = `
-    insert into "user" (id, json)
-    values ($1, $2)
-    on conflict (id)
-    do update set
-      json = excluded.json
-    returning id
-  `
-  const dbResult = await query(sql, [user.id, user])
-  return res.status(200).json(dbResult.rows[0])
+  const savedUser = await saveUser(user)
+  return res.status(200).json(savedUser)
 })
 
 app.post("/user/follow", async (req, res) => {
@@ -75,19 +73,16 @@ app.get("/user/following", async (req, res) => {
   return res.status(200).json(following)
 })
 
+app.delete("/user/unfollow", async (req, res) => {
+  const { userId, followingId } = req.body
+  const following = await unFollow(userId, followingId)
+  return res.status(200).json(following)
+})
+
 app.get("/avd/users", async (req, res) => {
   const { trackId } = req.query
-  const sql = `
-    select "user".json as "user"
-    from user_track 
-    join "user" on "user".id = user_track.user_id
-    where user_track.track_id = $1 
-    and user_track.arousal is not null
-    and user_track.valence is not null
-    and user_track.depth is not null
-  `
-  const dbResult = await query(sql, [trackId])
-  return res.status(200).json(dbResult.rows.map(r => r.user))
+  const users = await getListeners(trackId)
+  return res.status(200).json(users)
 })
 
 app.post("/avd", async (req, res) => {

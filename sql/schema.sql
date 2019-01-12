@@ -28,6 +28,7 @@ create table user_track (
 	valence smallint,
 	depth smallint,
 	last_heard_at timestamptz not null default current_timestamp,
+	first_heard_at timestamptz not null default current_timestamp,
 	play_count int default 1,
 	liked boolean,
 	primary key (track_id, user_id)

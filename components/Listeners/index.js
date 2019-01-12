@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer, useContext } from "react"
 import api from "../../utils/api"
-import { getImage } from "../../utils/user"
 import Store from "../../store"
+import UserImage from "../UserImage"
 
 function reducer(state, action) {
   switch (action.type) {
@@ -39,9 +39,11 @@ function Listeners({ trackId, userId }) {
   )
 
   function followUser(userId, followId) {
-    api({ action: "/user/follow", data: { userId, followId } }).then(
-      following => appDispatch({ type: "set-following", following })
-    )
+    if (userId !== followId) {
+      api({ action: "/user/follow", data: { userId, followId } }).then(
+        following => appDispatch({ type: "set-following", following })
+      )
+    }
   }
 
   return users.length ? (
@@ -49,7 +51,7 @@ function Listeners({ trackId, userId }) {
       {users.map(user => (
         <li key={user.id}>
           <button onClick={() => followUser(userId, user.id)}>
-            {getImage(user)}
+            <UserImage user={user} />
           </button>
         </li>
       ))}

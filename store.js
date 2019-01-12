@@ -1,14 +1,29 @@
-import React, { useReducer } from "react"
+import React, { useReducer, useContext } from "react"
 import { reducer, initialState } from "./reducer"
 
-function createStore() {
+const Store = React.createContext()
+
+const createStore = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
   return { state, dispatch }
 }
 
-const Store = React.createContext()
+export const connect = ({
+  mapStateToProps = () => {},
+  mapDispatchToProps = () => {}
+} = {}) => WrappedComponent => props => {
+  const { dispatch, state } = useContext(Store)
+  return (
+    <WrappedComponent
+      dispatch={dispatch}
+      {...props}
+      {...mapStateToProps(state, props)}
+      {...mapDispatchToProps(dispatch, props)}
+    />
+  )
+}
 
-export function Provider({ children }) {
+export const Provider = ({ children }) => {
   const store = createStore()
   return <Store.Provider value={store}>{children}</Store.Provider>
 }

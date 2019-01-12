@@ -45,7 +45,7 @@ const spotifyService = request(
 
 function AVD() {
   const { state, dispatch } = useContext(Store)
-  const { token, userId, loading, arousal, valence, depth } = state
+  const { token, trackId, userId, loading, arousal, valence, depth } = state
 
   useEffect(
     () => {
@@ -77,10 +77,17 @@ function AVD() {
       {!token && <a href={AUTH_URL}>Authorize</a>}
       {token && userId && (
         <Fragment>
-          <CurrentTrack spotifyService={spotifyService} userId={userId} />
+          <CurrentTrack
+            spotifyService={spotifyService}
+            userId={userId}
+            arousal={arousal}
+            valence={valence}
+            depth={depth}
+          />
           <PlayList
             spotifyService={spotifyService}
             userId={userId}
+            currentTrack={trackId}
             currentArousal={arousal}
             currentValence={valence}
             currentDepth={depth}

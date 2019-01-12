@@ -3,7 +3,7 @@ import { lensPath, view } from "ramda"
 
 const imagePath = lensPath(["images", 0, "url"])
 
-export function getImage(user) {
+function UserImage({ user }) {
   const url = view(imagePath, user) || "https://via.placeholder.com/50"
   return (
     <img
@@ -14,3 +14,5 @@ export function getImage(user) {
     />
   )
 }
+
+export default UserImage

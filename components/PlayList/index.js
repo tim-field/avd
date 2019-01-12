@@ -4,6 +4,7 @@ import api from "../../utils/api"
 import Control from "./Control"
 import "./style.css"
 import { isErrorNoActiveDevice } from "../../utils/spotify"
+import Following from "../Following"
 
 const initialState = {
   tracks: [],
@@ -67,6 +68,7 @@ function reducer(state, action) {
 export default function PlayList({
   spotifyService,
   userId,
+  currentTrack,
   currentArousal = 0,
   currentValence = 0,
   currentDepth = 0
@@ -269,7 +271,9 @@ export default function PlayList({
 
   return (
     <div className="playlist">
-      <button onClick={() => findSimilar()}>Find Similar</button>
+      {currentTrack && (
+        <button onClick={() => findSimilar()}>Find Similar</button>
+      )}
       <div className="searchControls">
         <Control
           label="Arousal"
@@ -293,6 +297,7 @@ export default function PlayList({
           setMax={value => setMax("depth", value)}
         />
       </div>
+      <Following />
       {tracks.length > 0 && (
         <div>
           <label>Playlist Name </label>
