@@ -1,14 +1,17 @@
-import request from "./request"
+import request, { urlParamify } from "./request"
 
 const serverURL = process.env.API_URL
 
 export default function api({ action, data, method, options = {} }) {
-  return request(`${serverURL}/${action.replace(/^\//, "")}`, {
-    method: method ? method : data ? "POST" : "GET",
+  const type = method ? method.toUpperCase() : data ? "POST" : "GET"
+  const qs = data && type === "GET" ? `?${urlParamify(data)}` : ""
+  const url = `${serverURL}/${action.replace(/^\//, "")}${qs}`
+  return request(url, {
+    method: type,
     headers: {
       "Content-Type": "application/json"
     },
     ...options,
-    body: data && JSON.stringify(data)
+    body: data && type !== "GET" && JSON.stringify(data)
   })
 }
