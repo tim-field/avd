@@ -46,7 +46,7 @@ const spotifyService = request(
 
 function AVD() {
   const { state, dispatch } = useContext(Store)
-  const { token, trackId, userId, loading, arousal, valence, depth  } = state
+  const { token, trackId, userId, loading, arousal, valence, depth } = state
 
   useEffect(
     () => {
