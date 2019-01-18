@@ -30,7 +30,7 @@ module.exports = shipit => {
 
   shipit.blTask("yarn:install", () =>
     shipit.remote(
-      `cd ${shipit.releasePath}; nice yarn install --production --non-interactive ----frozen-lockfile`
+      `cd ${shipit.releasePath}; nice yarn install --production --non-interactive`
     )
   )
 

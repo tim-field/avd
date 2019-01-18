@@ -5,11 +5,23 @@ export const initialState = {
   loading: false,
   token: localStorage.getItem("access_token"),
   userId: localStorage.getItem("userId"),
-  following: []
+  following: [],
+  tracks: [],
+  trackQuery: {
+    arousal: [0, 0],
+    valence: [0, 0],
+    depth: [0, 0],
+    userFilter: []
+  }
 }
 
 export function reducer(state, action) {
   switch (action.type) {
+    case "logout":
+      return {
+        ...initialState,
+        token: null
+      }
     case "set-avd": {
       const { arousal, valence, depth } = action
       return {
@@ -45,10 +57,29 @@ export function reducer(state, action) {
         ...state,
         following: action.following
       }
-    case "logout":
+    case "filter-with-user":
       return {
-        ...initialState,
-        token: null
+        ...state,
+        trackQuery: {
+          ...state.trackQuery,
+          userFilter: action.active
+            ? state.trackQuery.userFilter.concat(action.userId)
+            : state.trackQuery.userFilter.filter(id => id !== action.userId)
+        }
+      }
+    case "set-tracks":
+      return {
+        ...state,
+        playlistSaved: false,
+        tracks: action.tracks
+      }
+    case "set-track-query":
+      return {
+        ...state,
+        trackQuery: {
+          ...state.trackQuery,
+          ...action.query
+        }
       }
     default:
       return state

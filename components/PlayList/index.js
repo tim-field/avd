@@ -1,32 +1,29 @@
-import React, { useReducer, Fragment, useEffect, useRef } from "react"
+import React, {
+  useReducer,
+  Fragment,
+  useEffect,
+  useRef,
+  useContext
+} from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import api from "../../utils/api"
 import Control from "./Control"
 import "./style.css"
 import { isErrorNoActiveDevice } from "../../utils/spotify"
 import Following from "../Following"
+import Store, { connect } from "../../store"
+import { getTracks } from "../../actions/index"
 
 const initialState = {
-  tracks: [],
   playlists: [],
   name: "",
   loading: false,
   saved: false,
-  havePlayer: true,
-  avd: {
-    arousal: [0, 0],
-    valence: [0, 0],
-    depth: [0, 0]
-  }
+  havePlayer: true
 }
 
 function reducer(state, action) {
   switch (action.type) {
-    case "set-avd":
-      return {
-        ...state,
-        avd: action.avd
-      }
     case "set-name":
       return {
         ...state,
@@ -37,12 +34,6 @@ function reducer(state, action) {
       return {
         ...state,
         loading: action.value
-      }
-    case "set-tracks":
-      return {
-        ...state,
-        saved: false,
-        tracks: action.tracks
       }
     case "set-playlists":
       return {
@@ -65,18 +56,22 @@ function reducer(state, action) {
   }
 }
 
-export default function PlayList({
+function PlayList({
   spotifyService,
   userId,
   currentTrack,
+  tracks,
+  userFilter,
   currentArousal = 0,
   currentValence = 0,
-  currentDepth = 0
+  currentDepth = 0,
+  avd
 }) {
   const [
-    { avd, name, tracks, playlists, activePlaylist, saved, havePlayer },
+    { name, playlists, activePlaylist, saved, havePlayer },
     dispatch
   ] = useReducer(reducer, initialState)
+  const { dispatch: appDispatch } = useContext(Store)
   const getTracksTimeout = useRef()
 
   async function loadPlaylists() {
@@ -161,13 +156,16 @@ export default function PlayList({
     if (playlistId) {
       api({ action: `/playlist?id=${playlistId}` }).then(res => {
         const { arousal, valence, depth } = res
-        dispatch({ type: "set-avd", avd: { arousal, valence, depth } })
+        appDispatch({
+          type: "set-track-query",
+          query: { arousal, valence, depth }
+        })
       })
 
       spotifyService({
         action: `v1/playlists/${playlistId}`
       }).then(playlist => {
-        dispatch({
+        appDispatch({
           type: "set-tracks",
           tracks: playlist.tracks.items.map(({ track }) => ({
             name: track.name,
@@ -214,18 +212,19 @@ export default function PlayList({
       })
   }
 
-  function getTracks({ arousal, valence, depth }) {
-    api({
-      action: `tracks?arousal=${arousal}&valence=${valence}&depth=${depth}&userId=${userId}`
-    }).then(tracks => {
-      dispatch({ type: "set-tracks", tracks })
-      dispatch({ type: "set-loading", value: false })
-    })
-  }
-
-  function getTracksDebounced(avd, wait = 400) {
+  function getTracksDebounced(query, wait = 400) {
     clearTimeout(getTracksTimeout.current)
-    getTracksTimeout.current = setTimeout(() => getTracks(avd), wait)
+    getTracksTimeout.current = setTimeout(
+      () =>
+        appDispatch(
+          getTracks({
+            userIds: userFilter,
+            ...avd,
+            ...query
+          })
+        ),
+      wait
+    )
   }
 
   function findSimilar() {
@@ -240,25 +239,25 @@ export default function PlayList({
         ? [Math.max(currentDepth - 1, 0), Math.min(currentDepth + 1, 11)]
         : [0, 0]
     }
-    dispatch({ type: "set-avd", avd: updated })
+    appDispatch({ type: "set-track-query", query: updated })
     getTracks(updated)
   }
 
-  function setMin(name, value) {
+  function setMin(key, value) {
     const updated = {
       ...avd,
-      [name]: [Number(value), Math.max(Number(value), avd[name][1])]
+      [key]: [Number(value), Math.max(Number(value), avd[key][1])]
     }
-    dispatch({ type: "set-avd", avd: updated })
+    appDispatch({ type: "set-track-query", query: updated })
     getTracksDebounced(updated)
   }
 
-  function setMax(name, value) {
+  function setMax(key, value) {
     const updated = {
       ...avd,
-      [name]: [Math.min(avd[name][0], Number(value)), Number(value)]
+      [key]: [Math.min(avd[key][0], Number(value)), Number(value)]
     }
-    dispatch({ type: "set-avd", avd: updated })
+    appDispatch({ type: "set-track-query", query: updated })
     getTracksDebounced(updated)
   }
 
@@ -338,8 +337,8 @@ export default function PlayList({
       )}
       {!havePlayer && (
         <div>
-          Can't find a Spotify player! Please make sure you've got Spotify open
-          and playing somewhere.
+          Can&#39;t find a Spotify player! Please make sure you&#39;ve got
+          Spotify open and playing somewhere.
         </div>
       )}
       {tracks.length > 0 && (
@@ -387,3 +386,21 @@ export default function PlayList({
     </div>
   )
 }
+
+const mapStateToProps = state => {
+  const {
+    tracks,
+    trackQuery: { arousal, valence, depth, userFilter }
+  } = state
+  return {
+    tracks,
+    userFilter,
+    avd: {
+      arousal,
+      valence,
+      depth
+    }
+  }
+}
+
+export default connect({ mapStateToProps })(PlayList)

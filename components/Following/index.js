@@ -2,8 +2,16 @@ import React, { useEffect } from "react"
 import api from "../../utils/api"
 import { connect } from "../../store"
 import UserImage from "../UserImage"
+import { filterWithUser } from "../../actions/index"
 
-function Following({ following, loadUsers, userId, unFollowUser }) {
+function Following({
+  dispatch,
+  following,
+  loadUsers,
+  userId,
+  unFollowUser,
+  userFilter
+}) {
   useEffect(
     () => {
       loadUsers(userId)
@@ -23,6 +31,15 @@ function Following({ following, loadUsers, userId, unFollowUser }) {
           <li key={f.id}>
             <UserImage user={f} />
             <button onClick={() => unFollow(f.id)}>x</button>
+            <input
+              type="checkbox"
+              value={f.id}
+              checked={userFilter.includes(f.id)}
+              onChange={({ target: { checked } }) => {
+                console.log("clicked!")
+                dispatch(filterWithUser(f.id, checked))
+              }}
+            />
           </li>
         ))}
       </ul>
@@ -32,7 +49,8 @@ function Following({ following, loadUsers, userId, unFollowUser }) {
 
 const mapStateToProps = state => ({
   userId: state.userId,
-  following: state.following
+  following: state.following,
+  userFilter: state.trackQuery.userFilter
 })
 
 const mapDispatchToProps = dispatch => ({
