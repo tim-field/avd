@@ -9,7 +9,7 @@ function Following({
   following,
   loadUsers,
   userId,
-  unFollowUser,
+  // unFollowUser,
   userFilter
 }) {
   useEffect(
@@ -19,9 +19,9 @@ function Following({
     [userId]
   )
 
-  function unFollow(followingId) {
-    unFollowUser(userId, followingId)
-  }
+  // function unFollow(followingId) {
+  //   unFollowUser(userId, followingId)
+  // }
 
   return (
     <fieldset>
@@ -30,7 +30,7 @@ function Following({
         {following.map(f => (
           <li key={f.id}>
             <UserImage user={f} />
-            <button onClick={() => unFollow(f.id)}>x</button>
+            {/* <button onClick={() => unFollow(f.id)}>x</button> */}
             <input
               type="checkbox"
               value={f.id}
@@ -57,15 +57,15 @@ const mapDispatchToProps = dispatch => ({
   async loadUsers(userId) {
     const following = await api({ action: `user/following?userId=${userId}` })
     dispatch({ type: "set-following", following })
-  },
-  async unFollowUser(userId, followingId) {
-    const following = await api({
-      action: `user/unfollow`,
-      data: { userId, followingId },
-      method: "DELETE"
-    })
-    dispatch({ type: "set-following", following })
   }
+  // async unFollowUser(userId, followingId) {
+  //   const following = await api({
+  //     action: `user/unfollow`,
+  //     data: { userId, followingId },
+  //     method: "DELETE"
+  //   })
+  //   dispatch({ type: "set-following", following })
+  // }
 })
 
 export default connect({ mapStateToProps, mapDispatchToProps })(Following)

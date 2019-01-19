@@ -66,10 +66,25 @@ const remove = R.curry((table, fields, data) => {
   return [sql, values]
 })
 
+const reduceConditionValues = R.curry((values, fn, offset = 0) => {
+  return values.reduce(
+    (res, value) => {
+      const [vals, conditions] = res
+      const position = vals.length + offset + 1
+      return [
+        vals.concat(value),
+        conditions.concat(fn(position, value, values))
+      ]
+    },
+    [[], []]
+  )
+})
+
 module.exports = {
   insert,
   update,
   select,
   remove,
-  insertUpdate
+  insertUpdate,
+  reduceConditionValues
 }

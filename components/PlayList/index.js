@@ -12,7 +12,10 @@ import "./style.css"
 import { isErrorNoActiveDevice } from "../../utils/spotify"
 import Following from "../Following"
 import Store, { connect } from "../../store"
-import { getTracks } from "../../actions/index"
+import {
+  getTracks,
+  filterUsers as filterUsersAction
+} from "../../actions/index"
 
 const initialState = {
   playlists: [],
@@ -65,7 +68,8 @@ function PlayList({
   currentArousal = 0,
   currentValence = 0,
   currentDepth = 0,
-  avd
+  avd,
+  filterUsers
 }) {
   const [
     { name, playlists, activePlaylist, saved, havePlayer },
@@ -240,7 +244,7 @@ function PlayList({
         : [0, 0]
     }
     appDispatch({ type: "set-track-query", query: updated })
-    getTracks(updated)
+    appDispatch(getTracks(updated))
   }
 
   function setMin(key, value) {
@@ -273,7 +277,8 @@ function PlayList({
       {currentTrack && (
         <button onClick={() => findSimilar()}>Find Similar</button>
       )}
-      <div className="searchControls">
+      <fieldset>
+        <legend>Search</legend>
         <Control
           label="Arousal"
           min={arousal[0]}
@@ -295,8 +300,18 @@ function PlayList({
           setMin={value => setMin("depth", value)}
           setMax={value => setMax("depth", value)}
         />
-      </div>
-      <Following />
+        <label>
+          <input
+            type="checkbox"
+            checked={filterUsers}
+            onChange={({ target: { checked } }) =>
+              appDispatch(filterUsersAction(checked))
+            }
+          />
+          Filter Users
+        </label>
+        {filterUsers && <Following />}
+      </fieldset>
       {tracks.length > 0 && (
         <div>
           <label>Playlist Name </label>
@@ -390,11 +405,12 @@ function PlayList({
 const mapStateToProps = state => {
   const {
     tracks,
-    trackQuery: { arousal, valence, depth, userFilter }
+    trackQuery: { arousal, valence, depth, userFilter, filterUsers }
   } = state
   return {
     tracks,
     userFilter,
+    filterUsers,
     avd: {
       arousal,
       valence,

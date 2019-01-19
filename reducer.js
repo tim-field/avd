@@ -11,7 +11,8 @@ export const initialState = {
     arousal: [0, 0],
     valence: [0, 0],
     depth: [0, 0],
-    userFilter: []
+    userFilter: [],
+    filterUsers: false
   }
 }
 
@@ -79,6 +80,14 @@ export function reducer(state, action) {
         trackQuery: {
           ...state.trackQuery,
           ...action.query
+        }
+      }
+    case "filter-users":
+      return {
+        ...state,
+        trackQuery: {
+          ...state.trackQuery,
+          filterUsers: action.active
         }
       }
     default:

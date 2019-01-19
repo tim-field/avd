@@ -4,6 +4,7 @@ const bodyParser = require("body-parser")
 const cors = require("cors")
 const request = require("request")
 const { query } = require("./utils/db")
+const { reduceConditionValues } = require("./utils/sql")
 const {
   saveUser,
   followUser,
@@ -187,9 +188,9 @@ app.post("/track", async (req, res) => {
 })
 
 app.get("/tracks", async (req, res) => {
-  const { userId, ...data } = req.query
+  const { userId, userFilter, ...data } = req.query
   const avd = ["arousal", "valence", "depth"]
-  const where = avd.reduce((conditions, field) => {
+  const avdWhere = avd.reduce((conditions, field) => {
     if (data[field] && data[field].indexOf(",")) {
       const [min, max] = data[field]
         .split(",")
@@ -211,6 +212,19 @@ app.get("/tracks", async (req, res) => {
     return conditions
   }, [])
 
+  const users = userFilter ? userFilter.split(",") : []
+  const [values, userFilterConditions] = reduceConditionValues(
+    users.concat(userId),
+    position => `user_filter.user_id = $${position}`
+  )
+
+  const withUserFilter = userFilterConditions.length > 0
+  const userFilterWhere = withUserFilter
+    ? [`( ${userFilterConditions.join(" OR ")} )`]
+    : []
+
+  const where = avdWhere.concat(userFilterWhere)
+
   if (where.length > 0) {
     const sql = `
     select 
@@ -223,16 +237,21 @@ app.get("/tracks", async (req, res) => {
       t.json->'item'->>'name' as name, 
       t.json->'item'->'artists'->0->>'name' as artist
     from 
-      track t
+      track t 
+    ${
+      withUserFilter
+        ? `join user_track as user_filter on user_filter.track_id = t.id `
+        : ""
+    }
     left join 
-      user_track ut on ut.track_id = t.id and ut.user_id = $1
+      user_track ut on ut.track_id = t.id and ut.user_id = $${values.length + 1}
     where 
       ${where.concat("(ut.liked is null or ut.liked = true)").join(" and ")}
     order by 
       ut.user_id nulls first, random()
     limit 30
     `
-    const dbRes = await query(sql, [userId])
+    const dbRes = await query(sql, values.concat([userId]))
     return res.status(200).json(dbRes.rows.length ? dbRes.rows : [])
   }
   return res.status(200).json([])
