@@ -53,6 +53,12 @@ export function reducer(state, action) {
         ...state,
         userId: action.value
       }
+    case "set-user":
+      return {
+        ...state,
+        user: action.user,
+        userId: action.user.id
+      }
     case "set-following":
       return {
         ...state,

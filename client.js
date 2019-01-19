@@ -65,7 +65,7 @@ function AVD() {
         dispatch({ type: "set-loading", value: true })
         spotifyService({ action: "v1/me" }).then(user => {
           api({ action: "user", data: { user } })
-          dispatch({ type: "set-user-id", value: user.id })
+          dispatch({ type: "set-user", user })
           dispatch({ type: "set-loading", value: false })
         })
       }

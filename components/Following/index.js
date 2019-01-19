@@ -8,15 +8,15 @@ function Following({
   dispatch,
   following,
   loadUsers,
-  userId,
+  user,
   // unFollowUser,
   userFilter
 }) {
   useEffect(
     () => {
-      loadUsers(userId)
+      loadUsers(user)
     },
-    [userId]
+    [user.id]
   )
 
   // function unFollow(followingId) {
@@ -27,7 +27,7 @@ function Following({
     <fieldset>
       <legend>Following</legend>
       <ul>
-        {following.map(f => (
+        {[user].concat(following).map(f => (
           <li key={f.id}>
             <UserImage user={f} />
             {/* <button onClick={() => unFollow(f.id)}>x</button> */}
@@ -47,14 +47,14 @@ function Following({
 }
 
 const mapStateToProps = state => ({
-  userId: state.userId,
+  user: state.user,
   following: state.following,
   userFilter: state.trackQuery.userFilter
 })
 
 const mapDispatchToProps = dispatch => ({
-  async loadUsers(userId) {
-    const following = await api({ action: `user/following?userId=${userId}` })
+  async loadUsers(user) {
+    const following = await api({ action: `user/following?userId=${user.id}` })
     dispatch({ type: "set-following", following })
   }
   // async unFollowUser(userId, followingId) {
