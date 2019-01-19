@@ -212,20 +212,29 @@ app.get("/tracks", async (req, res) => {
     return conditions
   }, [])
 
-  const users = userFilter ? userFilter.split(",") : []
-  const [values, userFilterConditions] = reduceConditionValues(
+  const withUserFilter = !!userFilter
+  const users = withUserFilter ? userFilter.split(",") : []
+  const [userFilterValues, userFilterConditions] = reduceConditionValues(
     users.concat(userId),
     position => `user_filter.user_id = $${position}`
   )
 
-  const withUserFilter = userFilterConditions.length > 0
   const userFilterWhere = withUserFilter
     ? [`( ${userFilterConditions.join(" OR ")} )`]
     : []
 
-  const where = avdWhere.concat(userFilterWhere)
+  const playlistWhere = avdWhere.concat(userFilterWhere)
 
-  if (where.length > 0) {
+  if (playlistWhere.length > 0) {
+    const values = withUserFilter ? userFilterValues.concat(userId) : [userId]
+    const userIdPosition = values.length
+    const where = playlistWhere
+      .concat([
+        "(ut.liked is null or ut.liked = true)",
+        `ut.user_id = $${userIdPosition}`
+      ])
+      .join(" and ")
+
     const sql = `
     select 
       t.id, 
@@ -240,18 +249,18 @@ app.get("/tracks", async (req, res) => {
       track t 
     ${
       withUserFilter
-        ? `join user_track as user_filter on user_filter.track_id = t.id `
+        ? `join user_track as user_filter on user_filter.track_id = t.id`
         : ""
     }
     left join 
-      user_track ut on ut.track_id = t.id and ut.user_id = $${values.length + 1}
+      user_track ut on ut.track_id = t.id
     where 
-      ${where.concat("(ut.liked is null or ut.liked = true)").join(" and ")}
+      ${where}
     order by 
       ut.user_id nulls first, random()
     limit 30
     `
-    const dbRes = await query(sql, values.concat([userId]))
+    const dbRes = await query(sql, values)
     return res.status(200).json(dbRes.rows.length ? dbRes.rows : [])
   }
   return res.status(200).json([])

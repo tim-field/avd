@@ -36,7 +36,6 @@ function Following({
               value={f.id}
               checked={userFilter.includes(f.id)}
               onChange={({ target: { checked } }) => {
-                console.log("clicked!")
                 dispatch(filterWithUser(f.id, checked))
               }}
             />
