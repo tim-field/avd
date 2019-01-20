@@ -1,4 +1,4 @@
-const { query } = require("../utils/db")
+const { query, getRow } = require("../utils/db")
 const { reduceConditionValues } = require("../utils/sql")
 
 async function getListeners(trackId) {
@@ -16,7 +16,30 @@ async function getListeners(trackId) {
   return dbResult.rows.map(r => r.user)
 }
 
-async function getTracks({ userId, userFilter, arousal, valence, depth }) {
+function getAVD(trackId, userId) {
+  const sql = `
+  select
+    coalesce(user_track.arousal, track.arousal)::numeric::integer arousal,
+    coalesce(user_track.valence, track.valence)::numeric::integer valence,
+    coalesce(user_track.depth, track.depth)::numeric::integer depth,
+    user_track.liked
+  from 
+    track
+  left join 
+    user_track on track.id = user_track.track_id and user_id = $2 
+  where 
+    track.id = $1`
+  return getRow(sql, [trackId, userId])
+}
+
+async function getTracks({
+  userId,
+  userFilter,
+  arousal,
+  valence,
+  depth,
+  filterLiked
+}) {
   const avd = { arousal, valence, depth }
   const avdWhere = Object.entries(avd).reduce((conditions, [field, value]) => {
     if (value && value.indexOf(",")) {
@@ -29,42 +52,46 @@ async function getTracks({ userId, userFilter, arousal, valence, depth }) {
           `coalesce(ut.${field}, t.${field}) between ${Math.min(
             min,
             max
-          )}::int and ${Math.max(min, max)}::int`
+          )}::int and ${Math.max(min, max)}::int\n`
         )
       } else if (min || max) {
         return conditions.concat(
-          `coalesce(ut.${field}, t.${field}) = ${Math.max(min, max)}::int`
+          `coalesce(ut.${field}, t.${field}) = ${Math.max(min, max)}::int\n`
         )
       }
     }
     return conditions
   }, [])
 
-  const withUserFilter = !!userFilter
-  const users = withUserFilter ? userFilter.split(",") : []
+  const filterUsers = userFilter ? userFilter.split(",") : []
+  const withUserFilter = filterLiked || filterUsers.length > 0
+
   const [userFilterValues, userFilterConditions] = reduceConditionValues(
-    users,
+    filterUsers,
     position => `user_filter.user_id = $${position}`
   )
 
-  const userFilterWhere = withUserFilter
-    ? [`( ${userFilterConditions.join(" OR ")} )`]
-    : []
+  const userFilterCondition =
+    userFilterConditions.length > 0
+      ? [`( ${userFilterConditions.join(" or ")} )\n`]
+      : []
+
+  const userFilterLikedCondition = filterLiked
+    ? "user_filter.liked = true" // tracks user has liked
+    : "(ut.liked is null or ut.liked = true)" // tracks user hasn't disliked
+
+  const userFilterWhere = userFilterCondition.concat(userFilterLikedCondition)
 
   const playlistWhere = avdWhere.concat(userFilterWhere)
 
   if (playlistWhere.length > 0) {
     const values = withUserFilter ? userFilterValues.concat(userId) : [userId]
     const userIdPosition = values.length
-    const where = playlistWhere
-      .concat([
-        "(ut.liked is null or ut.liked = true)",
-        `ut.user_id = $${userIdPosition}`
-      ])
-      .join(" and ")
+
+    const where = playlistWhere.join(" and ")
 
     const sql = `
-    select 
+    select
       t.id, 
       ut.user_id,
       ut.liked, 
@@ -81,7 +108,7 @@ async function getTracks({ userId, userFilter, arousal, valence, depth }) {
         : ""
     }
     left join 
-      user_track ut on ut.track_id = t.id
+      user_track ut on ut.track_id = t.id and ut.user_id = $${userIdPosition}
     where 
       ${where}
     order by 
@@ -96,5 +123,6 @@ async function getTracks({ userId, userFilter, arousal, valence, depth }) {
 
 module.exports = {
   getListeners,
-  getTracks
+  getTracks,
+  getAVD
 }

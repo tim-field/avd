@@ -79,9 +79,9 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
         api({ action: `avd?userId=${userId}&trackId=${track.id}` }).then(
           res => {
             setAVD({
-              arousal: res.arousal || res.default_arousal || 0,
-              valence: res.valence || res.default_valence || 0,
-              depth: res.depth || res.default_depth || 0
+              arousal: res.arousal || 0,
+              valence: res.valence || 0,
+              depth: res.depth || 0
             })
             setLiked(res.liked)
           }

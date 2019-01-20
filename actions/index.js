@@ -6,13 +6,27 @@ export const getTracks = (query = {}) => {
       ...state.trackQuery,
       ...query
     }
-    const { arousal, valence, depth, userFilter, filterUsers } = apiQuery
+    const {
+      arousal,
+      valence,
+      depth,
+      userFilter,
+      filterLiked,
+      filterUsers,
+      ...rest
+    } = apiQuery
     api({
-      action: `tracks?userId=${
-        state.userId
-      }&arousal=${arousal}&valence=${valence}&depth=${depth}&userFilter=${
-        filterUsers ? userFilter : ""
-      }`
+      action: "tracks",
+      method: "GET",
+      data: {
+        ...rest,
+        ...(filterUsers && { userFilter: userFilter.join(",") }),
+        ...(filterLiked && { filterLiked: true }),
+        arousal: arousal.join(","),
+        valence: valence.join(","),
+        depth: depth.join(","),
+        userId: state.userId
+      }
     }).then(tracks => {
       dispatch({ type: "set-tracks", tracks })
     })
@@ -21,7 +35,6 @@ export const getTracks = (query = {}) => {
 
 export const filterWithUser = (followingId, active) => {
   return (dispatch, state) => {
-    // move this to an action
     dispatch({ type: "filter-with-user", userId: followingId, active })
     const trackQuery = state.trackQuery
     const userFilter = active
@@ -33,8 +46,14 @@ export const filterWithUser = (followingId, active) => {
 
 export const filterUsers = active => {
   return dispatch => {
-    // move this to an action
     dispatch({ type: "filter-users", active })
     dispatch(getTracks({ filterUsers: active }))
+  }
+}
+
+export const filterLiked = liked => {
+  return dispatch => {
+    dispatch({ type: "filter-liked", liked })
+    dispatch(getTracks({ filterLiked: liked }))
   }
 }

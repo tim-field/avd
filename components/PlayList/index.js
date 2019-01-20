@@ -14,7 +14,8 @@ import Following from "../Following"
 import Store, { connect } from "../../store"
 import {
   getTracks,
-  filterUsers as filterUsersAction
+  filterUsers as filterUsersAction,
+  filterLiked as filterLikedAction
 } from "../../actions/index"
 
 const initialState = {
@@ -64,13 +65,12 @@ function PlayList({
   userId,
   currentTrack,
   tracks,
-  userFilter,
   currentArousal = 0,
   currentValence = 0,
   currentDepth = 0,
-  avd,
-  filterUsers
+  trackQuery
 }) {
+  const { userFilter, filterUsers, liked: filterLiked, ...avd } = trackQuery
   const [
     { name, playlists, activePlaylist, saved, havePlayer },
     dispatch
@@ -303,6 +303,16 @@ function PlayList({
         <label>
           <input
             type="checkbox"
+            checked={filterLiked}
+            onChange={({ target: { checked } }) =>
+              appDispatch(filterLikedAction(checked))
+            }
+          />
+          Liked
+        </label>
+        <label>
+          <input
+            type="checkbox"
             checked={filterUsers}
             onChange={({ target: { checked } }) =>
               appDispatch(filterUsersAction(checked))
@@ -404,18 +414,22 @@ function PlayList({
 
 const mapStateToProps = state => {
   const {
+    userId,
+    trackId: currentTrack,
+    arousal: currentArousal,
+    valence: currentValence,
+    depth: currentDepth,
     tracks,
-    trackQuery: { arousal, valence, depth, userFilter, filterUsers }
+    trackQuery
   } = state
   return {
+    userId,
+    currentTrack,
+    currentArousal,
+    currentValence,
+    currentDepth,
     tracks,
-    userFilter,
-    filterUsers,
-    avd: {
-      arousal,
-      valence,
-      depth
-    }
+    trackQuery
   }
 }
 

@@ -12,6 +12,6 @@ export default function api({ action, data, method, options = {} }) {
       "Content-Type": "application/json"
     },
     ...options,
-    body: data && type !== "GET" && JSON.stringify(data)
+    ...(data && type !== "GET" && { body: JSON.stringify(data) })
   })
 }

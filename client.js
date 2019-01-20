@@ -94,14 +94,7 @@ function AVD() {
             valence={valence}
             depth={depth}
           />
-          <PlayList
-            spotifyService={spotifyService}
-            userId={userId}
-            currentTrack={trackId}
-            currentArousal={arousal}
-            currentValence={valence}
-            currentDepth={depth}
-          />
+          <PlayList spotifyService={spotifyService} />
         </Fragment>
       )}
       {loading && <Loading />}

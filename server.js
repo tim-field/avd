@@ -10,7 +10,7 @@ const {
   getFollowing,
   unFollow
 } = require("./services/user")
-const { getListeners, getTracks } = require("./services/avd")
+const { getListeners, getTracks, getAVD } = require("./services/avd")
 
 const { PORT, URL, SPOTIFY_CLIENT_ID, SPOTIFY_SECRET } = process.env
 const app = express()
@@ -157,22 +157,8 @@ app.post("/avd/like", async (req, res) => {
 
 app.get("/avd", async (req, res) => {
   const { trackId, userId } = req.query
-  const sql = `
-  select
-    user_track.arousal,
-    user_track.valence,
-    user_track.depth,
-    user_track.liked,
-    track.arousal as default_arousal,
-    track.valence as default_valence,
-    track.depth as default_depth
-  from track
-    left join user_track on track.id = user_track.track_id and user_id = $2 
-  where 
-    track.id = $1`
-  const dbRes = await query(sql, [trackId, userId])
-  // console.log(dbRes)
-  return res.status(200).json(dbRes.rows.length ? dbRes.rows[0] : {})
+  const avd = await getAVD(trackId, userId)
+  return res.status(200).json(avd || {})
 })
 
 app.post("/track", async (req, res) => {

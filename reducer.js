@@ -12,7 +12,8 @@ export const initialState = {
     valence: [0, 0],
     depth: [0, 0],
     userFilter: [],
-    filterUsers: false
+    filterUsers: false,
+    filterLiked: false
   }
 }
 
@@ -94,6 +95,14 @@ export function reducer(state, action) {
         trackQuery: {
           ...state.trackQuery,
           filterUsers: action.active
+        }
+      }
+    case "filter-liked":
+      return {
+        ...state,
+        trackQuery: {
+          ...state.trackQuery,
+          filterLiked: action.liked
         }
       }
     default:
