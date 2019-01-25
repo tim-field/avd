@@ -12,6 +12,15 @@ h1{
 a{
   color: #fff
 }
+
+
+// FORMS
+fieldset{
+  // align-items: center;
+  // justify-content: center;
+  border: none;
+  padding: 0;
+}
 button{
   transform: translateY(0);
   transition: transform .3s ease, background .3s ease, border-color .3s ease;

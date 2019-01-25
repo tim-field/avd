@@ -47,7 +47,8 @@
     }
   }
   .inputRangeWrap{
-    background: var(--overlay);
+    // background: var(--overlay);
+    background: var(--themeColor-strongest);
     margin: .5rem auto;
     display: flex;
     flex-direction: column;
@@ -60,14 +61,157 @@
     }
     label{
       font-size: .75rem;
+      color: var(--themeColor-weakest)
     }
   }
 }
 
+
+/*overrides defaults*/
+input[type=range]:focus {
+  outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+}
+input[type=range]::-webkit-slider-thumb {
+  // -webkit-appearance: none;
+}
+
+$thumbBorder: 0px solid red;
+$thumbShadow: 0 1px 2px -0px rgba(0,0,0,.2);
+$thumbBackground: var(--themeColor-strongest);
+// $thumbBackground: var(--textColor);
+// $thumbBackground: linear-gradient(to right, var(--themeColor-strongest) 45%, var(--themeColor-stronger) 47.5%, var(--textColor) 52.5%, var(--themeColor-strongest) 55%);
+$thumbBorderRadius: 1rem;
+
+$trackShortSide: 8px;
+$trackLongSide: 100%;
+$trackLongSideVertical: 180px;
+$thumbDiameter: 1rem;
+$trackShadow: none;
+$trackBackground: var(--themeColor-weakest);
+$trackRadius: 2px;
+$trackBorder: 0px solid black;
+
+input[type=range] {
+  height: $thumbDiameter * 2;
+  width: $trackLongSide;
+  -webkit-appearance: none;
+  background: transparent;
+  // margin: 1rem 0;
+  // width: 100%;
+}
 input[type="range"][orient="vertical"] {
   writing-mode: bt-lr; /* IE */
   -webkit-appearance: slider-vertical; /* WebKit */
-  width: 8px;
-  height: 175px;
-  padding: 0 5px;
+  width: $trackShortSide;
+  height: $trackLongSideVertical;
+  // padding: 0 5px;
+  background: transparent;
+  outline: none;
+  // -webkit-appearance: none;
+  // /*-webkit-appearance: slider-vertical; /*if we remove this slider-vertical then horizondally range bar styles applies correctly*/
+  // transform: translateY(30px) rotate(90deg);
+  // transform-origin:bottom;  
+}
+
+
+input[type=range]::-webkit-slider-runnable-track {
+  height: $trackShortSide;
+  width: $trackLongSide;
+  cursor: pointer;
+  animate: 0.2s;
+  box-shadow: $trackShadow;
+  background: $trackBackground;
+  border-radius: $trackRadius;
+  border: $trackBorder;
+}
+input[type="range"][orient="vertical"]::-webkit-slider-runnable-track {
+  width: $trackShortSide;
+  height: $trackLongSideVertical;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  box-shadow: $thumbShadow;
+  border: $thumbBorder;
+  height: $thumbDiameter;
+  width: $thumbDiameter * 2;
+  border-radius: $thumbBorderRadius;
+  background: $thumbBackground;
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -($thumbDiameter / 4);
+}
+input[type="range"][orient="vertical"]::-webkit-slider-thumb {
+  // margin-left: -($thumbDiameter / 4);
+  transform: translateX(-.25rem) translateY(.5rem);
+  width: $thumbDiameter;
+  height: $thumbDiameter * 2;
+  
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+  background: $trackBackground;
+}
+input[type=range]::-moz-range-track {
+  height: $trackShortSide;
+  width: $trackLongSide;
+  cursor: pointer;
+  animate: 0.2s;
+  box-shadow: $trackShadow;
+  background: $trackBackground;
+  border-radius: $trackRadius;
+  border: $trackBorder;
+}
+input[type="range"][orient="vertical"]::-moz-range-track {
+  width: $trackShortSide;
+  height: $trackLongSideVertical;
+}
+input[type=range]::-moz-range-thumb {
+  box-shadow: $thumbShadow;
+  border: $thumbBorder;
+  height: $thumbDiameter;
+  width: $thumbDiameter;
+  border-radius: $thumbBorderRadius;
+  background: $thumbBackground;
+  cursor: pointer;
+}
+input[type=range]::-ms-track {
+  height: $trackShortSide;
+  width: $trackLongSideVertical;
+  cursor: pointer;
+  animate: 0.2s;
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+input[type="range"][orient="vertical"]::-ms-track {
+  width: $trackShortSide;
+  height: $trackLongSide;
+}
+input[type=range]::-ms-fill-lower {
+  background: $trackBackground;
+  border: $trackBorder;
+  border-radius: $trackRadius;
+  box-shadow: $trackShadow;
+}
+input[type=range]::-ms-fill-upper {
+  background: $trackBackground;
+  border: $trackBorder;
+  border-radius: $trackRadius;
+  box-shadow: $trackShadow;
+}
+input[type=range]::-ms-thumb {
+  margin-top: 1px;
+  box-shadow: $thumbShadow;
+  border: $thumbBorder;
+  height: $thumbDiameter;
+  width: $thumbDiameter;
+  border-radius: $thumbBorderRadius;
+  background: $thumbBackground;
+  cursor: pointer;
+}
+input[type=range]:focus::-ms-fill-lower {
+  background: $trackBackground;
+}
+input[type=range]:focus::-ms-fill-upper {
+  background: $trackBackground;
 }
