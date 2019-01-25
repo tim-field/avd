@@ -92,7 +92,7 @@ function AVD() {
 
   return (
     <div className="avd">
-      {!token && <a href={AUTH_URL}>Authorize</a>}
+      {!token && <div className="authLink"><a href={AUTH_URL}>Authorize</a></div>}
       {token && userId && (
         <Fragment>
           <Header

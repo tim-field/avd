@@ -9,7 +9,7 @@ function Header({
   // console.log('doLogout', doLogout)
   return (
     <div className="Header">
-      <div className="appTitle"><span>A / V / L</span></div>
+      <div className="appTitle"><span>A / V / D</span></div>
       <div className="appUser">
         <button className="uiToggle" onClick={toggleUI}>
             UI mode
