@@ -15,21 +15,25 @@ export const getTracks = (query = {}) => {
       filterUsers,
       ...rest
     } = apiQuery
-    api({
-      action: "tracks",
-      method: "GET",
-      data: {
-        ...rest,
-        ...(filterUsers && { userFilter: userFilter.join(",") }),
-        ...(filterLiked && { filterLiked: true }),
-        arousal: arousal.join(","),
-        valence: valence.join(","),
-        depth: depth.join(","),
-        userId: state.userId
-      }
-    }).then(tracks => {
-      dispatch({ type: "set-tracks", tracks })
-    })
+
+    // Don't query unless we have some avd values
+    if (Math.max(...arousal.concat(valence).concat(depth)) > 0) {
+      api({
+        action: "tracks",
+        method: "GET",
+        data: {
+          ...rest,
+          ...(filterUsers && { userFilter: userFilter.join(",") }),
+          ...(filterLiked && { filterLiked: true }),
+          arousal: arousal.join(","),
+          valence: valence.join(","),
+          depth: depth.join(","),
+          userId: state.userId
+        }
+      }).then(tracks => {
+        dispatch({ type: "set-tracks", tracks })
+      })
+    }
   }
 }
 
