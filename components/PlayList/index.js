@@ -8,7 +8,6 @@ import React, {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import api from "../../utils/api"
 import Control from "./Control"
-import "./style.css"
 import { isErrorNoActiveDevice } from "../../utils/spotify"
 import Following from "../Following"
 import Store, { connect } from "../../store"
@@ -17,6 +16,7 @@ import {
   filterUsers as filterUsersAction,
   filterLiked as filterLikedAction
 } from "../../actions/index"
+import "./PlayList.scss"
 
 const initialState = {
   playlists: [],
@@ -273,12 +273,13 @@ function PlayList({
   const { arousal, valence, depth } = avd
 
   return (
-    <div className="playlist">
+    <div className="PlayList">
       {currentTrack && (
         <button onClick={() => findSimilar()}>Find Similar</button>
       )}
-      <fieldset>
-        <legend>Search</legend>
+      <div className="PlayListControlsWrap">
+        <h3>Search</h3>
+        <div className="PlayListControls">
         <Control
           label="Arousal"
           min={arousal[0]}
@@ -300,28 +301,32 @@ function PlayList({
           setMin={value => setMin("depth", value)}
           setMax={value => setMax("depth", value)}
         />
-        <label>
-          <input
-            type="checkbox"
-            checked={filterLiked}
-            onChange={({ target: { checked } }) =>
-              appDispatch(filterLikedAction(checked))
-            }
-          />
-          Liked
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={filterUsers}
-            onChange={({ target: { checked } }) =>
-              appDispatch(filterUsersAction(checked))
-            }
-          />
-          Filter Users
-        </label>
+          <div className="PlayListOptions">
+            <h4>Options</h4>
+            <label>
+              <input
+                type="checkbox"
+                checked={filterLiked}
+                onChange={({ target: { checked } }) =>
+                  appDispatch(filterLikedAction(checked))
+                }
+              />
+              Liked
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={filterUsers}
+                onChange={({ target: { checked } }) =>
+                  appDispatch(filterUsersAction(checked))
+                }
+              />
+              Filter Users
+            </label>
+          </div>
+        </div>
         {filterUsers && <Following />}
-      </fieldset>
+      </div>
       {tracks.length > 0 && (
         <div>
           <label>Playlist Name </label>

@@ -1,0 +1,84 @@
+#playlistTracks .playlistTrack {
+  display: flex;
+}
+h3{
+  margin: 0;
+  font-weight: 300;
+}
+h4{
+  margin: .5rem 0;
+  padding: 0;
+  position: relative;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: .875rem;
+  font-weight: 600;
+}
+.PlayListControlsWrap{
+  margin-top: 1rem;
+  padding: 1rem;
+  // border-top: 2px solid var(--textColor);
+  border-radius: 0rem;
+  // background: var(--themeColor-weakest);
+  background: var(--highlight);
+  color: var(--themeColor-strongest)
+  
+}
+.PlayListControls{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: stretch;
+  // background: var(--highlight);
+  > fieldset{
+    flex-basis: 25%;
+    legend{
+      position: relative;
+      top: 1rem;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      text-align: center;
+      font-size: .875rem;
+      font-weight: 600;
+      // letter-spacing: .1rem;
+    }
+    >div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      padding: 0;
+      background: var(--overlay);
+      // background: var(--themeColor-strongest);
+      // border: 2px solid var(--themeColor-strongest);
+      // margin: 0.5rem auto;
+      margin: 0 .5rem 0 0;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      label{
+        // color: var(--backgroundColor);
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        // color: var(--themeColor-weakest);
+        align-self: flex-start;
+      }
+    }
+    &:first-of-type{
+      >div{
+        // border-radius: 0.5rem 0.5rem 0 0 ;
+      }
+    }
+    &:last-of-type{
+      >div{
+        // border-radius: 0 0  0.5rem 0.5rem;
+      }
+    }
+  }
+}
+.PlayListOptions{
+  padding: .5rem;
+  display: flex;
+  flex-direction: column;
+  flex-basis: 25%;
+}
