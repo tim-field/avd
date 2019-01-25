@@ -59,7 +59,7 @@ $light-highlight: rgba(255,255,255,.1);
 $light-text: #333;
 $light-themeColor: #b7c182;
 $light-themeColor-weakest: #dee7b0;
-$light-themeColor-weaker: #b7c182;
+$light-themeColor-weaker: #dbe897; //#b7c182;
 $light-themeColor-stronger: #d6c984;
 $light-themeColor-strongest: #38351d;
 // $light-themeColor: #c7a1c7;
@@ -71,10 +71,10 @@ $dark-background: #333;
 $dark-text: #ddd;
 $dark-overlay: rgba(255,255,255,.05);
 $dark-highlight: rgba(0,0,0,.1);
-$dark-themeColor: #521452;
+$dark-themeColor: #521431;
 $dark-themeColor-weakest: #1d0e1d;
-$dark-themeColor-weaker: #4d0a4d;
-$dark-themeColor-stronger: #521452;
+$dark-themeColor-weaker: #410a24;
+$dark-themeColor-stronger: #521452; // 410a24
 $dark-themeColor-strongest: #dbbcdb;
 
 // ROOT DEFAULTS
@@ -123,8 +123,10 @@ html[data-theme="light"]{
   @include setVariable(--themeColor-stronger, $light-themeColor-stronger, #eee);
   @include setVariable(--themeColor-strongest, $light-themeColor-strongest, #eee);
   // @include variable(--textColor, #333, #000);
-  background: linear-gradient(to bottom, $light-themeColor-weaker 0%, $light-themeColor-stronger 100%);
+  // background: linear-gradient(to bottom, $light-themeColor-weaker 0%, $light-themeColor-stronger 100%);
+  background: linear-gradient(-45deg, $light-themeColor-weaker 0%, $light-themeColor-stronger 100%);
   color: $light-text;
+  border-left: 2rem solid $light-themeColor-weaker;
 }
 html[data-theme="dark"]{
   // @include themes('dark', $dark);
@@ -138,8 +140,11 @@ html[data-theme="dark"]{
   @include setVariable(--themeColor-stronger, $dark-themeColor-stronger, #eee);
   @include setVariable(--themeColor-strongest, $dark-themeColor-strongest, #eee);
   // GLOBAL
-  background: linear-gradient(to bottom, $dark-themeColor-stronger 0%, $dark-themeColor-weaker 100%);
+  // background: linear-gradient(to bottom, $dark-themeColor-stronger 0%, $dark-themeColor-weaker 100%);
+  background: linear-gradient(-45deg, $dark-themeColor-stronger 0%, $dark-themeColor-weaker 100%);
   color: $dark-text;
+  // border-left: 2rem solid $dark-themeColor-stronger;
+  border-left: 2rem solid $dark-themeColor-weakest;
 }
 
 $colorPrimary: #330022;
