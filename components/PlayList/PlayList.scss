@@ -1,3 +1,5 @@
+@import "../../styles/_variables.scss";
+
 #playlistTracks .playlistTrack {
   display: flex;
 }
@@ -81,4 +83,50 @@ h4{
   display: flex;
   flex-direction: column;
   flex-basis: 25%;
+}
+
+.PlayListEdit, .PlayListSelect, .PlayListTracks{
+  min-height: 2rem;
+  padding: .5rem 0;
+}
+
+.PlayListTracks{
+  caption{
+    padding: .5rem;
+    font-size: 2rem;
+  }
+  table{
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead{
+    tr{
+      border-top: none;
+      th{
+        text-transform: uppercase;
+        font-size: .75rem;
+        text-align: left;
+        padding: .25rem;
+        opacity: .8;
+        letter-spacing: .1rem;
+        font-weight: 300;
+      }
+    }
+  }
+  tr{
+    border-top: 1px solid var(--highlight);
+    button{
+      bordeR: none;
+    }
+    @media (hover: hover) {
+      &:hover{
+        @include variable(background, --highlight, orange);
+        // @include variable(color, --backgroundColor, orange);
+        cursor: pointer;
+      }
+    }
+  }
+  td{
+    padding: .25rem;  
+  }
 }

@@ -1,0 +1,36 @@
+.Listeners{
+  
+  ul.ListenersList{
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    li{
+      list-style-type: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      button{
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+      }
+    }
+  }
+}
+
+.CurrentTrack .Listeners{
+  flex-basis: 10%;
+  padding: .5rem;
+  margin: 0;
+  ul.ListenersList{
+    flex-direction: column;
+    li{
+      margin-bottom: .25rem;
+    }
+  }
+}

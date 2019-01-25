@@ -2,6 +2,7 @@ import React, { useEffect, useReducer, useContext } from "react"
 import api from "../../utils/api"
 import Store from "../../store"
 import UserImage from "../UserImage"
+import "./Listeners.scss";
 
 function reducer(state, action) {
   switch (action.type) {
@@ -47,9 +48,9 @@ function Listeners({ trackId, userId }) {
   }
 
   return users.length ? (
-    <div>
-      Listeners
-      <ul>
+    <div className="Listeners">
+      <h4>Listeners</h4>
+      <ul className="ListenersList">
         {users.map(user => (
           <li key={user.id}>
             <button onClick={() => followUser(user.id)}>

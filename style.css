@@ -23,7 +23,7 @@ button + button{
   margin-left: .5rem;
 }
 
-.CurrentTrack, .PlayList{
+.CurrentTrack, .PlayList, .Listeners{
   max-width: 66rem;
   margin: 1rem auto;
 }

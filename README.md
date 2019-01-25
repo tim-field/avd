@@ -9,6 +9,7 @@ For future reference...
 #### UI MODE
 - currently set with an ugly button but should be more subtle, and use state
 - if we keep track of user would be nice to store their stetting if they change it. (local storage?)
+- only pseudo themable at this point, as colours are set in the _variables.scss file.
 
 #### style notes
 - currently using scss but NOT modules, so classes are globally scoped

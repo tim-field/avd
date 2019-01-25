@@ -1,5 +1,8 @@
 import React from "react"
+import "./Loading.scss"
 
 export default function Loading() {
-  return <p>Loading...</p>
+  return <div className="Loading">
+    <p>Loading...</p>
+  </div>
 }
