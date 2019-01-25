@@ -17,7 +17,12 @@ export const getTracks = (query = {}) => {
     } = apiQuery
 
     // Don't query unless we have some avd values
-    if (Math.max(...arousal.concat(valence).concat(depth)) > 0) {
+    if (
+      arousal
+        .concat(valence)
+        .concat(depth)
+        .find(x => x > 0)
+    ) {
       api({
         action: "tracks",
         method: "GET",
