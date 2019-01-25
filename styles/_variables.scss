@@ -1,0 +1,135 @@
+
+
+
+// THEME
+$themes: (
+  light: (
+    backgroundLight: #fff,
+    backgroundDark: #f7f7f8,
+    textColor: #fff,
+    textDark: #000,
+    textLight: #919394,
+    contentColor: #b9baba,  
+    iconColor: #000,
+    color100: rgba(0,0,0,1),
+    color10: rgba(0,0,0,0.1),
+  ),
+  dark: (
+    backgroundLight: #131b1f,
+    backgroundDark: #000,
+    textColor: #fff,
+    textDark: #fff,
+    textLight: #b9baba,
+    iconColor: #fff,
+    color100: rgba(255,255,255,1),
+    color10: rgba(255,255,255,0.1),
+  ),
+);
+
+
+
+$light: (
+  border: 20px solid var(--primary-hue),
+  background: #eee,
+  textColor: #333,
+  textDark: #000,
+  textLight: #919394,
+  primaryColor: #bb11ba,  
+  iconColor: #000,
+  color100: rgba(255,255,255,1),
+  color10: rgba(255,255,255,0.1),
+);
+
+
+$dark: (
+  border: 20px solid #eee,
+  background: #333,
+  textColor: #ddd,
+  textDark: #aaa,
+  textLight: #fff,
+  primaryColor: #359b9b,  
+  iconColor: #fff,
+  color100: rgba(0,0,0,1),
+  color10: rgba(0,0,0,0.1),
+);
+
+$light-background: #eee;
+$light-overlay: rgba(0,0,0,.03);
+$light-highlight: rgba(255,255,255,.03);
+$light-text: #333;
+$light-themeColor: #c7a1c7;
+$light-themeColor-weaker: #c7a1c7;
+$light-themeColor-stronger: #966d96;
+
+$dark-background: #333;
+$dark-text: #ddd;
+$dark-overlay: rgba(255,255,255,.03);
+$dark-highlight: rgba(0,0,0,.03);
+$dark-themeColor: #521452;
+$dark-themeColor-weaker: #521452;
+$dark-themeColor-stronger: #2f042f;
+
+// ROOT DEFAULTS
+
+:root{
+  --primary-hue: $dark-themeColor;
+  --textColor: $dark-text;
+  --overlay: $dark-overlay;
+  // --theme-primary-hue: pink;
+  --theme: 'dark';
+}
+
+// $color-schemes: (
+//   scheme-default: (
+//     backgroundColor: #00b4ff,
+//   ),
+//   scheme-cs1: (
+//     backgroundColor: #e68a00,
+//   )
+// );
+
+$prefix: 'body';
+@mixin themes($name, $map){
+  // #{$prefix} & {
+    @each $property, $value in $map {
+      #{$property}: $value;
+    }
+  // }
+ }
+ 
+
+ 
+@mixin variable($property, $variable, $fallback) {
+  #{$property}: $fallback;
+  #{$property}: var($variable);
+}
+@mixin  setVariable($property, $variable, $fallback) {
+  // #{$property}: $fallback;
+  #{$property}: $variable;
+}
+
+body[data-theme="light"]{
+  // @include themes('light', $light);
+  
+  // @include variable(--theme-primary-hue, pink, #000);
+  // @include variable(--primary-hue, pink, #000);
+  @include setVariable(--theme-background, $light-background, #eee);
+  @include setVariable(--textColor, $light-text, #eee);
+  @include setVariable(--overlay, $light-overlay, #eee);
+  // @include variable(--textColor, #333, #000);
+  background: linear-gradient(to bottom, $light-themeColor-weaker 0%, $light-themeColor-stronger 100%);
+  color: $light-text;
+}
+body[data-theme="dark"]{
+  // @include themes('dark', $dark);
+  @include setVariable(--theme-background, $dark-background, #eee);
+  @include setVariable(--textColor, $dark-text, #eee);
+  @include setVariable(--overlay, $dark-overlay, #eee);
+  // GLOBAL
+  background: linear-gradient(to bottom, $dark-themeColor-weaker 0%, $dark-themeColor-stronger 100%);
+  color: $dark-text;
+}
+
+$colorPrimary: #330022;
+$color100: rgba(0,0,0,1);
+$color10: rgba(0,0,0,.1);

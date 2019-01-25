@@ -2,10 +2,14 @@ import React from "react"
 import classNames from "classnames"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import "./style.css"
+import "./LikeControls.scss"
+
+// import styles from "./LikeControls.module.scss"
+// note to use css modules, it would be {styles.LikeControls} (note uppercase L)
 
 export default function LikeControls({ liked, setLiked }) {
   return (
-    <div className="likeControls">
+    <div className={classNames('likeControls')}>
       <button
         className={classNames({ active: liked === false })}
         onClick={() => setLiked(false)}

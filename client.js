@@ -78,9 +78,22 @@ function AVD() {
     dispatch({ type: "logout" })
     localStorage.removeItem("access_token")
   }
-
+  const changeTheme = (theme) => {
+    // this.setState({color: event.target.value});
+    console.log('theme')
+    document.documentElement.style.setProperty('--primary-hue', '#1199aa');
+    document.documentElement.style.setProperty('--theme', 'light');
+  }
+  changeTheme('light');
   return (
     <div className="avd">
+    <style>{`
+            :root {
+              --primary-hue: '#002200';
+              --primary-lightness: '#1199aa';
+              }
+            `}
+          </style>
       {!token && <a href={AUTH_URL}>Authorize</a>}
       {token && userId && (
         <Fragment>

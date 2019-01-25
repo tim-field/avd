@@ -1,0 +1,19 @@
+@import "../../styles/_variables.scss";
+
+.likeControls{
+  // @include variable(background, --theme-background, $color100);
+  
+  button{
+    @include variable(border-color, --textColor, red);
+    @include variable(color, --textColor, red);
+    // border-color: var(--primary-hue)
+    // @include variable(border-color, --theme-primary-hue, $color100);
+  }
+  svg path{
+    @include variable(fill, --textColor, orange);
+  }
+}
+
+.active {
+  color: blue;
+}
