@@ -55,7 +55,7 @@ $dark: (
 
 $light-background: #eee;
 $light-overlay: rgba(0,0,0,.03);
-$light-highlight: rgba(255,255,255,.03);
+$light-highlight: rgba(255,255,255,.1);
 $light-text: #333;
 $light-themeColor: #b7c182;
 $light-themeColor-weaker: #b7c182;
@@ -68,7 +68,7 @@ $light-themeColor-stronger: #d6c984;
 $dark-background: #333;
 $dark-text: #ddd;
 $dark-overlay: rgba(255,255,255,.03);
-$dark-highlight: rgba(0,0,0,.03);
+$dark-highlight: rgba(0,0,0,.1);
 $dark-themeColor: #521452;
 $dark-themeColor-weaker: #521452;
 $dark-themeColor-stronger: #2f042f;
@@ -77,6 +77,7 @@ $dark-themeColor-stronger: #2f042f;
 
 :root, html{
   --primary-hue: $dark-themeColor;
+  --backgroundColor: $dark-themeColor;
   --textColor: $dark-text;
   --overlay: $dark-overlay;
   // --theme-primary-hue: pink;
@@ -112,6 +113,7 @@ html[data-theme="light"]{
   @include setVariable(--textColor, $light-text, #eee);
   @include setVariable(--overlay, $light-overlay, #eee);
   @include setVariable(--highlight, $light-highlight, #eee);
+  @include setVariable(--themeColor, $light-themeColor, #eee);
   // @include variable(--textColor, #333, #000);
   background: linear-gradient(to bottom, $light-themeColor-weaker 0%, $light-themeColor-stronger 100%);
   color: $light-text;
@@ -122,6 +124,7 @@ html[data-theme="dark"]{
   @include setVariable(--textColor, $dark-text, #eee);
   @include setVariable(--overlay, $dark-overlay, #eee);
   @include setVariable(--highlight, $dark-highlight, #eee);
+  @include setVariable(--themeColor, $dark-themeColor, #eee);
   // GLOBAL
   background: linear-gradient(to bottom, $dark-themeColor-weaker 0%, $dark-themeColor-stronger 100%);
   color: $dark-text;

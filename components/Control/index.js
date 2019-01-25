@@ -1,5 +1,5 @@
 import React from "react"
-import "./style.css"
+import "./Control.scss"
 
 function Control({
   value,
@@ -15,34 +15,37 @@ function Control({
   return (
     <fieldset className="control">
       <legend>{label}</legend>
-      <input
-        type="number"
-        value={value}
-        // id={id}
-        min={min}
-        max={max}
-        onChange={onChange}
-      />
-      {endLabel && (
-        <label className="endLabel" htmlFor={id}>
-          {endLabel}
-        </label>
-      )}
-
-      <input
-        type="range"
-        value={value}
-        orient="vertical"
-        onChange={onChange}
-        id={id}
-        min={min}
-        max={max}
-      />
-      {startLabel && (
-        <label className="startLabel" htmlFor={id}>
-          {startLabel}
-        </label>
-      )}
+      <div className="inputNumberWrap">
+        <input
+          type="number"
+          value={value}
+          // id={id}
+          min={min}
+          max={max}
+          onChange={onChange}
+        />
+      </div>
+      <div className="inputRangeWrap">
+        {endLabel && (
+          <label className="endLabel" htmlFor={id}>
+            {endLabel}
+          </label>
+        )}
+        <input
+          type="range"
+          value={value}
+          orient="vertical"
+          onChange={onChange}
+          id={id}
+          min={min}
+          max={max}
+        />
+        {startLabel && (
+          <label className="startLabel" htmlFor={id}>
+            {startLabel}
+          </label>
+        )}
+      </div>
       {description && <p>{description}</p>}
     </fieldset>
   )
