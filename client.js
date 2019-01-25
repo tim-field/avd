@@ -13,9 +13,12 @@ import request, { fetchToken, AUTH_URL } from "./utils/spotify"
 import CurrentTrack from "./components/CurrentTrack"
 import PlayList from "./components/PlayList"
 import Loading from "./components/Loading"
+import Header from "./components/Header"
 import api from "./utils/api"
 import Store, { Provider } from "./store"
+require("typeface-open-sans")
 import "./style.css"
+import "./styles/_global.scss"
 
 library.add(
   faThumbsUp,
@@ -78,28 +81,24 @@ function AVD() {
     dispatch({ type: "logout" })
     localStorage.removeItem("access_token")
   }
-  const changeTheme = (theme) => {
-    // this.setState({color: event.target.value});
-    console.log('theme')
-    document.documentElement.style.setProperty('--primary-hue', '#1199aa');
-    document.documentElement.style.setProperty('--theme', 'light');
+  const toggleUI = (theme = 'dark') => {
+    // NOTE: this function will be replaced by something in state
+    const rootElement = document.getElementById('html');
+    const currentTheme = rootElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark'; 
+    rootElement.style.setProperty('--theme', newTheme);
+    rootElement.setAttribute('data-theme', newTheme);
   }
-  changeTheme('light');
+
   return (
     <div className="avd">
-    <style>{`
-            :root {
-              --primary-hue: '#002200';
-              --primary-lightness: '#1199aa';
-              }
-            `}
-          </style>
       {!token && <a href={AUTH_URL}>Authorize</a>}
       {token && userId && (
         <Fragment>
-          <button className="logout" onClick={doLogout}>
-            Logout
-          </button>
+          <Header
+            doLogout={doLogout}
+            toggleUI={toggleUI}
+          />
           <CurrentTrack
             spotifyService={spotifyService}
             userId={userId}

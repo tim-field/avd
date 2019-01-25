@@ -22,7 +22,10 @@
     "react": "^16.8.0-alpha.0",
     "react-dom": "^16.8.0-alpha.0",
     "request": "^2.88.0",
-    "sass": "^1.16.1"
+    "sass": "^1.16.1",
+    "typeface-open-sans": "^0.0.54",
+    "typeface-poppins": "^0.0.54",
+    "typefaces": "^0.0.1"
   },
   "browserslist": [
     "last 1 Chrome version",

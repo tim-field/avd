@@ -57,9 +57,13 @@ $light-background: #eee;
 $light-overlay: rgba(0,0,0,.03);
 $light-highlight: rgba(255,255,255,.03);
 $light-text: #333;
-$light-themeColor: #c7a1c7;
-$light-themeColor-weaker: #c7a1c7;
-$light-themeColor-stronger: #966d96;
+$light-themeColor: #b7c182;
+$light-themeColor-weaker: #b7c182;
+$light-themeColor-stronger: #d6c984;
+// $light-themeColor: #c7a1c7;
+// $light-themeColor-weaker: #c7a1c7;
+// $light-themeColor-stronger: #966d96;
+
 
 $dark-background: #333;
 $dark-text: #ddd;
@@ -71,7 +75,7 @@ $dark-themeColor-stronger: #2f042f;
 
 // ROOT DEFAULTS
 
-:root{
+:root, html{
   --primary-hue: $dark-themeColor;
   --textColor: $dark-text;
   --overlay: $dark-overlay;
@@ -79,16 +83,7 @@ $dark-themeColor-stronger: #2f042f;
   --theme: 'dark';
 }
 
-// $color-schemes: (
-//   scheme-default: (
-//     backgroundColor: #00b4ff,
-//   ),
-//   scheme-cs1: (
-//     backgroundColor: #e68a00,
-//   )
-// );
-
-$prefix: 'body';
+// $prefix: 'body';
 @mixin themes($name, $map){
   // #{$prefix} & {
     @each $property, $value in $map {
@@ -108,23 +103,25 @@ $prefix: 'body';
   #{$property}: $variable;
 }
 
-body[data-theme="light"]{
+html[data-theme="light"]{
   // @include themes('light', $light);
   
   // @include variable(--theme-primary-hue, pink, #000);
   // @include variable(--primary-hue, pink, #000);
-  @include setVariable(--theme-background, $light-background, #eee);
+  @include setVariable(--backgroundColor, $light-background, #eee);
   @include setVariable(--textColor, $light-text, #eee);
   @include setVariable(--overlay, $light-overlay, #eee);
+  @include setVariable(--highlight, $light-highlight, #eee);
   // @include variable(--textColor, #333, #000);
   background: linear-gradient(to bottom, $light-themeColor-weaker 0%, $light-themeColor-stronger 100%);
   color: $light-text;
 }
-body[data-theme="dark"]{
+html[data-theme="dark"]{
   // @include themes('dark', $dark);
-  @include setVariable(--theme-background, $dark-background, #eee);
+  @include setVariable(--backgroundColor, $dark-background, #eee);
   @include setVariable(--textColor, $dark-text, #eee);
   @include setVariable(--overlay, $dark-overlay, #eee);
+  @include setVariable(--highlight, $dark-highlight, #eee);
   // GLOBAL
   background: linear-gradient(to bottom, $dark-themeColor-weaker 0%, $dark-themeColor-stronger 100%);
   color: $dark-text;

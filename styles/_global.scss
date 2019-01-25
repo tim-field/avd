@@ -1,0 +1,36 @@
+@import "./_variables.scss";
+
+html {
+  transition: background .3s ease, color 1s ease;
+  @include variable(color, --textColor, orange);
+}
+
+// FONTS & TEXT
+h1{
+  text-align: center;
+}
+a{
+  color: #fff
+}
+button{
+  transform: translateY(0);
+  transition: transform .3s ease, background .3s ease, border-color .3s ease;
+  outline: none;
+  font-weight: bold;
+  border-radius: 2rem;
+  padding: .5rem 1rem;
+  text-transform: uppercase;
+}
+
+button{
+  @media (hover: hover) {
+		&:hover{
+      @include variable(background, --textColor, orange);
+      @include variable(color, --backgroundColor, orange);
+      cursor: pointer;
+      svg path{
+        @include variable(fill, --backgroundColor, orange);
+      }
+		}
+	}
+}
