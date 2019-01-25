@@ -6,6 +6,7 @@ html{
   padding: 0; 
   margin: 0;
   font-size: 16px;
+  /* this is the root rem size that all other sizing derives from */
 }
 body{
   padding: 0; 
@@ -22,7 +23,7 @@ button + button{
   margin-left: .5rem;
 }
 
-.currentTrack, .playlist{
+.CurrentTrack, .playlist{
   max-width: 66rem;
   margin: 1rem auto;
 }

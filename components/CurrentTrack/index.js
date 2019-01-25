@@ -2,11 +2,12 @@ import React, { useEffect, useContext, useState, Fragment, useRef } from "react"
 import debounce from "lodash.debounce"
 import Control from "../Control"
 import api from "../../utils/api"
-import "./style.css"
 import PlayControls from "../PlayControls"
 import LikeControls from "../LikeControls"
 import Listeners from "../Listeners"
 import Store from "../../store"
+
+import "./CurrentTrack.scss"
 
 const saveAVD = debounce(data => {
   return api({ action: "avd/", data })
@@ -114,7 +115,7 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
       <h1>
         {track.name} by {track.artist}
       </h1>
-      <div className="currentTrack">
+      <div className="CurrentTrack">
         <div className="player">
           <PlayControls
             isPlaying={isPlaying}
