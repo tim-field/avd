@@ -4,7 +4,10 @@
   justify-content: center;
   border: none;
   padding: 0;
+  margin: 0;
+  margin-left: 1px;
   &:first-child{
+    margin-left: 0;
     .inputRangeWrap{
       border-radius: .5rem 0 0 .5rem;
     }
@@ -47,8 +50,8 @@
     }
   }
   .inputRangeWrap{
-    // background: var(--overlay);
-    background: var(--themeColor-strongest);
+    background: var(--textColor);
+    // background: var(--themeColor-strongest);
     margin: .5rem auto;
     display: flex;
     flex-direction: column;
