@@ -12,7 +12,7 @@ function Header({
       <div className="appTitle"><span>A / V / L</span></div>
       <div className="appUser">
         <button className="uiToggle" onClick={toggleUI}>
-            ui
+            UI mode
         </button>
         <button className="logout" onClick={doLogout}>
           Logout

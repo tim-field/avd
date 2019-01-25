@@ -20,6 +20,29 @@
       font-size: 0.75rem;
       margin-top: 1rem;
       margin-left: 0.5rem;;
+      
+    }
+  }
+  button.uiToggle{
+    position: fixed;
+    left: -18px;
+    top: calc(100% - 46px);
+    transform: rotate(-90deg);
+    padding: .25rem .5rem;
+    /* background: #eee; */
+    border-radius: 0;
+    border-width: 0;
+    background: transparent;
+    border-right: 2px solid var(--textColor);
+    @media (hover: hover) {
+      &:hover{
+        @include variable(background, --textColor, orange);
+        @include variable(color, --backgroundColor, orange);
+        cursor: pointer;
+        svg path{
+          @include variable(fill, --backgroundColor, orange);
+        }
+      }
     }
   }
 }
