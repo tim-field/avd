@@ -328,8 +328,9 @@ function PlayList({
         {filterUsers && <Following />}
       </div>
       {tracks.length > 0 && (
-        <div className="PlayLists">
+        <div className="PlayListsEdit">
           <label>Playlist Name </label>
+          <div className="inputWrap">
           <input
             type="text"
             value={name}
@@ -340,9 +341,10 @@ function PlayList({
           {!activePlaylist && name && (
             <button onClick={createPlaylist}>Create Playlist</button>
           )}
+          <button onClick={() => savePlaylist()}>Save Playlist</button>
+          </div>
           {activePlaylist && (
             <Fragment>
-              <button onClick={() => savePlaylist()}>Save Playlist</button>
               <button onClick={playPlaylist}>
                 <FontAwesomeIcon icon="play" />
               </button>
