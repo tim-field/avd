@@ -48,6 +48,7 @@ function reducer(state, action) {
       return {
         ...state,
         saved: true,
+        name: action.playlist.name,
         activePlaylist: action.playlist
       }
     case "set-have-player":
@@ -79,37 +80,37 @@ function PlayList({
   const getTracksTimeout = useRef()
 
   async function loadPlaylists() {
-    const playlists = await api({
+    const usersPlaylists = await api({
       action: `playlists?userId=${userId}`
     })
     dispatch({
       type: "set-playlists",
-      playlists
+      playlists: usersPlaylists
     })
   }
 
-  function savePlaylist() {
-    spotifyService({
-      action: `v1/playlists/${activePlaylist.id}`,
-      data: { name },
-      method: "PUT"
-    })
+  async function savePlaylist() {
+    await Promise.all([
+      spotifyService({
+        action: `v1/playlists/${activePlaylist.id}`,
+        data: { name },
+        method: "PUT"
+      }),
+      spotifyService({
+        action: `v1/playlists/${activePlaylist.id}/tracks`,
+        data: {
+          uris: tracks.map(track => `spotify:track:${track.id}`)
+        },
+        method: "PUT"
+      }),
+      api({
+        action: "playlist",
+        data: { id: activePlaylist.id, userId, name, trackQuery },
+        method: "POST"
+      })
+    ])
 
-    spotifyService({
-      action: `v1/playlists/${activePlaylist.id}/tracks`,
-      data: {
-        uris: tracks.map(track => `spotify:track:${track.id}`)
-      },
-      method: "PUT"
-    })
-
-    api({
-      action: "playlists",
-      data: { ...avd, id: activePlaylist.id, name, userId },
-      method: "POST"
-    })
-
-    dispatch({ type: "set-saved", value: true })
+    loadPlaylists()
   }
 
   async function createPlaylist() {
@@ -136,11 +137,9 @@ function PlayList({
         id: playlist.id,
         name,
         userId,
-        arousal,
-        valence,
-        depth
-        // playlist
-      }
+        trackQuery
+      },
+      method: "POST"
     })
 
     loadPlaylists()
@@ -159,10 +158,14 @@ function PlayList({
   function loadPlaylist(playlistId) {
     if (playlistId) {
       api({ action: `/playlist?id=${playlistId}` }).then(res => {
-        const { arousal, valence, depth } = res
         appDispatch({
           type: "set-track-query",
-          query: { arousal, valence, depth }
+          query: res.trackQuery || {
+            // handles legacy table columns
+            arousal: res.arousal,
+            valence: res.valence,
+            depth: res.depth
+          }
         })
       })
 
@@ -174,16 +177,12 @@ function PlayList({
           tracks: playlist.tracks.items.map(({ track }) => ({
             name: track.name,
             id: track.id,
-            artist: track.artists.map(({ name }) => name).join(", ")
+            artist: track.artists.map((artist) => artist.name).join(", ")
           }))
         })
         dispatch({
           type: "set-active-playlist",
           playlist
-        })
-        dispatch({
-          type: "set-name",
-          value: playlist.name
         })
       })
     }
@@ -265,10 +264,13 @@ function PlayList({
     getTracksDebounced(updated)
   }
 
-  useEffect(() => {
-    loadPlaylists()
-    getTracksDebounced(avd)
-  }, [])
+  useEffect(
+    () => {
+      loadPlaylists()
+      getTracksDebounced(avd)
+    },
+    [userId]
+  )
 
   const { arousal, valence, depth } = avd
 
@@ -280,27 +282,27 @@ function PlayList({
       <div className="PlayListControlsWrap">
         <h3>Search</h3>
         <div className="PlayListControls">
-        <Control
-          label="Arousal"
-          min={arousal[0]}
-          max={arousal[1]}
-          setMin={value => setMin("arousal", value)}
-          setMax={value => setMax("arousal", value)}
-        />
-        <Control
-          label="Valence"
-          min={valence[0]}
-          max={valence[1]}
-          setMin={value => setMin("valence", value)}
-          setMax={value => setMax("valence", value)}
-        />
-        <Control
-          label="Depth"
-          min={depth[0]}
-          max={depth[1]}
-          setMin={value => setMin("depth", value)}
-          setMax={value => setMax("depth", value)}
-        />
+          <Control
+            label="Arousal"
+            min={arousal[0]}
+            max={arousal[1]}
+            setMin={value => setMin("arousal", value)}
+            setMax={value => setMax("arousal", value)}
+          />
+          <Control
+            label="Valence"
+            min={valence[0]}
+            max={valence[1]}
+            setMin={value => setMin("valence", value)}
+            setMax={value => setMax("valence", value)}
+          />
+          <Control
+            label="Depth"
+            min={depth[0]}
+            max={depth[1]}
+            setMin={value => setMin("depth", value)}
+            setMax={value => setMax("depth", value)}
+          />
           <div className="PlayListOptions">
             <h4>Options</h4>
             <label>
@@ -331,17 +333,17 @@ function PlayList({
         <div className="PlayListsEdit">
           <label>Playlist Name </label>
           <div className="inputWrap">
-          <input
-            type="text"
-            value={name}
-            onChange={({ target: { value } }) =>
-              dispatch({ type: "set-name", value })
-            }
-          />
-          {!activePlaylist && name && (
-            <button onClick={createPlaylist}>Create Playlist</button>
-          )}
-          <button onClick={() => savePlaylist()}>Save Playlist</button>
+            <input
+              type="text"
+              value={name}
+              onChange={({ target: { value } }) =>
+                dispatch({ type: "set-name", value })
+              }
+            />
+            {!activePlaylist && name && (
+              <button onClick={createPlaylist}>Create Playlist</button>
+            )}
+            <button onClick={() => savePlaylist()}>Save Playlist</button>
           </div>
           {activePlaylist && (
             <Fragment>
@@ -354,9 +356,9 @@ function PlayList({
       )}
       {playlists.length > 0 && (
         <div className="PlayListSelect">
-          <h4>Cuyrrent Playlist</h4>
+          <h4>Current Playlist</h4>
           <select
-          className="select"
+            className="select"
             value={activePlaylist && activePlaylist.id}
             onChange={({ target: { value } }) => loadPlaylist(value)}
           >
@@ -377,7 +379,7 @@ function PlayList({
       )}
       {tracks.length > 0 && (
         <div className="PlayListTracks">
-          <table id="playlistTracks" >
+          <table id="playlistTracks">
             <caption>
               {name}
               {name && !saved ? "*" : ""}

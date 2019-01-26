@@ -2,8 +2,8 @@ import React from "react"
 import {
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons"
-import "./Loading.scss"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "./Loading.scss"
 
 export default function Loading() {
   return <div className="Loading">

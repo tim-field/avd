@@ -1,7 +1,6 @@
 import React from "react"
 import classNames from "classnames"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import "./style.css"
 import "./LikeControls.scss"
 
 // import styles from "./LikeControls.module.scss"

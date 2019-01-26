@@ -20,6 +20,7 @@ server {
 
     listen [::]:443 ssl http2 ipv6only=on;
     listen 443 ssl http2;
+    charset utf-8;
 
     ssl_certificate /etc/letsencrypt/live/www.mohiohio.com/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/www.mohiohio.com/privkey.pem; # managed by Certbot

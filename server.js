@@ -190,34 +190,21 @@ app.get("/playlist", async (req, res) => {
 })
 
 app.post("/playlist", async (req, res) => {
-  const { id, userId, name, arousal, valence, depth, playlist } = req.body
-  console.log(arousal)
+  const { id, userId, name, trackQuery, playlist } = req.body
   const sql = `insert into playlist (
     id, 
     user_id, 
     name, 
-    arousal,
-    valence,
-    depth,
+    track_query,
     "json"
   ) 
-  values ($1, $2, $3, $4, $5, $6, $7)
+  values ($1, $2, $3, $4, $5)
   on conflict (id, user_id)
   do update set 
-    arousal = excluded.arousal,
-    valence = excluded.valence,
-    depth = excluded.depth,
+    track_query = excluded.track_query,
     name = excluded.name,
     json = excluded.json`
-  const dbRes = await query(sql, [
-    id,
-    userId,
-    name,
-    arousal,
-    valence,
-    depth,
-    playlist
-  ])
+  const dbRes = await query(sql, [id, userId, name, trackQuery, playlist])
   return res.status(200).json(dbRes.rows.length ? dbRes.rows[0] : {})
 })
 

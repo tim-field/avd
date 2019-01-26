@@ -38,9 +38,10 @@ create table playlist (
 	id text not null,
 	user_id text not null,
 	"name" text not null,
-	arousal smallint[] not null default array[0, 0],
-	valence smallint[] not null default array[0, 0],
-	"depth" smallint[] not null default array[0, 0],
+	-- arousal smallint[] not null default array[0, 0],
+	-- valence smallint[] not null default array[0, 0],
+	-- "depth" smallint[] not null default array[0, 0],
+	track_query jsonb not null,
 	"json" jsonb null,
 	primary key (id, user_id)
 );
