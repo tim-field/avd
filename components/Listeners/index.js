@@ -61,7 +61,9 @@ function Listeners({ trackId, userId }) {
       </ul>
     </div>
   ) : (
-    <p>Be the first to rate this track</p>
+    <div className="Listeners">
+      <p className="noData">Be the first to rate this track.</p>
+    </div>
   )
 }
 

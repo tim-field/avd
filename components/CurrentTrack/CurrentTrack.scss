@@ -27,20 +27,129 @@
 .likeControls{
   margin-top: 1rem;
 }
+.coverWrap{
+  width: 300px;
+  height: 300px;
+  position: relative;
+  perspective: 1000px;
+  @media (hover: hover) {
+    &:hover{
+      .image{
+        transform: translateY(-.5rem) rotateY(180deg);
+      // transform: rotateY(180deg);
+        box-shadow: 0 1rem 4rem -0.5rem rgba(0, 0, 0, 0.5);
+      }
+      .back{
+        transform: translateY(-.5rem) rotateY(360deg);
+      }
+    }
+  }
+}
 
 .image{
   box-shadow: 0 0.5rem 3rem -0.5rem rgba(0, 0, 0, 0.5);
-  transform: translateY(0);
+  transform: translateY(0) rotateY(0deg);
   transition: transform .3s ease-in-out, box-shadow .3s ease-in-out;
+  animation: imageAppear .5s linear 1;
+  animation-fill-mode: backwards;
+  backface-visibility: hidden;
+  z-index: 2;
+  position: relative;
   @media (hover: hover) {
     &:hover{
-      transform: translateY(-.5rem);
-      box-shadow: 0 1rem 4rem -0.5rem rgba(0, 0, 0, 0.5);
     }
+  }
+}
+
+.back{
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  background: var(--textColor);
+  color: var(--themeColor);
+  padding: 1rem;
+  transform: translateY(0) rotateY(180deg);
+  transition: transform .3s ease-in-out, box-shadow .3s ease-in-out;
+  animation: backAppear .5s linear 1;
+  animation-fill-mode: backwards;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  
+  h4{
+    text-align: left;
+    padding: 0; 
+  }
+  .subtitle{
+    font-size: .875rem;
+    text-align: left;
+  }
+  >div {
+    span.title{
+      font-weight: 600;
+      font-weight: 300;
+      // text-transform: capitalize;
+      text-transform: uppercase;
+      min-width: 5rem;
+      display: inline-block;
+      font-size: .75rem;
+      text-align: left;
+      padding: .25rem;
+      opacity: .8;
+      letter-spacing: .1rem;
+    }
+  }
+  .albumLinkWrap{
+    display: block;
+    padding: .5rem 0;
+    align-self: center;
+    justify-self: center;
+    flex-basis: 100%;
+    display: flex;
+  }
+  .albumLink{
+    background: var(--backgroundColor);
+    color: var(--textColor);
+    padding: .5rem 1rem;
+    border-radius: 2rem;
+    position: relative;
+    line-height: 2rem;
+    font-weight: bold;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    align-self: flex-end;
   }
 }
 
 // AVL CONTROLS
 .controls{
   
+}
+
+
+
+
+@keyframes imageAppear {
+  0% {
+    transform: translateY(0) rotateY(180deg);
+  }
+  100% {
+    transform: translateY(0) rotateY(0deg);
+  }
+}
+
+@keyframes backAppear {
+  0% {
+    opacity: 0;
+    transform: rotateY(360deg);
+  }
+  100% {
+    opacity: 1;
+    transform: rotateY(180deg);
+  }
 }

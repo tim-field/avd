@@ -1,5 +1,6 @@
 .control {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   border: none;
@@ -24,6 +25,7 @@
     text-align: center;
   }
   legend{
+    width: 100%;
     position: relative;
     top: 1rem;
     margin-bottom: 1rem;
@@ -36,6 +38,7 @@
   .inputNumberWrap{
     display: flex;
     margin: .5rem auto;
+    
     input{
       display: block;
       background: var(--textColor);
@@ -47,6 +50,7 @@
       outline: none;
       border-radius: .25rem;
       text-align: center;
+      max-width: 3rem;
     }
   }
   .inputRangeWrap{
@@ -59,6 +63,7 @@
     align-items: center;
     margin-top: 1rem;
     padding: 1rem 0;
+    width: 100%;
     input{
       margin: 0.5rem auto;
     }

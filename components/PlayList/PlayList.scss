@@ -84,6 +84,37 @@ h4{
   flex-direction: column;
   flex-basis: 25%;
 }
+.PlayListsEdit{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  border: 2px solid var(--highlight);
+  padding: 2rem;
+  border-radius: 1rem;
+  background: var(--overlay);
+  .inputWrap{
+    flex-basis: 200px;
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 0 1rem;
+    input[type="text"]{
+      border: 2px solid var(--textColor);
+      height: 2rem;
+      border-radius: .5rem 0 0 .5rem;
+      font-weight: normal;
+      box-shadow: 0 0 0 1px var(--themeColor) inset;
+      // box-shadow: 0 0 35px rgba(0,0,0,.2) inset;
+    }
+    button{
+      white-space: nowrap;
+      height: 2rem;
+      border-radius: 0 .5rem .5rem 0;
+    }
+  }
+}
 
 .PlayListEdit, .PlayListSelect, .PlayListTracks{
   min-height: 2rem;
