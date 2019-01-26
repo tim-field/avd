@@ -66,3 +66,12 @@ export const filterLiked = liked => {
     dispatch(getTracks({ filterLiked: liked }))
   }
 }
+
+export const setTheme = () => {
+  // Work in progress 
+  const rootElement = document.getElementById("html")
+  const currentTheme = rootElement.getAttribute("data-theme")
+  const newTheme = currentTheme === "dark" ? "light" : "dark"
+  rootElement.style.setProperty("--theme", newTheme)
+  rootElement.setAttribute("data-theme", newTheme)
+}
