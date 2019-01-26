@@ -76,6 +76,7 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
   useEffect(
     () => {
       if (track) {
+        console.log('track.raw.item: ', track.raw.item);
         document.title = `AVD - ${track.name}`
         api({ action: `avd?userId=${userId}&trackId=${track.id}` }).then(
           res => {
@@ -144,7 +145,28 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
               spotifyService({ action: "v1/me/player/pause", method: "PUT" })
             }}
           />
-          <img className="image" src={track.image.url} />
+          <div className="coverWrap">
+            <img className="image" src={track.image.url} />
+            <div className="back">
+              <div>
+                <span className="title">track: </span>
+                <span className="subtitle">{track.name}</span>
+              </div>
+              <div>
+                <span className="title">artist: </span>
+                <span className="subtitle">{track.artist}</span>
+              </div>
+              <div>
+                <span className="title">{track.raw.item.album && track.raw.item.album.album_type}:</span>
+                <span className="subtitle">{track.raw.item.album && track.raw.item.album.name}</span>
+                
+              </div>
+              {track.raw.item.album && track.raw.item.album.external_urls && track.raw.item.album.external_urls.spotify && 
+                <div className="albumLinkWrap"><a target="_blank" className="albumLink" href={track.raw.item.album.external_urls.spotify}>View in Spotify</a>
+              </div>
+              }
+            </div>
+          </div>
           <LikeControls
             liked={liked}
             setLiked={isLiked => {
