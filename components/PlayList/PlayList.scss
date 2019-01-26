@@ -120,8 +120,23 @@ h4{
   min-height: 2rem;
   padding: .5rem 0;
 }
-
+.PlayListSelect{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; 
+  // width: 200px;
+  padding: 1rem 0;
+  h4{
+    white-space: nowrap;
+  }
+  select{
+    margin-left: 1rem;
+  }
+}
 .PlayListTracks{
+  background: var(--textColor);
+  color: var(--themeColor-weaker);
+  border-radius: 1rem;
   caption{
     padding: .5rem;
     font-size: 2rem;
@@ -146,8 +161,15 @@ h4{
   }
   tr{
     border-top: 1px solid var(--highlight);
+    > td:first-child{
+      padding-left: .5rem;
+    }
     button{
-      bordeR: none;
+      border: none;
+      background: var(--highlight);
+      svg path{
+        fill: var(--themeColor-weakest);
+      }
     }
     @media (hover: hover) {
       &:hover{
