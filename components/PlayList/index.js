@@ -355,6 +355,7 @@ function PlayList({
       {playlists.length > 0 && (
         <div className="PlayListSelect">
           <select
+          className="select"
             value={activePlaylist && activePlaylist.id}
             onChange={({ target: { value } }) => loadPlaylist(value)}
           >
