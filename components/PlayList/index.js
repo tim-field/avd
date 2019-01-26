@@ -177,7 +177,7 @@ function PlayList({
           tracks: playlist.tracks.items.map(({ track }) => ({
             name: track.name,
             id: track.id,
-            artist: track.artists.map((artist) => artist.name).join(", ")
+            artist: track.artists.map(artist => artist.name).join(", ")
           }))
         })
         dispatch({
@@ -315,7 +315,7 @@ function PlayList({
               />
               Liked
             </label>
-              <label>
+            <label>
               <input
                 type="checkbox"
                 checked={filterUsers}
