@@ -83,10 +83,11 @@ input[type=range]::-webkit-slider-thumb {
   // -webkit-appearance: none;
 }
 
-$thumbBorder: 0px solid red;
+$thumbBorder: 0px solid white;
 $thumbShadow: 0 1px 2px -0px rgba(0,0,0,.2);
-$thumbBackground: var(--themeColor-strongest);
-// $thumbBackground: var(--textColor);
+// $thumbBackground: var(--themeColor-strongest);
+$thumbBackground: var(--textColor);
+$thumbBackgroundVertical: var(--themeColor-stronger);
 // $thumbBackground: linear-gradient(to right, var(--themeColor-strongest) 45%, var(--themeColor-stronger) 47.5%, var(--textColor) 52.5%, var(--themeColor-strongest) 55%);
 $thumbBorderRadius: 1rem;
 
@@ -96,6 +97,7 @@ $trackLongSideVertical: 180px;
 $thumbDiameter: 1rem;
 $trackShadow: none;
 $trackBackground: var(--themeColor-weakest);
+$trackBackgroundVertical: var(--backgroundColor);
 $trackRadius: 2px;
 $trackBorder: 0px solid black;
 
@@ -135,6 +137,7 @@ input[type=range]::-webkit-slider-runnable-track {
 input[type="range"][orient="vertical"]::-webkit-slider-runnable-track {
   width: $trackShortSide;
   height: $trackLongSideVertical;
+  background: $trackBackgroundVertical; 
 }
 
 input[type=range]::-webkit-slider-thumb {
@@ -153,7 +156,7 @@ input[type="range"][orient="vertical"]::-webkit-slider-thumb {
   transform: translateX(-.25rem) translateY(.5rem);
   width: $thumbDiameter;
   height: $thumbDiameter * 2;
-  
+  background: $thumbBackgroundVertical;
 }
 
 input[type=range]:focus::-webkit-slider-runnable-track {
@@ -172,15 +175,19 @@ input[type=range]::-moz-range-track {
 input[type="range"][orient="vertical"]::-moz-range-track {
   width: $trackShortSide;
   height: $trackLongSideVertical;
+  background: $trackBackgroundVertical; 
 }
 input[type=range]::-moz-range-thumb {
   box-shadow: $thumbShadow;
   border: $thumbBorder;
   height: $thumbDiameter;
-  width: $thumbDiameter;
+  width: $thumbDiameter * 2;
   border-radius: $thumbBorderRadius;
   background: $thumbBackground;
   cursor: pointer;
+}
+input[type="range"][orient="vertical"]::-moz-range-thumb {
+  background: $thumbBackgroundVertical;
 }
 input[type=range]::-ms-track {
   height: $trackShortSide;
@@ -194,6 +201,7 @@ input[type=range]::-ms-track {
 input[type="range"][orient="vertical"]::-ms-track {
   width: $trackShortSide;
   height: $trackLongSide;
+  background: $trackBackgroundVertical; 
 }
 input[type=range]::-ms-fill-lower {
   background: $trackBackground;
@@ -212,10 +220,13 @@ input[type=range]::-ms-thumb {
   box-shadow: $thumbShadow;
   border: $thumbBorder;
   height: $thumbDiameter;
-  width: $thumbDiameter;
+  width: $thumbDiameter * 2;
   border-radius: $thumbBorderRadius;
   background: $thumbBackground;
   cursor: pointer;
+}
+input[type=range][orient="vertical"]::-ms-thumb {
+  background: $thumbBackgroundVertical;
 }
 input[type=range]:focus::-ms-fill-lower {
   background: $trackBackground;
