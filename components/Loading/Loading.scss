@@ -3,8 +3,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  .iconWrap{
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: loadingRotate .8s linear infinite;
+  }
   p{
     text-align: center;
     font-style: italic;
+    opacity: .8;
+    font-weight: 300;
+  }
+}
+
+@keyframes loadingRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
