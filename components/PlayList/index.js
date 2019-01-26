@@ -315,7 +315,7 @@ function PlayList({
               />
               Liked
             </label>
-            <label>
+              <label>
               <input
                 type="checkbox"
                 checked={filterUsers}
