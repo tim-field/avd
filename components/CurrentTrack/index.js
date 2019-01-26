@@ -110,10 +110,11 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
     [arousal, valence, depth]
   )
 
-  return !!track ? (
+  return track ? (
     <Fragment>
       <h1>
-        {track.name}<span>by {track.artist}</span>
+        {track.name}
+        <span>by {track.artist}</span>
       </h1>
       <div className="CurrentTrack">
         <div className="player">

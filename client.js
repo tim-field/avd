@@ -19,6 +19,7 @@ import Store, { Provider } from "./store"
 require("typeface-open-sans")
 import "./style.css"
 import "./styles/_global.scss"
+import { setTheme } from "./actions"
 
 library.add(
   faThumbsUp,
@@ -49,7 +50,7 @@ const spotifyService = request(
 
 function AVD() {
   const { state, dispatch } = useContext(Store)
-  const { token, trackId, userId, loading, arousal, valence, depth } = state
+  const { token, userId, loading, arousal, valence, depth } = state
 
   useEffect(
     () => {
@@ -81,24 +82,17 @@ function AVD() {
     dispatch({ type: "logout" })
     localStorage.removeItem("access_token")
   }
-  const toggleUI = (theme = 'dark') => {
-    // NOTE: this function will be replaced by something in state
-    const rootElement = document.getElementById('html');
-    const currentTheme = rootElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark'; 
-    rootElement.style.setProperty('--theme', newTheme);
-    rootElement.setAttribute('data-theme', newTheme);
-  }
 
   return (
     <div className="avd">
-      {!token && <div className="authLink"><a href={AUTH_URL}>Authorize</a></div>}
+      {!token && (
+        <div className="authLink">
+          <a href={AUTH_URL}>Authorize</a>
+        </div>
+      )}
       {token && userId && (
         <Fragment>
-          <Header
-            doLogout={doLogout}
-            toggleUI={toggleUI}
-          />
+          <Header doLogout={doLogout} toggleUI={setTheme} />
           <CurrentTrack
             spotifyService={spotifyService}
             userId={userId}
