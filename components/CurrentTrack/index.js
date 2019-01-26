@@ -76,7 +76,6 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
   useEffect(
     () => {
       if (track) {
-        console.log('track.raw.item: ', track.raw.item);
         document.title = `AVD - ${track.name}`
         api({ action: `avd?userId=${userId}&trackId=${track.id}` }).then(
           res => {
