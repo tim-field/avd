@@ -19,6 +19,7 @@
     "pg": "^7.7.1",
     "ramda": "^0.26.1",
     "react": "^16.8.0-alpha.0",
+    "react-color-extractor": "^1.1.2",
     "react-dom": "^16.8.0-alpha.0",
     "request": "^2.88.0",
     "sass": "^1.16.1",

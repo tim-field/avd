@@ -6,6 +6,7 @@ import PlayControls from "../PlayControls"
 import LikeControls from "../LikeControls"
 import Listeners from "../Listeners"
 import Store from "../../store"
+import { ColorExtractor } from "react-color-extractor"
 
 import "./CurrentTrack.scss"
 
@@ -24,7 +25,7 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
   const [liked, setLiked] = useState(null)
   const timeoutRef = useRef()
   const trackId = track && track.id
-
+  const [iamgeColors, setColors] = useState([])
   function setAVD(updates) {
     dispatch({
       valence,
@@ -33,6 +34,122 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
       ...updates,
       type: "set-avd"
     })
+  }
+
+  function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+    return result
+      ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16)
+        }
+      : null
+  }
+  function hexToHsl(hex, mode = "default") {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+
+    var r = parseInt(result[1], 16)
+    var g = parseInt(result[2], 16)
+    var b = parseInt(result[3], 16)
+
+    ;(r /= 255), (g /= 255), (b /= 255)
+    var max = Math.max(r, g, b),
+      min = Math.min(r, g, b)
+    var h,
+      s,
+      l = (max + min) / 2
+
+    if (max == min) {
+      h = s = 0 // achromatic
+    } else {
+      var d = max - min
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+      switch (max) {
+        case r:
+          h = (g - b) / d + (g < b ? 6 : 0)
+          break
+        case g:
+          h = (b - r) / d + 2
+          break
+        case b:
+          h = (r - g) / d + 4
+          break
+      }
+      h /= 6
+    }
+
+    s = s * 100
+    s = Math.round(s)
+    l = l * 100
+    l = Math.round(l)
+    h = Math.round(360 * h)
+
+    var colorInHSL = "hsl(" + h + ", " + s + "%, " + l + "%)"
+    let returnValue = colorInHSL
+    switch (mode) {
+      case "h":
+        returnValue = h
+        break
+      case "s":
+        returnValue = s
+        break
+      case "l":
+        returnValue = l
+        break
+      default:
+        returnValue = colorInHSL
+    }
+    return returnValue
+  }
+  function getColors(colors) {
+    console.log("colors", colors)
+    if (colors.length < 1) {
+      console.log("no colors")
+      return false
+    }
+    // console.log('colors[0]: ', hexToRgb(colors[0]));
+    console.log("colors[0]: ", hexToHsl(colors[0]))
+    console.log("colors[1]: ", hexToHsl(colors[1]))
+    console.log("colors[2]: ", hexToHsl(colors[2]))
+    console.log("colors[3]: ", hexToHsl(colors[3]))
+    console.log("colors[4]: ", hexToHsl(colors[4]))
+    console.log("colors[4]: ", hexToHsl(colors[5]))
+    // this.setState(state => ({ colors: [...state.colors, ...colors] }))
+    setColors(colors)
+    const rootElement = document.getElementById("html")
+    rootElement.setAttribute("data-theme", "generated")
+    document.documentElement.style.setProperty("--backgroundColor", colors[0])
+    document.documentElement.style.setProperty("--themeColor", colors[1])
+    // document.documentElement.style.setProperty('--textColor', colors[2]);
+    if (hexToHsl(colors[0], "l") < 50) {
+      console.log("less than 50: ", hexToHsl(colors[0], "l"))
+      document.documentElement.style.setProperty(
+        "--textColor",
+        "rgba(255,255,255,.9)"
+      )
+    } else {
+      console.log("more than 50: ", hexToHsl(colors[0], "l"))
+      document.documentElement.style.setProperty(
+        "--textColor",
+        "rgba(0,0,0,.9)"
+      )
+    }
+    // document.documentElement.style.setProperty('--themeColor-weaker', colors[2]);
+    document.documentElement.style.setProperty("--themeColor-weaker", colors[0])
+    document.documentElement.style.setProperty(
+      "--themeColor-stronger",
+      colors[5]
+    )
+
+    document.documentElement.style.setProperty(
+      "--themeColor-weakest",
+      colors[4]
+    )
+    document.documentElement.style.setProperty(
+      "--themeColor-strongest",
+      colors[5]
+    )
   }
 
   const doRequest = () => {
@@ -116,6 +233,24 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
         {track.name}
         <span>by {track.artist}</span>
       </h1>
+      <div style={{ position: "fixed", bottom: "1rem" }}>
+        {iamgeColors &&
+          iamgeColors.map(color => {
+            return (
+              <div
+                style={{
+                  backgroundColor: color,
+                  width: 30,
+                  height: 30,
+                  display: "inline-block",
+                  border: "2px solid white",
+                  borderRadius: "3px",
+                  transform: "rotate(-90deg)"
+                }}
+              />
+            )
+          })}
+      </div>
       <div className="CurrentTrack">
         <div className="player">
           <PlayControls
@@ -146,7 +281,9 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
             }}
           />
           <div className="coverWrap">
-            <img className="image" src={track.image.url} />
+            <ColorExtractor getColors={colors => getColors(colors)}>
+              <img className="image" src={track.image.url} />
+            </ColorExtractor>
             <div className="back">
               <div>
                 <span className="title">track: </span>
@@ -157,14 +294,26 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
                 <span className="subtitle">{track.artist}</span>
               </div>
               <div>
-                <span className="title">{track.raw.item.album && track.raw.item.album.album_type}:</span>
-                <span className="subtitle">{track.raw.item.album && track.raw.item.album.name}</span>
-                
+                <span className="title">
+                  {track.raw.item.album && track.raw.item.album.album_type}:
+                </span>
+                <span className="subtitle">
+                  {track.raw.item.album && track.raw.item.album.name}
+                </span>
               </div>
-              {track.raw.item.album && track.raw.item.album.external_urls && track.raw.item.album.external_urls.spotify && 
-                <div className="albumLinkWrap"><a target="_blank" className="albumLink" href={track.raw.item.album.external_urls.spotify}>View in Spotify</a>
-              </div>
-              }
+              {track.raw.item.album &&
+                track.raw.item.album.external_urls &&
+                track.raw.item.album.external_urls.spotify && (
+                  <div className="albumLinkWrap">
+                    <a
+                      target="_blank"
+                      className="albumLink"
+                      href={track.raw.item.album.external_urls.spotify}
+                    >
+                      View in Spotify
+                    </a>
+                  </div>
+                )}
             </div>
           </div>
           <LikeControls
