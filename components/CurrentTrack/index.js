@@ -126,7 +126,7 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
       console.log("less than 50: ", hexToHsl(colors[0], "l"))
       document.documentElement.style.setProperty(
         "--textColor",
-        "rgba(255,255,255,.9)"
+        "rgba(229,229,229,.9)"
       )
     } else {
       console.log("more than 50: ", hexToHsl(colors[0], "l"))
@@ -144,7 +144,7 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
 
     document.documentElement.style.setProperty(
       "--themeColor-weakest",
-      colors[4]
+      colors[3]
     )
     document.documentElement.style.setProperty(
       "--themeColor-strongest",
