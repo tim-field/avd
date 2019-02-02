@@ -5,75 +5,81 @@
   box-sizing: border-box;
 }
 html {
-  transition: background .3s ease, color 1s ease;
+  transition: background 0.3s ease, color 1s ease;
   @include variable(color, --textColor, orange);
 }
 
 // FONTS & TEXT
-h1{
+h1 {
   text-align: center;
-  span{
+  span {
     font-weight: 300;
-    opacity: .8;;
+    opacity: 0.8;
     display: block;
     font-size: 1.2rem;
   }
 }
-a{
-  color: #fff
+a {
+  color: #fff;
 }
 
-
 // FORMS
-fieldset{
+fieldset {
   // align-items: center;
   // justify-content: center;
   border: none;
   padding: 0;
 }
-input[type="text"]{
-    background: var(--textColor);
-    color: var(--themeColor);
-    border: none;
-    box-shadow: none;
-    padding: .25rem 0rem .25rem .5rem;
-    font-weight: bold;
-    outline: none;
-    // border-radius: .25rem;
-    min-height: 1.5rem;
-    color: var(--backgroundColor);
+input[type="text"] {
+  background: var(--textColor);
+  color: var(--themeColor);
+  border: none;
+  box-shadow: none;
+  padding: 0.25rem 0rem 0.25rem 0.5rem;
+  font-weight: bold;
+  outline: none;
+  // border-radius: .25rem;
+  min-height: 1.5rem;
+  color: var(--backgroundColor);
 }
-button{
+button {
   transform: translateY(0);
-  transition: transform .3s ease, background .3s ease, border-color .3s ease;
+  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
   outline: none;
   font-weight: bold;
   border-radius: 2rem;
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   text-transform: uppercase;
+  &.active {
+    @include variable(background, --textColor, orange);
+    @include variable(color, --backgroundColor, orange);
+    cursor: pointer;
+    svg path {
+      @include variable(fill, --backgroundColor, orange);
+    }
+  }
 }
 
-button{
+button {
   @media (hover: hover) {
-		&:hover{
+    &:hover {
       @include variable(background, --textColor, orange);
       @include variable(color, --backgroundColor, orange);
       cursor: pointer;
-      svg path{
+      svg path {
         @include variable(fill, --backgroundColor, orange);
       }
-		}
-	}
+    }
+  }
 }
 
-
 // MISC
-.authLink{
+.authLink {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  a{
+  a {
     background: var(--themeColor-weakest);
     color: var(--themeColor-strongest);
     padding: 1rem 2rem;
@@ -81,7 +87,7 @@ button{
     text-decoration: none;
     font-weight: 600;
     @media (hover: hover) {
-      &:hover{
+      &:hover {
         @include variable(background, --textColor, orange);
         @include variable(color, --backgroundColor, orange);
       }

@@ -67,11 +67,11 @@ export const filterLiked = liked => {
   }
 }
 
-export const setTheme = () => {
-  // Work in progress 
+export const setTheme = theme => {
+  // Work in progress
   const rootElement = document.getElementById("html")
   const currentTheme = rootElement.getAttribute("data-theme")
   const newTheme = currentTheme === "dark" ? "light" : "dark"
-  rootElement.style.setProperty("--theme", newTheme)
-  rootElement.setAttribute("data-theme", newTheme)
+  rootElement.style.setProperty("--theme", theme || newTheme)
+  rootElement.setAttribute("data-theme", theme || newTheme)
 }
