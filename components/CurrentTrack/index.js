@@ -36,7 +36,12 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
     })
   }
 
+  // TIM:
+  // THese functions do the job, but I was playin garound quite a lot and am asware they
+  // can probably be optimised at some point.
+
   function hexToRgb(hex) {
+    // converts hex color into rgb color
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
     return result
       ? {
@@ -47,6 +52,7 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
       : null
   }
   function hexToHsl(hex, mode = "default") {
+    // converts hex color into hsl colour. mode sets whether to return the whole string 'hsl(12, 34%, 12%)', or a single value h = 23
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
 
     var r = parseInt(result[1], 16)
@@ -102,8 +108,9 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
     }
     return returnValue
   }
+
   function getColors(colors) {
-    console.log("colors", colors)
+    // gets colours form image, then applys them to document root css variables
     if (colors.length < 1) {
       console.log("no colors")
       return false
@@ -122,7 +129,9 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
     document.documentElement.style.setProperty("--backgroundColor", colors[0])
     document.documentElement.style.setProperty("--themeColor", colors[1])
     // document.documentElement.style.setProperty('--textColor', colors[2]);
-    if (hexToHsl(colors[0], "l") < 50) {
+
+    // this bit determins whether text coloour should be dark (on a light background), or vice versa
+    if (hexToHsl(colors[0], "l") < 60) {
       console.log("less than 50: ", hexToHsl(colors[0], "l"))
       document.documentElement.style.setProperty(
         "--textColor",
@@ -135,7 +144,6 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
         "rgba(0,0,0,.9)"
       )
     }
-    // document.documentElement.style.setProperty('--themeColor-weaker', colors[2]);
     document.documentElement.style.setProperty("--themeColor-weaker", colors[0])
     document.documentElement.style.setProperty(
       "--themeColor-stronger",
