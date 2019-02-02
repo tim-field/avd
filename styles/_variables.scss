@@ -126,6 +126,8 @@ html[data-theme="light"] {
   );
   color: $light-text;
   border-left: 2rem solid $light-themeColor-weaker;
+  transition: background-color 1s ease-in-out, color 1s ease-in-out,
+    border-left-color 1s ease-in-out;
 }
 html[data-theme="dark"] {
   // @include themes('dark', $dark);
@@ -152,6 +154,33 @@ html[data-theme="dark"] {
   color: $dark-text;
   // border-left: 2rem solid $dark-themeColor-stronger;
   border-left: 2rem solid $dark-themeColor-weakest;
+  transition: background-color 1s ease-in-out, color 1s ease-in-out,
+    border-left-color 1s ease-in-out;
+}
+
+html[data-theme="generated"] {
+  // @include themes('dark', $dark);
+  @include setVariable(--backgroundColor, $dark-background, #eee);
+  @include setVariable(--textColor, $dark-text, #eee);
+  @include setVariable(--overlay, $dark-overlay, #eee);
+  @include setVariable(--highlight, $dark-highlight, #eee);
+  @include setVariable(--themeColor, $dark-themeColor, #eee);
+  @include setVariable(--themeColor-weakest, $dark-themeColor-weakest, #eee);
+  @include setVariable(--themeColor-weaker, $dark-themeColor-weaker, #eee);
+  @include setVariable(--themeColor-stronger, $dark-themeColor-stronger, #eee);
+  @include setVariable(
+    --themeColor-strongest,
+    $dark-themeColor-strongest,
+    #eee
+  );
+  background: var(--backgroundColor);
+  // background: linear-gradient(-45deg, $dark-themeColor-stronger 0%, $dark-themeColor-weaker 100%);
+  // color: $dark-text;
+  color: var(--textColor);
+  border-left: 2rem solid $dark-themeColor-strongest;
+  border-left-color: var(--themeColor-strongest);
+  transition: background-color 1s ease-in-out, color 1s ease-in-out,
+    border-left-color 1s ease-in-out;
 }
 
 .swatchSet {
