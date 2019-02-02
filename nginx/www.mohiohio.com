@@ -28,6 +28,10 @@ server {
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 
     location / {
+        return 301 https://www.djavd.com$request_uri;
+    }
+
+    location / {
         try_files $uri $uri/ /index.html;
     }
 

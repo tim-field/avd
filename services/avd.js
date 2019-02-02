@@ -112,7 +112,7 @@ async function getTracks({
     where 
       ${where}
     order by 
-      ut.user_id nulls first, random()
+      random()
     limit 30
     `
     const dbRes = await query(sql, values)
