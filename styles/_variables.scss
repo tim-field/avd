@@ -1,6 +1,3 @@
-
-
-
 // THEME
 // $themes: (
 //   light: (
@@ -9,7 +6,7 @@
 //     textColor: #fff,
 //     textDark: #000,
 //     textLight: #919394,
-//     contentColor: #b9baba,  
+//     contentColor: #b9baba,
 //     iconColor: #000,
 //     color100: rgba(0,0,0,1),
 //     color10: rgba(0,0,0,0.1),
@@ -26,20 +23,17 @@
 //   ),
 // );
 
-
-
 // $light: (
 //   border: 20px solid var(--primary-hue),
 //   background: #eee,
 //   textColor: #333,
 //   textDark: #000,
 //   textLight: #919394,
-//   primaryColor: #bb11ba,  
+//   primaryColor: #bb11ba,
 //   iconColor: #000,
 //   color100: rgba(255,255,255,1),
 //   color10: rgba(255,255,255,0.1),
 // );
-
 
 // $dark: (
 //   border: 20px solid #eee,
@@ -47,15 +41,15 @@
 //   textColor: #ddd,
 //   textDark: #aaa,
 //   textLight: #fff,
-//   primaryColor: #359b9b,  
+//   primaryColor: #359b9b,
 //   iconColor: #fff,
 //   color100: rgba(0,0,0,1),
 //   color10: rgba(0,0,0,0.1),
 // );
 
 $light-background: #eee;
-$light-overlay: rgba(0,0,0,.05);
-$light-highlight: rgba(255,255,255,.1);
+$light-overlay: rgba(0, 0, 0, 0.05);
+$light-highlight: rgba(255, 255, 255, 0.1);
 $light-text: #333;
 $light-themeColor: #b7c182;
 $light-themeColor-weakest: #dee7b0;
@@ -66,11 +60,10 @@ $light-themeColor-strongest: #38351d;
 // $light-themeColor-weaker: #c7a1c7;
 // $light-themeColor-stronger: #966d96;
 
-
 $dark-background: #333;
 $dark-text: #ddd;
-$dark-overlay: rgba(255,255,255,.05);
-$dark-highlight: rgba(0,0,0,.1);
+$dark-overlay: rgba(255, 255, 255, 0.05);
+$dark-highlight: rgba(0, 0, 0, 0.1);
 $dark-themeColor: #521431;
 $dark-themeColor-weakest: #1d0e1d;
 $dark-themeColor-weaker: #410a24;
@@ -79,38 +72,36 @@ $dark-themeColor-strongest: #dbbcdb;
 
 // ROOT DEFAULTS
 
-:root, html{
+:root,
+html {
   --primary-hue: $dark-themeColor;
   --backgroundColor: $dark-themeColor;
   --textColor: $dark-text;
   --overlay: $dark-overlay;
   // --theme-primary-hue: pink;
-  --theme: 'dark';
+  --theme: "dark";
 }
 
 // $prefix: 'body';
-@mixin themes($name, $map){
+@mixin themes($name, $map) {
   // #{$prefix} & {
-    @each $property, $value in $map {
-      #{$property}: $value;
-    }
+  @each $property, $value in $map {
+    #{$property}: $value;
+  }
   // }
- }
- 
+}
 
- 
 @mixin variable($property, $variable, $fallback) {
   #{$property}: $fallback;
   #{$property}: var($variable);
 }
-@mixin  setVariable($property, $variable, $fallback) {
+@mixin setVariable($property, $variable, $fallback) {
   // #{$property}: $fallback;
   #{$property}: $variable;
 }
 
-html[data-theme="light"]{
+html[data-theme="light"] {
   // @include themes('light', $light);
-  
   // @include variable(--theme-primary-hue, pink, #000);
   // @include variable(--primary-hue, pink, #000);
   @include setVariable(--backgroundColor, $light-background, #eee);
@@ -121,14 +112,24 @@ html[data-theme="light"]{
   @include setVariable(--themeColor-weakest, $light-themeColor-weakest, #eee);
   @include setVariable(--themeColor-weaker, $light-themeColor-weaker, #eee);
   @include setVariable(--themeColor-stronger, $light-themeColor-stronger, #eee);
-  @include setVariable(--themeColor-strongest, $light-themeColor-strongest, #eee);
+  @include setVariable(
+    --themeColor-strongest,
+    $light-themeColor-strongest,
+    #eee
+  );
   // @include variable(--textColor, #333, #000);
   // background: linear-gradient(to bottom, $light-themeColor-weaker 0%, $light-themeColor-stronger 100%);
-  background: linear-gradient(-45deg, $light-themeColor-weaker 0%, $light-themeColor-stronger 100%);
+  background: linear-gradient(
+    -45deg,
+    $light-themeColor-weaker 0%,
+    $light-themeColor-stronger 100%
+  );
   color: $light-text;
   border-left: 2rem solid $light-themeColor-weaker;
+  transition: background-color 1s ease-in-out, color 1s ease-in-out,
+    border-left-color 1s ease-in-out;
 }
-html[data-theme="dark"]{
+html[data-theme="dark"] {
   // @include themes('dark', $dark);
   @include setVariable(--backgroundColor, $dark-background, #eee);
   @include setVariable(--textColor, $dark-text, #eee);
@@ -138,16 +139,119 @@ html[data-theme="dark"]{
   @include setVariable(--themeColor-weakest, $dark-themeColor-weakest, #eee);
   @include setVariable(--themeColor-weaker, $dark-themeColor-weaker, #eee);
   @include setVariable(--themeColor-stronger, $dark-themeColor-stronger, #eee);
-  @include setVariable(--themeColor-strongest, $dark-themeColor-strongest, #eee);
+  @include setVariable(
+    --themeColor-strongest,
+    $dark-themeColor-strongest,
+    #eee
+  );
   // GLOBAL
   // background: linear-gradient(to bottom, $dark-themeColor-stronger 0%, $dark-themeColor-weaker 100%);
-  background: linear-gradient(-45deg, $dark-themeColor-stronger 0%, $dark-themeColor-weaker 100%);
+  background: linear-gradient(
+    -45deg,
+    $dark-themeColor-stronger 0%,
+    $dark-themeColor-weaker 100%
+  );
   color: $dark-text;
   // border-left: 2rem solid $dark-themeColor-stronger;
   border-left: 2rem solid $dark-themeColor-weakest;
+  transition: background-color 1s ease-in-out, color 1s ease-in-out,
+    border-left-color 1s ease-in-out;
+}
+
+html[data-theme="generated"] {
+  // @include themes('dark', $dark);
+  @include setVariable(--backgroundColor, $dark-background, #eee);
+  @include setVariable(--textColor, $dark-text, #eee);
+  @include setVariable(--overlay, $dark-overlay, #eee);
+  @include setVariable(--highlight, $dark-highlight, #eee);
+  @include setVariable(--themeColor, $dark-themeColor, #eee);
+  @include setVariable(--themeColor-weakest, $dark-themeColor-weakest, #eee);
+  @include setVariable(--themeColor-weaker, $dark-themeColor-weaker, #eee);
+  @include setVariable(--themeColor-stronger, $dark-themeColor-stronger, #eee);
+  @include setVariable(
+    --themeColor-strongest,
+    $dark-themeColor-strongest,
+    #eee
+  );
+  background: var(--backgroundColor);
+  // background: linear-gradient(-45deg, $dark-themeColor-stronger 0%, $dark-themeColor-weaker 100%);
+  // color: $dark-text;
+  color: var(--textColor);
+  border-left: 2rem solid $dark-themeColor-strongest;
+  border-left-color: var(--themeColor-strongest);
+  transition: background-color 1s ease-in-out, color 1s ease-in-out,
+    border-left-color 1s ease-in-out;
+}
+
+.swatchSet {
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: stretch;
+  flex-direction: column;
+  .swatch {
+    width: 100%;
+    height: 1rem;
+  }
+  &.dark {
+    .swatch {
+      &:nth-child(1) {
+        background: $dark-background;
+      }
+      &:nth-child(2) {
+        background: $dark-text;
+      }
+      &:nth-child(3) {
+        background: $dark-themeColor;
+      }
+      &:nth-child(4) {
+        background: $dark-themeColor-weakest;
+      }
+      &:nth-child(5) {
+        background: $dark-themeColor-strongest;
+      }
+    }
+  }
+  &.light {
+    .swatch {
+      &:nth-child(1) {
+        background: $light-background;
+      }
+      &:nth-child(2) {
+        background: $light-text;
+      }
+      &:nth-child(3) {
+        background: $light-themeColor;
+      }
+      &:nth-child(4) {
+        background: $light-themeColor-weakest;
+      }
+      &:nth-child(5) {
+        background: $light-themeColor-strongest;
+      }
+    }
+  }
+  &.generated {
+    .swatch {
+      &:nth-child(1) {
+        background: var(--backgroundColor);
+      }
+      &:nth-child(2) {
+        background: var(--textColor);
+      }
+      &:nth-child(3) {
+        background: var(--themeColor);
+      }
+      &:nth-child(4) {
+        background: var(--themeColor-weakest);
+      }
+      &:nth-child(5) {
+        background: var(--themeColor-strongest);
+      }
+    }
+  }
 }
 
 $colorPrimary: #330022;
-$color100: rgba(0,0,0,1);
-$color10: rgba(0,0,0,.1);
-
+$color100: rgba(0, 0, 0, 1);
+$color10: rgba(0, 0, 0, 0.1);

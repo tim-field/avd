@@ -1,19 +1,41 @@
 @import "../../styles/_variables.scss";
 
-.likeControls{
+.likeControls {
   // @include variable(background, --theme-background, $color100);
-  
-  button{
+
+  button {
     @include variable(border-color, --textColor, red);
     @include variable(color, --textColor, red);
     // border-color: var(--primary-hue)
     // @include variable(border-color, --theme-primary-hue, $color100);
+    svg path {
+      @include variable(fill, --textColor, orange);
+    }
+    &.active {
+      @include variable(background, --textColor, orange);
+      @include variable(color, --backgroundColor, orange);
+      cursor: pointer;
+      svg path {
+        @include variable(fill, --backgroundColor, orange);
+      }
+    }
   }
-  svg path{
-    @include variable(fill, --textColor, orange);
+
+  .liked {
   }
 }
 
 .active {
-  color: blue;
+  // background: blue;
+}
+
+.active {
+  // background: red;
+}
+
+.test {
+  /// background: pink;
+}
+.notest {
+  // background: lime;
 }
