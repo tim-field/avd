@@ -23,7 +23,11 @@
       position: fixed;
     }
   }
-  button.uiToggle {
+  .uiToggle {
+    font-weight: bold;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    outline: none;
     position: fixed;
     left: -18px;
     top: calc(100% - 46px);

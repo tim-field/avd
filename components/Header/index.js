@@ -9,14 +9,14 @@ function Header({ user, doLogout, toggleUI }) {
         <span>A / V / D</span>
       </div>
       <div className="appUser">
-        <button className="uiToggle">
+        <div className="uiToggle">
           UI mode
           <div className="uiControls">
             <button onClick={() => toggleUI("light")}>light</button>
             <button onClick={() => toggleUI("dark")}>dark</button>
             <button onClick={() => toggleUI("generated")}>gerated</button>
           </div>
-        </button>
+        </div>
         <button className="logout" onClick={doLogout}>
           Logout
         </button>
