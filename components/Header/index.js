@@ -1,5 +1,6 @@
 import React from "react"
 import "./Header.scss"
+import classNames from "classnames"
 
 function Header({ user, doLogout, toggleUI }) {
   // console.log('doLogout', doLogout)
@@ -12,9 +13,36 @@ function Header({ user, doLogout, toggleUI }) {
         <div className="uiToggle">
           UI mode
           <div className="uiControls">
-            <button onClick={() => toggleUI("light")}>light</button>
-            <button onClick={() => toggleUI("dark")}>dark</button>
-            <button onClick={() => toggleUI("generated")}>gerated</button>
+            <div className="themePanel">
+              <button onClick={() => toggleUI("light")}>light</button>
+              <div className={classNames("swatchSet", "light")}>
+                <div className="swatch" />
+                <div className="swatch" />
+                <div className="swatch" />
+                <div className="swatch" />
+                <div className="swatch" />
+              </div>
+            </div>
+            <div className="themePanel">
+              <button onClick={() => toggleUI("dark")}>dark</button>
+              <div className={classNames("swatchSet", "dark")}>
+                <div className="swatch" />
+                <div className="swatch" />
+                <div className="swatch" />
+                <div className="swatch" />
+                <div className="swatch" />
+              </div>
+            </div>
+            <div className="themePanel">
+              <button onClick={() => toggleUI("generated")}>gerated</button>
+              <div className={classNames("swatchSet", "generated")}>
+                <div className="swatch" />
+                <div className="swatch" />
+                <div className="swatch" />
+                <div className="swatch" />
+                <div className="swatch" />
+              </div>
+            </div>
           </div>
         </div>
         <button className="logout" onClick={doLogout}>
