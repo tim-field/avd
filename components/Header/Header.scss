@@ -38,6 +38,7 @@
     border-width: 0;
     background: transparent;
     border-right: 2px solid var(--textColor);
+    z-index: 99;
     .uiControls {
       display: none;
     }
@@ -57,9 +58,12 @@
   }
   .uiControls {
     @include variable(background, --themeColor-weakest, orange);
+    transform: rotate(90deg);
+    transform-origin: left bottom;
     padding: 1rem;
-    top: 100%;
+    bottom: 0;
     left: 0;
+    z-index: 999;
     position: absolute;
     display: flex;
     align-items: center;
