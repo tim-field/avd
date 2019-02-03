@@ -14,7 +14,6 @@ function Header({ user, doLogout, toggleUI }) {
           UI mode
           <div className="uiControls">
             <div className="themePanel">
-              <button onClick={() => toggleUI("light")}>light</button>
               <div className={classNames("swatchSet", "light")}>
                 <div className="swatch" />
                 <div className="swatch" />
@@ -22,9 +21,9 @@ function Header({ user, doLogout, toggleUI }) {
                 <div className="swatch" />
                 <div className="swatch" />
               </div>
+              <button onClick={() => toggleUI("light")}>light</button>
             </div>
             <div className="themePanel">
-              <button onClick={() => toggleUI("dark")}>dark</button>
               <div className={classNames("swatchSet", "dark")}>
                 <div className="swatch" />
                 <div className="swatch" />
@@ -32,9 +31,9 @@ function Header({ user, doLogout, toggleUI }) {
                 <div className="swatch" />
                 <div className="swatch" />
               </div>
+              <button onClick={() => toggleUI("dark")}>dark</button>
             </div>
             <div className="themePanel">
-              <button onClick={() => toggleUI("generated")}>gerated</button>
               <div className={classNames("swatchSet", "generated")}>
                 <div className="swatch" />
                 <div className="swatch" />
@@ -42,6 +41,7 @@ function Header({ user, doLogout, toggleUI }) {
                 <div className="swatch" />
                 <div className="swatch" />
               </div>
+              <button onClick={() => toggleUI("generated")}>generated</button>
             </div>
           </div>
         </div>

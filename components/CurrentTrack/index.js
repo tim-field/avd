@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useState, Fragment, useRef } from "react"
 import debounce from "lodash.debounce"
+import { ColorExtractor } from "react-color-extractor"
 import Control from "../Control"
 import api from "../../utils/api"
 import PlayControls from "../PlayControls"
@@ -8,6 +9,123 @@ import Listeners from "../Listeners"
 import Store from "../../store"
 
 import "./CurrentTrack.scss"
+
+// TIM:
+// THese functions do the job, but I was playin garound quite a lot and am asware they
+// can probably be optimised at some point.
+
+function hexToRgb(hex) {
+  // converts hex color into rgb color
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  return result
+    ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      }
+    : null
+}
+function hexToHsl(hex, mode = "default") {
+  // converts hex color into hsl colour.
+  // 'mode' sets whether to return the whole string 'hsl(12, 34%, 12%)', or a single value h = 23
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+
+  var r = parseInt(result[1], 16)
+  var g = parseInt(result[2], 16)
+  var b = parseInt(result[3], 16)
+
+  ;(r /= 255), (g /= 255), (b /= 255)
+  var max = Math.max(r, g, b),
+    min = Math.min(r, g, b)
+  var h,
+    s,
+    l = (max + min) / 2
+
+  if (max == min) {
+    h = s = 0 // achromatic
+  } else {
+    var d = max - min
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
+    switch (max) {
+      case r:
+        h = (g - b) / d + (g < b ? 6 : 0)
+        break
+      case g:
+        h = (b - r) / d + 2
+        break
+      case b:
+        h = (r - g) / d + 4
+        break
+    }
+    h /= 6
+  }
+
+  s = s * 100
+  s = Math.round(s)
+  l = l * 100
+  l = Math.round(l)
+  h = Math.round(360 * h)
+
+  var colorInHSL = "hsl(" + h + ", " + s + "%, " + l + "%)"
+  let returnValue = colorInHSL
+  switch (mode) {
+    case "h":
+      returnValue = h
+      break
+    case "s":
+      returnValue = s
+      break
+    case "l":
+      returnValue = l
+      break
+    default:
+      returnValue = colorInHSL
+  }
+  return returnValue
+}
+
+function getColors(colors) {
+  // gets colours form image, then applys them to document root css variables
+  if (colors.length < 1) {
+    console.error("no colors")
+    return false
+  }
+  // console.log('colors[0]: ', hexToRgb(colors[0]));
+  console.log("colors[0]: ", hexToHsl(colors[0]))
+  console.log("colors[1]: ", hexToHsl(colors[1]))
+  console.log("colors[2]: ", hexToHsl(colors[2]))
+  console.log("colors[3]: ", hexToHsl(colors[3]))
+  console.log("colors[4]: ", hexToHsl(colors[4]))
+  console.log("colors[4]: ", hexToHsl(colors[5]))
+  // this.setState(state => ({ colors: [...state.colors, ...colors] }))
+  // setColors(colors);
+  const rootElement = document.getElementById("html")
+  console.log("rootelement: ", rootElement)
+  rootElement.setAttribute("data-theme", "generated")
+
+  // THese do the actual setting of css variables.
+  // needs to be abstracted into another function so it can be called manually.
+  document.documentElement.style.setProperty("--backgroundColor", colors[0])
+  document.documentElement.style.setProperty("--themeColor", colors[1])
+  document.documentElement.style.setProperty("--themeColor-weaker", colors[0])
+  document.documentElement.style.setProperty("--themeColor-stronger", colors[5])
+  document.documentElement.style.setProperty("--themeColor-weakest", colors[3])
+  document.documentElement.style.setProperty(
+    "--themeColor-strongest",
+    colors[5]
+  )
+  // this bit determines whether text coloour should be dark (on a light background), or vice versa
+  if (hexToHsl(colors[0], "l") < 60) {
+    console.log("less than 60: ", hexToHsl(colors[0], "l"))
+    document.documentElement.style.setProperty(
+      "--textColor",
+      "rgba(229,229,229,.9)"
+    )
+  } else {
+    console.log("more than 60: ", hexToHsl(colors[0], "l"))
+    document.documentElement.style.setProperty("--textColor", "rgba(0,0,0,.9)")
+  }
+}
 
 const saveAVD = debounce(data => {
   return api({ action: "avd/", data })
@@ -146,7 +264,9 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
             }}
           />
           <div className="coverWrap">
-            <img className="image" src={track.image.url} />
+            <ColorExtractor getColors={colors => getColors(colors)}>
+              <img className="image" src={track.image.url} />
+            </ColorExtractor>
             <div className="back">
               <div>
                 <span className="title">track: </span>
@@ -157,14 +277,26 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
                 <span className="subtitle">{track.artist}</span>
               </div>
               <div>
-                <span className="title">{track.raw.item.album && track.raw.item.album.album_type}:</span>
-                <span className="subtitle">{track.raw.item.album && track.raw.item.album.name}</span>
-                
+                <span className="title">
+                  {track.raw.item.album && track.raw.item.album.album_type}:
+                </span>
+                <span className="subtitle">
+                  {track.raw.item.album && track.raw.item.album.name}
+                </span>
               </div>
-              {track.raw.item.album && track.raw.item.album.external_urls && track.raw.item.album.external_urls.spotify && 
-                <div className="albumLinkWrap"><a target="_blank" className="albumLink" href={track.raw.item.album.external_urls.spotify}>View in Spotify</a>
-              </div>
-              }
+              {track.raw.item.album &&
+                track.raw.item.album.external_urls &&
+                track.raw.item.album.external_urls.spotify && (
+                  <div className="albumLinkWrap">
+                    <a
+                      target="_blank"
+                      className="albumLink"
+                      href={track.raw.item.album.external_urls.spotify}
+                    >
+                      View in Spotify
+                    </a>
+                  </div>
+                )}
             </div>
           </div>
           <LikeControls
