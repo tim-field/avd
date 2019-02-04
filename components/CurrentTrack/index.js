@@ -115,14 +115,14 @@ function getColors(colors) {
     colors[5]
   )
   // this bit determines whether text coloour should be dark (on a light background), or vice versa
-  if (hexToHsl(colors[0], "l") < 60) {
-    console.log("less than 60: ", hexToHsl(colors[0], "l"))
+  if (hexToHsl(colors[0], "l") < 40) {
+    console.log("less than 40: ", hexToHsl(colors[0], "l"))
     document.documentElement.style.setProperty(
       "--textColor",
       "rgba(229,229,229,.9)"
     )
   } else {
-    console.log("more than 60: ", hexToHsl(colors[0], "l"))
+    console.log("more than 40: ", hexToHsl(colors[0], "l"))
     document.documentElement.style.setProperty("--textColor", "rgba(0,0,0,.9)")
   }
 }
