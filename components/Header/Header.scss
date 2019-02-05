@@ -102,6 +102,7 @@
   border-radius: 100%;
   z-index: -1;
   animation: buttonSize 10s ease-in-out infinite;
+  transform-origin: 40% 40%;
   opacity: 0.6;
   // animation-iteration-count: infinite;
   + .bubble {
@@ -113,6 +114,7 @@
     top: 5vw;
     animation-delay: 4s;
     animation-duration: 15s;
+    transform-origin: 60% 60%;
   }
 }
 

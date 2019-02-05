@@ -24,7 +24,9 @@ h4 {
   font-size: 0.875rem;
   font-weight: 600;
 }
-.PlayListHeader {
+
+// MAIN HEADER FOR GROUPING OF PLAYLIST FUNCTIONALITY
+.PlayListsHeader {
   display: flex;
   .PlayListPlay {
     padding-right: 0.5rem;
@@ -43,6 +45,8 @@ h4 {
     }
   }
 }
+
+// SEARCH BOX
 .PlayListControlsWrap {
   position: relative;
   margin-top: 1rem;
@@ -50,10 +54,17 @@ h4 {
   border-radius: 0rem;
   background: var(--themeColor);
   color: var(--themeColor-strongest);
+  h3 {
+    border-bottom: 1px solid var(--overlay);
+  }
   .closeButton {
     position: absolute;
-    right: 1rem;
-    top: 1rem;
+    right: 0.5rem;
+    top: 0.5rem;
+    button {
+      border: none;
+      font-size: 1rem;
+    }
   }
 }
 .PlayListControls {
@@ -208,9 +219,34 @@ h4 {
     padding: 0.5rem;
     font-size: 2rem;
   }
-  .subTitle {
-    font-size: 0.835rem;
-    margin: 0;
+  .PlayListHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 1rem 0;
+    .PlayListPlay {
+      flex-basis: 5.5rem;
+      padding: 0.5rem 1.25rem 0 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      button {
+        height: 3rem;
+        width: 100%;
+        // margin-right: .5rem;
+      }
+    }
+    h2 {
+      font-weight: normal;
+      font-size: 2rem;
+      margin: 0;
+      padding: 0;
+    }
+    .subTitle {
+      font-size: 0.835rem;
+      margin: 0;
+    }
   }
   table {
     width: 100%;

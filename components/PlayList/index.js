@@ -299,7 +299,7 @@ function PlayList({
   return (
     <div className="PlayListWrap">
       <div className="PlayList">
-        <div className="PlayListHeader">
+        <div className="PlayListsHeader">
           {playlists.length > 0 && (
             <div className="PlayListSelect">
               <h4>Playlist</h4>
@@ -317,11 +317,11 @@ function PlayList({
               </select>
             </div>
           )}
-          {!name && (
+          {/* {!name && (
             <div className="PlayListTitleWrap">
               <h4>{tracks.length > 0 && <span>Unnamed Playlist</span>}</h4>
             </div>
-          )}
+          )} */}
           {activePlaylist && (
             <div className="PlayListPlay">
               <Fragment>
@@ -483,12 +483,25 @@ function PlayList({
         )}
         {tracks.length > 0 && (
           <div className="PlayListTracks">
-            <table id="playlistTracks">
-              <caption>
-                {name || "Unnamed Playlist"}
-                {name && !saved ? "*" : ""}
+            <div className="PlayListHeader">
+              {tracks.length > 0 && (
+                <div className="PlayListPlay">
+                  <Fragment>
+                    <button onClick={playPlaylist}>
+                      <FontAwesomeIcon icon="play" />
+                    </button>
+                  </Fragment>
+                </div>
+              )}
+              <div className="PlayListTitle">
+                <h2>
+                  {name || "Unnamed Playlist"}
+                  {name && !saved ? "*" : ""}
+                </h2>
                 <p className="subTitle">{tracks.length} tracks</p>
-              </caption>
+              </div>
+            </div>
+            <table id="playlistTracks">
               <thead>
                 <tr>
                   <th />
