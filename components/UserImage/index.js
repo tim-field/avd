@@ -11,7 +11,7 @@ function UserImage({ user }) {
       <img
         src={url}
         title={user.display_name}
-        style={{ height: 50 }}
+        // style={{ height: 50 }}
         alt={user.display_name}
       />
     </div>

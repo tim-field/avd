@@ -9,7 +9,8 @@
   justify-content: center;
   flex-direction: column;
   img {
-    width: 50px;
-    height: auto;
+    height: 50px;
+    width: auto;
+    min-width: 100%;
   }
 }

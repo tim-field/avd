@@ -13,17 +13,18 @@
       justify-content: center;
       button {
         border: none;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        overflow: hidden;
+        padding: 0;
+        // width: 50px;
+        // height: 50px;
+        // border-radius: 50%;
+        // overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
         img {
-          width: 50px;
-          height: auto;
+          // width: 50px;
+          // height: auto;
         }
       }
     }
