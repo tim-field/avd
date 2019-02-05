@@ -7,6 +7,19 @@
   padding-right: 1rem;
 }
 
+.PlayList {
+  position: relative;
+  .loadingWrap {
+    position: absolute;
+    z-index: 99;
+    width: 100%;
+  }
+  &.loading {
+    .PlayListTracks {
+      opacity: 0;
+    }
+  }
+}
 #playlistTracks .playlistTrack {
   display: flex;
 }
@@ -223,6 +236,8 @@ h4 {
   // background: var(--textColor);
   // color: var(--themeColor-weaker);
   border-radius: 1rem;
+  opacity: 1;
+  transition: opacity 0.1s ease-in-out;
   caption {
     padding: 0.5rem;
     font-size: 2rem;

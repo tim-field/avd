@@ -17,6 +17,7 @@ import {
   filterUsers as filterUsersAction,
   filterLiked as filterLikedAction
 } from "../../actions/index"
+import Loading from "../Loading"
 import "./PlayList.scss"
 
 const initialState = {
@@ -70,6 +71,11 @@ function reducer(state, action) {
         ...state,
         showSave: action.value
       }
+    case "set-loading":
+      return {
+        ...state,
+        loading: action.value
+      }
     default:
       return state
   }
@@ -94,7 +100,8 @@ function PlayList({
       saved,
       havePlayer,
       showSearch,
-      showSave
+      showSave,
+      loading
     },
     dispatch
   ] = useReducer(reducer, initialState)
@@ -179,6 +186,10 @@ function PlayList({
 
   function loadPlaylist(playlistId) {
     if (playlistId) {
+      dispatch({
+        type: "set-loading",
+        value: true
+      })
       api({ action: `/playlist?id=${playlistId}` }).then(res => {
         appDispatch({
           type: "set-track-query",
@@ -205,6 +216,10 @@ function PlayList({
         dispatch({
           type: "set-active-playlist",
           playlist
+        })
+        dispatch({
+          type: "set-loading",
+          value: false
         })
       })
     }
@@ -298,7 +313,7 @@ function PlayList({
 
   return (
     <div className="PlayListWrap">
-      <div className="PlayList">
+      <div className={`PlayList ${loading && "loading"}`}>
         <div className="PlayListsHeader">
           {playlists.length > 0 && (
             <div className="PlayListSelect">
@@ -494,6 +509,11 @@ function PlayList({
           <div>
             Can&#39;t find a Spotify player! Please make sure you&#39;ve got
             Spotify open and playing somewhere.
+          </div>
+        )}
+        {loading && (
+          <div className="loadingWrap">
+            <Loading />
           </div>
         )}
         {tracks.length > 0 && (

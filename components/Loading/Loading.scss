@@ -1,20 +1,21 @@
-.Loading{
+.Loading {
   min-height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  .iconWrap{
+  animation: fade 0.3s ease-in-out 1;
+  .iconWrap {
     width: 2rem;
     height: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: loadingRotate .8s linear infinite;
+    animation: loadingRotate 0.8s linear infinite;
   }
-  p{
+  p {
     text-align: center;
     // font-style: italic;
-    opacity: .8;
+    opacity: 0.8;
     font-weight: 300;
   }
 }
@@ -25,5 +26,14 @@
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }

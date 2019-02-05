@@ -17,6 +17,7 @@
       text-align: left;
       font-weight: bold;
       color: var(--textColor);
+      color: #eee;
       font-size: 0.75rem;
       margin-top: 1rem;
       margin-left: 0.5rem;
@@ -91,6 +92,15 @@
       }
     }
   }
+}
+.bubbleWrap {
+  z-index: -1;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 90vw;
+  height: 100vh;
+  overflow: hidden;
 }
 .bubble {
   position: absolute;

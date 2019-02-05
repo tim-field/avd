@@ -49,8 +49,10 @@ function Header({ user, doLogout, toggleUI }) {
           Logout
         </button>
       </div>
-      <div className="bubble" />
-      <div className="bubble" />
+      <div className="bubbleWrap">
+        <div className="bubble" />
+        <div className="bubble" />
+      </div>
     </div>
   )
 }
