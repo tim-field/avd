@@ -15,7 +15,6 @@ export const getTracks = (query = {}) => {
       filterUsers,
       ...rest
     } = apiQuery
-
     // Don't query unless we have some avd values
     if (
       arousal
@@ -23,6 +22,7 @@ export const getTracks = (query = {}) => {
         .concat(depth)
         .find(x => x > 0)
     ) {
+      dispatch({ type: "set-loading-playlist", value: true })
       api({
         action: "tracks",
         method: "GET",
@@ -35,9 +35,15 @@ export const getTracks = (query = {}) => {
           depth: depth.join(","),
           userId: state.userId
         }
-      }).then(tracks => {
-        dispatch({ type: "set-tracks", tracks })
       })
+        .then(tracks => {
+          dispatch({ type: "set-tracks", tracks })
+          dispatch({ type: "set-loading-playlist", value: false })
+        })
+        .catch(e => {
+          dispatch({ type: "set-loading-playlist", value: false })
+          throw e
+        })
     }
   }
 }

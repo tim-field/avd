@@ -23,7 +23,6 @@ import "./PlayList.scss"
 const initialState = {
   playlists: [],
   name: "",
-  loading: false,
   saved: false,
   havePlayer: true,
   showSearch: false,
@@ -37,11 +36,6 @@ function reducer(state, action) {
         ...state,
         saved: false,
         name: action.value
-      }
-    case "set-loading":
-      return {
-        ...state,
-        loading: action.value
       }
     case "set-playlists":
       return {
@@ -71,11 +65,6 @@ function reducer(state, action) {
         ...state,
         showSave: action.value
       }
-    case "set-loading":
-      return {
-        ...state,
-        loading: action.value
-      }
     default:
       return state
   }
@@ -89,7 +78,8 @@ function PlayList({
   currentArousal = 0,
   currentValence = 0,
   currentDepth = 0,
-  trackQuery
+  trackQuery,
+  loading
 }) {
   const { userFilter, filterUsers, liked: filterLiked, ...avd } = trackQuery
   const [
@@ -100,8 +90,7 @@ function PlayList({
       saved,
       havePlayer,
       showSearch,
-      showSave,
-      loading
+      showSave
     },
     dispatch
   ] = useReducer(reducer, initialState)
@@ -186,8 +175,8 @@ function PlayList({
 
   function loadPlaylist(playlistId) {
     if (playlistId) {
-      dispatch({
-        type: "set-loading",
+      appDispatch({
+        type: "set-loading-playlist",
         value: true
       })
       api({ action: `/playlist?id=${playlistId}` }).then(res => {
@@ -217,8 +206,8 @@ function PlayList({
           type: "set-active-playlist",
           playlist
         })
-        dispatch({
-          type: "set-loading",
+        appDispatch({
+          type: "set-loading-playlist",
           value: false
         })
       })
@@ -602,7 +591,8 @@ const mapStateToProps = state => {
     valence: currentValence,
     depth: currentDepth,
     tracks,
-    trackQuery
+    trackQuery,
+    loadingPlaylist: loading
   } = state
   return {
     userId,
@@ -611,7 +601,8 @@ const mapStateToProps = state => {
     currentValence,
     currentDepth,
     tracks,
-    trackQuery
+    trackQuery,
+    loading
   }
 }
 
