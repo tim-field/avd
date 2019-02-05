@@ -48,6 +48,10 @@ html[data-mode="condensed"] .CurrentTrack {
   align-items: flex-start;
   position: relative;
   top: 1rem;
+  position: sticky;
+  z-index: 9;
+  background: var(--backgroundColor);
+  padding: 1rem;
   .player {
     flex-basis: 30%;
     height: 150px;
