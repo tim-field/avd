@@ -321,6 +321,15 @@ function PlayList({
             <h4>{tracks.length > 0 && <span>Unnamed Playlist</span>}</h4>
           </div>
         )}
+        {activePlaylist && (
+          <div className="PlayListPlay">
+            <Fragment>
+              <button onClick={playPlaylist}>
+                <FontAwesomeIcon icon="play" />
+              </button>
+            </Fragment>
+          </div>
+        )}
         {tracks.length > 0 && (
           <button
             className={classNames(showSave ? "active" : "")}
@@ -354,15 +363,7 @@ function PlayList({
           //   </div>
           // )
         }
-        {activePlaylist && (
-          <div className="PlayListPlay">
-            <Fragment>
-              <button onClick={playPlaylist}>
-                <FontAwesomeIcon icon="play" />
-              </button>
-            </Fragment>
-          </div>
-        )}
+
         {currentTrack && (
           <button onClick={() => findSimilar()}>
             Find Similar to this track

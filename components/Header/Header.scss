@@ -101,6 +101,9 @@
   background: var(--highlight);
   border-radius: 100%;
   z-index: -1;
+  animation: buttonSize 10s ease-in-out infinite;
+  opacity: 0.6;
+  // animation-iteration-count: infinite;
   + .bubble {
     background: var(--themeColor-strongest);
     opacity: 0.05;
@@ -108,5 +111,19 @@
     height: 40vw;
     right: -25vw;
     top: 5vw;
+    animation-delay: 4s;
+    animation-duration: 15s;
+  }
+}
+
+@keyframes buttonSize {
+  0% {
+    transform: translateY(0) scale3d(1, 1, 1);
+  }
+  50% {
+    transform: translateY(0) scale3d(1.1, 1.1, 1.1);
+  }
+  100% {
+    transform: translateY(0) scale3d(1, 1, 1);
   }
 }
