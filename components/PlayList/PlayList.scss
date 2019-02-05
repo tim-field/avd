@@ -319,6 +319,22 @@ h4 {
         cursor: pointer;
       }
     }
+    &.active {
+      // background: var(--highlight);
+      background: rgba(255, 255, 255, 0.1);
+      font-weight: bold;
+      > td {
+        border-top: 1px solid var(--highlight);
+        border-bottom: 1px solid var(--highlight);
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        &:first-child {
+          button {
+            background: var(--themeColor);
+          }
+        }
+      }
+    }
   }
   td {
     padding: 0.25rem;

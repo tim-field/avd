@@ -205,6 +205,7 @@ function PlayList({
       spotifyService({
         action: `v1/playlists/${playlistId}`
       }).then(playlist => {
+        console.log("playlist: ", playlist)
         appDispatch({
           type: "set-tracks",
           tracks: playlist.tracks.items.map(({ track }) => ({
@@ -571,10 +572,15 @@ function PlayList({
               <tbody>
                 {tracks.map(track => {
                   return (
-                    <tr key={track.id}>
+                    <tr
+                      key={track.id}
+                      className={track.id === currentTrack ? "active" : ""}
+                    >
                       <td>
                         <button onClick={() => playTrack(track.id)}>
-                          <FontAwesomeIcon icon="play" />
+                          <FontAwesomeIcon
+                            icon={track.id === currentTrack ? "pause" : "play"}
+                          />
                         </button>
                       </td>
                       <td>{track.name}</td>
