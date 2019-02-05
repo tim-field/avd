@@ -322,7 +322,7 @@ function PlayList({
               <h4>{tracks.length > 0 && <span>Unnamed Playlist</span>}</h4>
             </div>
           )} */}
-          {activePlaylist && (
+          {/* {activePlaylist && (
             <div className="PlayListPlay">
               <Fragment>
                 <button onClick={playPlaylist}>
@@ -330,20 +330,22 @@ function PlayList({
                 </button>
               </Fragment>
             </div>
-          )}
-          {tracks.length > 0 && (
-            <button
-              className={classNames(showSave ? "active" : "")}
-              onClick={() =>
-                dispatch({
-                  type: "set-show-save",
-                  value: !showSave
-                })
-              }
-            >
-              Save Playlist...
-            </button>
-          )}
+          )} */}
+          {
+            //   tracks.length > 0 && (
+            //   <button
+            //     className={classNames(showSave ? "active" : "")}
+            //     onClick={() =>
+            //       dispatch({
+            //         type: "set-show-save",
+            //         value: !showSave
+            //       })
+            //     }
+            //   >
+            //     Save Playlist...
+            //   </button>
+            // )
+          }
           {
             //   tracks.length > 0 && (
             //   <div className="PlayListsEdit">
@@ -365,11 +367,12 @@ function PlayList({
             // )
           }
 
-          {currentTrack && (
-            <button onClick={() => findSimilar()}>
-              Find Similar to this track
-            </button>
-          )}
+          {currentTrack &&
+            (currentArousal || currentDepth || currentValence) && (
+              <button onClick={() => findSimilar()}>
+                Find Similar to this track
+              </button>
+            )}
           <div className="searchButtonWrap">
             <button
               className={classNames(showSearch ? "active" : "")}
@@ -450,7 +453,19 @@ function PlayList({
         )}
         {showSave && tracks.length > 0 && (
           <div className="PlayListsEdit edit">
-            <h4>Save playlist</h4>
+            <h3>Save playlist</h3>
+            <div className="closeButton">
+              <button
+                onClick={() =>
+                  dispatch({
+                    type: "set-show-save",
+                    value: false
+                  })
+                }
+              >
+                <FontAwesomeIcon icon="times" />
+              </button>
+            </div>
             {/* <label>Name </label> */}
             <div className="row">
               <div className="column">
@@ -499,6 +514,21 @@ function PlayList({
                   {name && !saved ? "*" : ""}
                 </h2>
                 <p className="subTitle">{tracks.length} tracks</p>
+              </div>
+              <div className="PlayListActions">
+                {tracks.length > 0 && (
+                  <button
+                    className={classNames(showSave ? "active" : "")}
+                    onClick={() =>
+                      dispatch({
+                        type: "set-show-save",
+                        value: !showSave
+                      })
+                    }
+                  >
+                    Save Playlist...
+                  </button>
+                )}
               </div>
             </div>
             <table id="playlistTracks">

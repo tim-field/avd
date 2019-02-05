@@ -28,9 +28,9 @@ h4 {
 // MAIN HEADER FOR GROUPING OF PLAYLIST FUNCTIONALITY
 .PlayListsHeader {
   display: flex;
-  .PlayListPlay {
-    padding-right: 0.5rem;
-  }
+  // .PlayListPlay {
+  //   padding-right: 0.5rem;
+  // }
   .PlayListTitleWrap {
     flex-grow: 1;
     h4 {
@@ -56,15 +56,8 @@ h4 {
   color: var(--themeColor-strongest);
   h3 {
     border-bottom: 1px solid var(--overlay);
-  }
-  .closeButton {
-    position: absolute;
-    right: 0.5rem;
-    top: 0.5rem;
-    button {
-      border: none;
-      font-size: 1rem;
-    }
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
   }
 }
 .PlayListControls {
@@ -119,6 +112,15 @@ h4 {
     }
   }
 }
+.closeButton {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  button {
+    border: none;
+    font-size: 1rem;
+  }
+}
 .PlayListOptions {
   padding: 0.5rem;
   display: flex;
@@ -126,6 +128,7 @@ h4 {
   flex-basis: 25%;
 }
 .PlayListsEdit {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -137,6 +140,11 @@ h4 {
     // border-radius: 1rem;
     background: var(--themeColor);
     display: block;
+    h3 {
+      border-bottom: 1px solid var(--overlay);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
     h4 {
       text-align: left;
     }
@@ -236,6 +244,17 @@ h4 {
         width: 100%;
         // margin-right: .5rem;
       }
+    }
+    .PlayListTitle {
+      flex-basis: 100%;
+      flex-grow: 1;
+      flex-shrink: 1;
+    }
+    .PlayListActions {
+      flex-basis: 20%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
     }
     h2 {
       font-weight: normal;
