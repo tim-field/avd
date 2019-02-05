@@ -368,7 +368,7 @@ function PlayList({
           }
 
           {currentTrack &&
-            (currentArousal || currentDepth || currentValence) && (
+            (currentArousal > 0 || currentDepth > 0 || currentValence > 0) && (
               <button onClick={() => findSimilar()}>
                 Find Similar to this track
               </button>
@@ -388,7 +388,7 @@ function PlayList({
           </div>
         </div>
         {showSearch && (
-          <div className="PlayListControlsWrap">
+          <div className="PlayListControlsWrap dialog">
             <h3>Search</h3>
             <div className="closeButton">
               <button
@@ -452,7 +452,7 @@ function PlayList({
           </div>
         )}
         {showSave && tracks.length > 0 && (
-          <div className="PlayListsEdit edit">
+          <div className="PlayListsEdit edit dialog">
             <h3>Save playlist</h3>
             <div className="closeButton">
               <button
