@@ -93,12 +93,20 @@
   }
 }
 .bubble {
-  position: fixed;
+  position: absolute;
   right: -25vw;
   top: -30vw;
   width: 60vw;
   height: 60vw;
-  background: var(--overlay);
+  background: var(--highlight);
   border-radius: 100%;
   z-index: -1;
+  + .bubble {
+    background: var(--themeColor-strongest);
+    opacity: 0.05;
+    width: 40vw;
+    height: 40vw;
+    right: -25vw;
+    top: 5vw;
+  }
 }

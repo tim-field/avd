@@ -50,6 +50,7 @@ function Header({ user, doLogout, toggleUI }) {
         </button>
       </div>
       <div className="bubble" />
+      <div className="bubble" />
     </div>
   )
 }

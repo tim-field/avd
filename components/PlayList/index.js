@@ -6,6 +6,7 @@ import React, {
   useContext
 } from "react"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import classNames from "classnames"
 import api from "../../utils/api"
 import Control from "./Control"
 import { isErrorNoActiveDevice } from "../../utils/spotify"
@@ -23,7 +24,9 @@ const initialState = {
   name: "",
   loading: false,
   saved: false,
-  havePlayer: true
+  havePlayer: true,
+  showSearch: false,
+  showSave: false
 }
 
 function reducer(state, action) {
@@ -56,6 +59,17 @@ function reducer(state, action) {
         ...state,
         havePlayer: action.value
       }
+    // @TIM: is this how I set a state??
+    case "set-show-search":
+      return {
+        ...state,
+        showSearch: action.value
+      }
+    case "set-show-save":
+      return {
+        ...state,
+        showSave: action.value
+      }
     default:
       return state
   }
@@ -73,7 +87,15 @@ function PlayList({
 }) {
   const { userFilter, filterUsers, liked: filterLiked, ...avd } = trackQuery
   const [
-    { name, playlists, activePlaylist, saved, havePlayer },
+    {
+      name,
+      playlists,
+      activePlaylist,
+      saved,
+      havePlayer,
+      showSearch,
+      showSave
+    },
     dispatch
   ] = useReducer(reducer, initialState)
   const { dispatch: appDispatch } = useContext(Store)
@@ -276,99 +298,167 @@ function PlayList({
 
   return (
     <div className="PlayList">
-      {currentTrack && (
-        <button onClick={() => findSimilar()}>Find Similar</button>
-      )}
-      <div className="PlayListControlsWrap">
-        <h3>Search</h3>
-        <div className="PlayListControls">
-          <Control
-            label="Arousal"
-            min={arousal[0]}
-            max={arousal[1]}
-            setMin={value => setMin("arousal", value)}
-            setMax={value => setMax("arousal", value)}
-          />
-          <Control
-            label="Valence"
-            min={valence[0]}
-            max={valence[1]}
-            setMin={value => setMin("valence", value)}
-            setMax={value => setMax("valence", value)}
-          />
-          <Control
-            label="Depth"
-            min={depth[0]}
-            max={depth[1]}
-            setMin={value => setMin("depth", value)}
-            setMax={value => setMax("depth", value)}
-          />
-          <div className="PlayListOptions">
-            <h4>Options</h4>
-            <label>
-              <input
-                type="checkbox"
-                checked={filterLiked}
-                onChange={({ target: { checked } }) =>
-                  appDispatch(filterLikedAction(checked))
-                }
-              />
-              Liked
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={filterUsers}
-                onChange={({ target: { checked } }) =>
-                  appDispatch(filterUsersAction(checked))
-                }
-              />
-              Filter Users
-            </label>
+      <div className="PlayListHeader">
+        {playlists.length > 0 && (
+          <div className="PlayListSelect">
+            <h4>Playlist</h4>
+            <select
+              className="select"
+              value={activePlaylist && activePlaylist.id}
+              onChange={({ target: { value } }) => loadPlaylist(value)}
+            >
+              <option />
+              {playlists.map(playlist => (
+                <option key={playlist.id} value={playlist.id}>
+                  {playlist.name}
+                </option>
+              ))}
+            </select>
           </div>
-        </div>
-        {filterUsers && <Following />}
-      </div>
-      {tracks.length > 0 && (
-        <div className="PlayListsEdit">
-          <label>Playlist Name </label>
-          <div className="inputWrap">
-            <input
-              type="text"
-              value={name}
-              onChange={({ target: { value } }) =>
-                dispatch({ type: "set-name", value })
-              }
-            />
-            {!activePlaylist && name && (
-              <button onClick={createPlaylist}>Create Playlist</button>
-            )}
-            <button onClick={() => savePlaylist()}>Save Playlist</button>
+        )}
+        {!name && (
+          <div className="PlayListTitleWrap">
+            <h4>{tracks.length > 0 && <span>Unnamed Playlist</span>}</h4>
           </div>
-          {activePlaylist && (
+        )}
+        {tracks.length > 0 && (
+          <button
+            className={classNames(showSave ? "active" : "")}
+            onClick={() =>
+              dispatch({
+                type: "set-show-save",
+                value: !showSave
+              })
+            }
+          >
+            Save Playlist...
+          </button>
+        )}
+        {
+          //   tracks.length > 0 && (
+          //   <div className="PlayListsEdit">
+          //     {/* <label>Name </label> */}
+          //     <div className="inputWrap">
+          //       <input
+          //         type="text"
+          //         value={name || 'unnamed playlist'}
+          //         onChange={({ target: { value } }) =>
+          //           dispatch({ type: "set-name", value })
+          //         }
+          //       />
+          //       {!activePlaylist && name && (
+          //         <button onClick={createPlaylist}>Create Playlist</button>
+          //       )}
+          //       <button onClick={() => savePlaylist()}>Save Playlist</button>
+          //     </div>
+          //   </div>
+          // )
+        }
+        {activePlaylist && (
+          <div className="PlayListPlay">
             <Fragment>
               <button onClick={playPlaylist}>
                 <FontAwesomeIcon icon="play" />
               </button>
             </Fragment>
-          )}
+          </div>
+        )}
+        {currentTrack && (
+          <button onClick={() => findSimilar()}>
+            Find Similar to this track
+          </button>
+        )}
+        <div className="searchButtonWrap">
+          <button
+            className={classNames(showSearch ? "active" : "")}
+            onClick={() =>
+              dispatch({
+                type: "set-show-search",
+                value: !showSearch
+              })
+            }
+          >
+            Create New Playlist
+          </button>
+        </div>
+      </div>
+      {showSearch && (
+        <div className="PlayListControlsWrap">
+          <h3>Search</h3>
+          <div className="PlayListControls">
+            <Control
+              label="Arousal"
+              min={arousal[0]}
+              max={arousal[1]}
+              setMin={value => setMin("arousal", value)}
+              setMax={value => setMax("arousal", value)}
+            />
+            <Control
+              label="Valence"
+              min={valence[0]}
+              max={valence[1]}
+              setMin={value => setMin("valence", value)}
+              setMax={value => setMax("valence", value)}
+            />
+            <Control
+              label="Depth"
+              min={depth[0]}
+              max={depth[1]}
+              setMin={value => setMin("depth", value)}
+              setMax={value => setMax("depth", value)}
+            />
+            <div className="PlayListOptions">
+              <h4>Options</h4>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={filterLiked}
+                  onChange={({ target: { checked } }) =>
+                    appDispatch(filterLikedAction(checked))
+                  }
+                />
+                Liked
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={filterUsers}
+                  onChange={({ target: { checked } }) =>
+                    appDispatch(filterUsersAction(checked))
+                  }
+                />
+                Filter Users
+              </label>
+            </div>
+          </div>
+          {filterUsers && <Following />}
         </div>
       )}
-      {playlists.length > 0 && (
-        <div className="PlayListSelect">
-          <h4>Current Playlist</h4>
-          <select
-            className="select"
-            value={activePlaylist && activePlaylist.id}
-            onChange={({ target: { value } }) => loadPlaylist(value)}
-          >
-            <option />
-            {playlists.map(playlist => (
-              <option key={playlist.id} value={playlist.id}>
-                {playlist.name}
-              </option>
-            ))}
-          </select>
+      {showSave && tracks.length > 0 && (
+        <div className="PlayListsEdit edit">
+          <h4>Save playlist</h4>
+          {/* <label>Name </label> */}
+          <div className="row">
+            <div className="column">
+              <label>Name </label>
+              <div className="inputWrap">
+                <input
+                  type="text"
+                  value={name || "unnamed playlist"}
+                  onChange={({ target: { value } }) =>
+                    dispatch({ type: "set-name", value })
+                  }
+                />
+              </div>
+            </div>
+            <div className="column">
+              <label> </label>
+              {!activePlaylist && name && (
+                <button onClick={createPlaylist}>Create Playlist</button>
+              )}
+              <button onClick={() => savePlaylist()}>Save Playlist</button>
+            </div>
+          </div>
         </div>
       )}
       {!havePlayer && (
@@ -381,8 +471,9 @@ function PlayList({
         <div className="PlayListTracks">
           <table id="playlistTracks">
             <caption>
-              {name}
+              {name || "Unnamed Playlist"}
               {name && !saved ? "*" : ""}
+              <p className="subTitle">{tracks.length} tracks</p>
             </caption>
             <thead>
               <tr>

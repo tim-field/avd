@@ -3,7 +3,7 @@ import api from "../../utils/api"
 import { connect } from "../../store"
 import UserImage from "../UserImage"
 import { filterWithUser } from "../../actions/index"
-import styles from "./Following.module.scss"
+import "./Following.scss"
 
 function Following({
   dispatch,
@@ -25,7 +25,7 @@ function Following({
   // }
 
   return (
-    <fieldset className={styles.Following}>
+    <fieldset className="Following">
       <legend>Following</legend>
       <ul>
         {[user].concat(following).map(f => (

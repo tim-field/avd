@@ -1,18 +1,17 @@
-.Listeners{
-  
-  ul.ListenersList{
+.Listeners {
+  ul.ListenersList {
     margin: 0;
     padding: 0;
     list-style-type: none;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    li{
+    li {
       list-style-type: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      button{
+      button {
         border: none;
         width: 50px;
         height: 50px;
@@ -22,27 +21,27 @@
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        img{
+        img {
           width: 50px;
           height: auto;
         }
       }
     }
   }
-  .noData{
-    font-size: .75rem;
+  .noData {
+    font-size: 0.75rem;
     text-align: center;
   }
 }
 
-.CurrentTrack .Listeners{
+.CurrentTrack .Listeners {
   flex-basis: 10%;
-  padding: .5rem;
+  padding: 0.5rem;
   margin: 0;
-  ul.ListenersList{
+  ul.ListenersList {
     flex-direction: column;
-    li{
-      margin-bottom: .25rem;
+    li {
+      margin-bottom: 0.25rem;
     }
   }
 }

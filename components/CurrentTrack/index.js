@@ -353,7 +353,14 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
         )}
       </div>
     </Fragment>
-  ) : null
+  ) : (
+    <div className="CurrentTrack noData">
+      <div className="player">no track</div>
+      <div className="controls">
+        Play a song in Spotify, or select a playlist
+      </div>
+    </div>
+  )
 }
 
 export default CurrentTrack

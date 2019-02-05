@@ -10,11 +10,30 @@ h3 {
 h4 {
   margin: 0.5rem 0;
   padding: 0;
+  padding-right: 0.5rem;
   position: relative;
   text-transform: uppercase;
   text-align: center;
   font-size: 0.875rem;
   font-weight: 600;
+}
+.PlayListHeader {
+  display: flex;
+  .PlayListPlay {
+  }
+  .PlayListTitleWrap {
+    flex-grow: 1;
+    h4 {
+      text-align: left;
+    }
+  }
+  .searchButtonWrap {
+    justify-self: flex-end;
+    padding-left: 0.5rem;
+    button {
+      white-space: nowrap;
+    }
+  }
 }
 .PlayListControlsWrap {
   margin-top: 1rem;
@@ -86,29 +105,60 @@ h4 {
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  border: 2px solid var(--highlight);
-  padding: 2rem;
-  border-radius: 1rem;
-  background: var(--overlay);
+  &.edit {
+    // border: 2px solid var(--highlight);
+    padding: 1rem 1.5rem;
+    border-radius: 1rem;
+    background: var(--themeColor);
+    display: block;
+    h4 {
+      text-align: left;
+    }
+    .row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0 0.5rem 0 0;
+    }
+    label {
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      min-height: 1rem;
+      opacity: 0.8;
+    }
+    button {
+      white-space: nowrap;
+    }
+  }
   .inputWrap {
-    flex-basis: 200px;
+    // flex-basis: 200px;
     display: inline-flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    margin: 0 1rem;
+    width: 100%;
+    // margin: 0 1rem;
     input[type="text"] {
+      width: 100%;
+      min-width: 200px;
       border: 2px solid var(--textColor);
       height: 2rem;
-      border-radius: 0.5rem 0 0 0.5rem;
+      border-radius: 2px;
+      // border-radius: 0.5rem 0 0 0.5rem;
       font-weight: normal;
-      box-shadow: 0 0 0 1px var(--themeColor) inset;
+      // box-shadow: 0 0 0 1px var(--themeColor) inset;
       // box-shadow: 0 0 35px rgba(0,0,0,.2) inset;
     }
     button {
       white-space: nowrap;
       height: 2rem;
-      border-radius: 0 0.5rem 0.5rem 0;
+      margin-left: 0.5rem;
+      // border-radius: 0 0.5rem 0.5rem 0;
     }
   }
 }
@@ -120,11 +170,14 @@ h4 {
   padding: 0.5rem 0;
 }
 .PlayListSelect {
+  flex-basis: 50%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 0.5rem;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   // width: 200px;
-  padding: 1rem 0;
   h4 {
     white-space: nowrap;
   }
@@ -139,6 +192,10 @@ h4 {
   caption {
     padding: 0.5rem;
     font-size: 2rem;
+  }
+  .subTitle {
+    font-size: 0.835rem;
+    margin: 0;
   }
   table {
     width: 100%;
