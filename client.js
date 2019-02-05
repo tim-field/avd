@@ -7,7 +7,9 @@ import {
   faPause,
   faPlay,
   faStepBackward,
-  faStepForward
+  faStepForward,
+  faTimes,
+  faTimesCircle
 } from "@fortawesome/free-solid-svg-icons"
 import request, { fetchToken, AUTH_URL } from "./utils/spotify"
 import CurrentTrack from "./components/CurrentTrack"
@@ -27,7 +29,9 @@ library.add(
   faPause,
   faPlay,
   faStepBackward,
-  faStepForward
+  faStepForward,
+  faTimes,
+  faTimesCircle
 )
 
 function setTokenLocalStorage({ access_token, expires_in, refresh_token }) {

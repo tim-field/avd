@@ -297,222 +297,236 @@ function PlayList({
   const { arousal, valence, depth } = avd
 
   return (
-    <div className="PlayList">
-      <div className="PlayListHeader">
-        {playlists.length > 0 && (
-          <div className="PlayListSelect">
-            <h4>Playlist</h4>
-            <select
-              className="select"
-              value={activePlaylist && activePlaylist.id}
-              onChange={({ target: { value } }) => loadPlaylist(value)}
+    <div className="PlayListWrap">
+      <div className="PlayList">
+        <div className="PlayListHeader">
+          {playlists.length > 0 && (
+            <div className="PlayListSelect">
+              <h4>Playlist</h4>
+              <select
+                className="select"
+                value={activePlaylist && activePlaylist.id}
+                onChange={({ target: { value } }) => loadPlaylist(value)}
+              >
+                <option />
+                {playlists.map(playlist => (
+                  <option key={playlist.id} value={playlist.id}>
+                    {playlist.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          {!name && (
+            <div className="PlayListTitleWrap">
+              <h4>{tracks.length > 0 && <span>Unnamed Playlist</span>}</h4>
+            </div>
+          )}
+          {activePlaylist && (
+            <div className="PlayListPlay">
+              <Fragment>
+                <button onClick={playPlaylist}>
+                  <FontAwesomeIcon icon="play" />
+                </button>
+              </Fragment>
+            </div>
+          )}
+          {tracks.length > 0 && (
+            <button
+              className={classNames(showSave ? "active" : "")}
+              onClick={() =>
+                dispatch({
+                  type: "set-show-save",
+                  value: !showSave
+                })
+              }
             >
-              <option />
-              {playlists.map(playlist => (
-                <option key={playlist.id} value={playlist.id}>
-                  {playlist.name}
-                </option>
-              ))}
-            </select>
+              Save Playlist...
+            </button>
+          )}
+          {
+            //   tracks.length > 0 && (
+            //   <div className="PlayListsEdit">
+            //     {/* <label>Name </label> */}
+            //     <div className="inputWrap">
+            //       <input
+            //         type="text"
+            //         value={name || 'unnamed playlist'}
+            //         onChange={({ target: { value } }) =>
+            //           dispatch({ type: "set-name", value })
+            //         }
+            //       />
+            //       {!activePlaylist && name && (
+            //         <button onClick={createPlaylist}>Create Playlist</button>
+            //       )}
+            //       <button onClick={() => savePlaylist()}>Save Playlist</button>
+            //     </div>
+            //   </div>
+            // )
+          }
+
+          {currentTrack && (
+            <button onClick={() => findSimilar()}>
+              Find Similar to this track
+            </button>
+          )}
+          <div className="searchButtonWrap">
+            <button
+              className={classNames(showSearch ? "active" : "")}
+              onClick={() =>
+                dispatch({
+                  type: "set-show-search",
+                  value: !showSearch
+                })
+              }
+            >
+              Create New Playlist
+            </button>
           </div>
-        )}
-        {!name && (
-          <div className="PlayListTitleWrap">
-            <h4>{tracks.length > 0 && <span>Unnamed Playlist</span>}</h4>
-          </div>
-        )}
-        {activePlaylist && (
-          <div className="PlayListPlay">
-            <Fragment>
-              <button onClick={playPlaylist}>
-                <FontAwesomeIcon icon="play" />
+        </div>
+        {showSearch && (
+          <div className="PlayListControlsWrap">
+            <h3>Search</h3>
+            <div className="closeButton">
+              <button
+                onClick={() =>
+                  dispatch({
+                    type: "set-show-search",
+                    value: false
+                  })
+                }
+              >
+                <FontAwesomeIcon icon="times" />
               </button>
-            </Fragment>
+            </div>
+            <div className="PlayListControls">
+              <Control
+                label="Arousal"
+                min={arousal[0]}
+                max={arousal[1]}
+                setMin={value => setMin("arousal", value)}
+                setMax={value => setMax("arousal", value)}
+              />
+              <Control
+                label="Valence"
+                min={valence[0]}
+                max={valence[1]}
+                setMin={value => setMin("valence", value)}
+                setMax={value => setMax("valence", value)}
+              />
+              <Control
+                label="Depth"
+                min={depth[0]}
+                max={depth[1]}
+                setMin={value => setMin("depth", value)}
+                setMax={value => setMax("depth", value)}
+              />
+              <div className="PlayListOptions">
+                <h4>Options</h4>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={filterLiked}
+                    onChange={({ target: { checked } }) =>
+                      appDispatch(filterLikedAction(checked))
+                    }
+                  />
+                  Liked
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={filterUsers}
+                    onChange={({ target: { checked } }) =>
+                      appDispatch(filterUsersAction(checked))
+                    }
+                  />
+                  Filter Users
+                </label>
+              </div>
+            </div>
+            {filterUsers && <Following />}
+          </div>
+        )}
+        {showSave && tracks.length > 0 && (
+          <div className="PlayListsEdit edit">
+            <h4>Save playlist</h4>
+            {/* <label>Name </label> */}
+            <div className="row">
+              <div className="column">
+                <label>Name </label>
+                <div className="inputWrap">
+                  <input
+                    type="text"
+                    value={name || "unnamed playlist"}
+                    onChange={({ target: { value } }) =>
+                      dispatch({ type: "set-name", value })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="column">
+                <label> </label>
+                {!activePlaylist && name && (
+                  <button onClick={createPlaylist}>Create Playlist</button>
+                )}
+                <button onClick={() => savePlaylist()}>Save Playlist</button>
+              </div>
+            </div>
+          </div>
+        )}
+        {!havePlayer && (
+          <div>
+            Can&#39;t find a Spotify player! Please make sure you&#39;ve got
+            Spotify open and playing somewhere.
           </div>
         )}
         {tracks.length > 0 && (
-          <button
-            className={classNames(showSave ? "active" : "")}
-            onClick={() =>
-              dispatch({
-                type: "set-show-save",
-                value: !showSave
-              })
-            }
-          >
-            Save Playlist...
-          </button>
+          <div className="PlayListTracks">
+            <table id="playlistTracks">
+              <caption>
+                {name || "Unnamed Playlist"}
+                {name && !saved ? "*" : ""}
+                <p className="subTitle">{tracks.length} tracks</p>
+              </caption>
+              <thead>
+                <tr>
+                  <th />
+                  <th>Title</th>
+                  <th>Artist</th>
+                  <th>
+                    <abbr title="Arousal">A</abbr>
+                  </th>
+                  <th>
+                    <abbr title="Valence">V</abbr>
+                  </th>
+                  <th>
+                    <abbr title="Depth">D</abbr>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {tracks.map(track => {
+                  return (
+                    <tr key={track.id}>
+                      <td>
+                        <button onClick={() => playTrack(track.id)}>
+                          <FontAwesomeIcon icon="play" />
+                        </button>
+                      </td>
+                      <td>{track.name}</td>
+                      <td>{track.artist}</td>
+                      <td>{track.arousal}</td>
+                      <td>{track.valence}</td>
+                      <td>{track.depth}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         )}
-        {
-          //   tracks.length > 0 && (
-          //   <div className="PlayListsEdit">
-          //     {/* <label>Name </label> */}
-          //     <div className="inputWrap">
-          //       <input
-          //         type="text"
-          //         value={name || 'unnamed playlist'}
-          //         onChange={({ target: { value } }) =>
-          //           dispatch({ type: "set-name", value })
-          //         }
-          //       />
-          //       {!activePlaylist && name && (
-          //         <button onClick={createPlaylist}>Create Playlist</button>
-          //       )}
-          //       <button onClick={() => savePlaylist()}>Save Playlist</button>
-          //     </div>
-          //   </div>
-          // )
-        }
-
-        {currentTrack && (
-          <button onClick={() => findSimilar()}>
-            Find Similar to this track
-          </button>
-        )}
-        <div className="searchButtonWrap">
-          <button
-            className={classNames(showSearch ? "active" : "")}
-            onClick={() =>
-              dispatch({
-                type: "set-show-search",
-                value: !showSearch
-              })
-            }
-          >
-            Create New Playlist
-          </button>
-        </div>
       </div>
-      {showSearch && (
-        <div className="PlayListControlsWrap">
-          <h3>Search</h3>
-          <div className="PlayListControls">
-            <Control
-              label="Arousal"
-              min={arousal[0]}
-              max={arousal[1]}
-              setMin={value => setMin("arousal", value)}
-              setMax={value => setMax("arousal", value)}
-            />
-            <Control
-              label="Valence"
-              min={valence[0]}
-              max={valence[1]}
-              setMin={value => setMin("valence", value)}
-              setMax={value => setMax("valence", value)}
-            />
-            <Control
-              label="Depth"
-              min={depth[0]}
-              max={depth[1]}
-              setMin={value => setMin("depth", value)}
-              setMax={value => setMax("depth", value)}
-            />
-            <div className="PlayListOptions">
-              <h4>Options</h4>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={filterLiked}
-                  onChange={({ target: { checked } }) =>
-                    appDispatch(filterLikedAction(checked))
-                  }
-                />
-                Liked
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={filterUsers}
-                  onChange={({ target: { checked } }) =>
-                    appDispatch(filterUsersAction(checked))
-                  }
-                />
-                Filter Users
-              </label>
-            </div>
-          </div>
-          {filterUsers && <Following />}
-        </div>
-      )}
-      {showSave && tracks.length > 0 && (
-        <div className="PlayListsEdit edit">
-          <h4>Save playlist</h4>
-          {/* <label>Name </label> */}
-          <div className="row">
-            <div className="column">
-              <label>Name </label>
-              <div className="inputWrap">
-                <input
-                  type="text"
-                  value={name || "unnamed playlist"}
-                  onChange={({ target: { value } }) =>
-                    dispatch({ type: "set-name", value })
-                  }
-                />
-              </div>
-            </div>
-            <div className="column">
-              <label> </label>
-              {!activePlaylist && name && (
-                <button onClick={createPlaylist}>Create Playlist</button>
-              )}
-              <button onClick={() => savePlaylist()}>Save Playlist</button>
-            </div>
-          </div>
-        </div>
-      )}
-      {!havePlayer && (
-        <div>
-          Can&#39;t find a Spotify player! Please make sure you&#39;ve got
-          Spotify open and playing somewhere.
-        </div>
-      )}
-      {tracks.length > 0 && (
-        <div className="PlayListTracks">
-          <table id="playlistTracks">
-            <caption>
-              {name || "Unnamed Playlist"}
-              {name && !saved ? "*" : ""}
-              <p className="subTitle">{tracks.length} tracks</p>
-            </caption>
-            <thead>
-              <tr>
-                <th />
-                <th>Title</th>
-                <th>Artist</th>
-                <th>
-                  <abbr title="Arousal">A</abbr>
-                </th>
-                <th>
-                  <abbr title="Valence">V</abbr>
-                </th>
-                <th>
-                  <abbr title="Depth">D</abbr>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {tracks.map(track => {
-                return (
-                  <tr key={track.id}>
-                    <td>
-                      <button onClick={() => playTrack(track.id)}>
-                        <FontAwesomeIcon icon="play" />
-                      </button>
-                    </td>
-                    <td>{track.name}</td>
-                    <td>{track.artist}</td>
-                    <td>{track.arousal}</td>
-                    <td>{track.valence}</td>
-                    <td>{track.depth}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   )
 }

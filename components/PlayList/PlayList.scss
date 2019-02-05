@@ -1,4 +1,11 @@
 @import "../../styles/_variables.scss";
+.PlayListWrap {
+  // border-top: 1px dashed rgba(0,0,0,.2);
+  border-top: 1px dashed var(--textColor);
+  padding-top: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
 
 #playlistTracks .playlistTrack {
   display: flex;
@@ -37,11 +44,17 @@ h4 {
   }
 }
 .PlayListControlsWrap {
+  position: relative;
   margin-top: 1rem;
   padding: 1rem;
   border-radius: 0rem;
   background: var(--highlight);
   color: var(--themeColor-strongest);
+  .closeButton {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+  }
 }
 .PlayListControls {
   display: flex;
