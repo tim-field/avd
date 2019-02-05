@@ -29,16 +29,25 @@
     text-transform: uppercase;
     outline: none;
     position: fixed;
-    left: -18px;
-    top: calc(100% - 46px);
+    left: 0%;
+    // top: calc(100% - 80px);
+    top: 100%;
+    width: 80px;
+    height: 2rem;
     transform: rotate(-90deg);
     padding: 0.25rem 0.5rem;
-    /* background: #eee; */
+    line-height: 1.5rem;
+    text-align: center;
     border-radius: 0;
     border-width: 0;
     background: transparent;
     border-right: 2px solid var(--textColor);
     z-index: 99;
+    background: #111;
+    color: #eee;
+    margin-left: 0;
+    transform-origin: top left;
+
     .uiControls {
       display: none;
       opacity: 0;
@@ -82,4 +91,14 @@
       }
     }
   }
+}
+.bubble {
+  position: fixed;
+  right: -25vw;
+  top: -30vw;
+  width: 60vw;
+  height: 60vw;
+  background: var(--overlay);
+  border-radius: 100%;
+  z-index: -1;
 }
