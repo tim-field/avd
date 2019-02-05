@@ -312,6 +312,14 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
             }}
           />
         </div>
+        {1 === 1 && (
+          <div className="title">
+            <h1>
+              {track.name}
+              <span>by {track.artist}</span>
+            </h1>
+          </div>
+        )}
         {userId && (
           <Fragment>
             <div className="controls">

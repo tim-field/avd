@@ -21,7 +21,7 @@ import Store, { Provider } from "./store"
 require("typeface-open-sans")
 import "./style.css"
 import "./styles/_global.scss"
-import { setTheme } from "./actions"
+import { setTheme, setDisplayMode } from "./actions"
 
 library.add(
   faThumbsUp,
@@ -96,7 +96,11 @@ function AVD() {
       )}
       {token && userId && (
         <Fragment>
-          <Header doLogout={doLogout} toggleUI={setTheme} />
+          <Header
+            doLogout={doLogout}
+            toggleUI={setTheme}
+            setDisplayMode={setDisplayMode}
+          />
           <CurrentTrack
             spotifyService={spotifyService}
             userId={userId}

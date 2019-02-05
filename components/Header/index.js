@@ -2,7 +2,7 @@ import React from "react"
 import "./Header.scss"
 import classNames from "classnames"
 
-function Header({ user, doLogout, toggleUI }) {
+function Header({ user, doLogout, toggleUI, setDisplayMode }) {
   // console.log('doLogout', doLogout)
   return (
     <div className="Header">
@@ -43,6 +43,13 @@ function Header({ user, doLogout, toggleUI }) {
               </div>
               <button onClick={() => toggleUI("generated")}>generated</button>
             </div>
+            <div className="modesWrap">
+              <h4>Mode</h4>
+              <button onClick={() => setDisplayMode("full")}>Full</button>
+              <button onClick={() => setDisplayMode("condensed")}>
+                condensed
+              </button>
+            </div>
           </div>
         </div>
         <button className="logout" onClick={doLogout}>
@@ -50,6 +57,7 @@ function Header({ user, doLogout, toggleUI }) {
         </button>
       </div>
       <div className="bubbleWrap">
+        <div className="bubble" />
         <div className="bubble" />
         <div className="bubble" />
       </div>

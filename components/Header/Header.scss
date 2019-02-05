@@ -91,6 +91,23 @@
         margin-top: 0.5rem;
       }
     }
+    .modesWrap {
+      padding: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      h4 {
+        margin: 0;
+      }
+      button {
+        width: 100%;
+        + button {
+          margin-left: 0;
+          margin-top: 0.5rem;
+        }
+      }
+    }
   }
 }
 .bubbleWrap {
@@ -100,7 +117,7 @@
   top: 0;
   width: 90vw;
   // height: 100vh;
-  height: 110%;
+  height: 100%;
   overflow: hidden;
 }
 .bubble {
@@ -112,31 +129,40 @@
   background: var(--highlight);
   border-radius: 100%;
   z-index: -1;
-  animation: buttonSize 10s ease-in-out infinite;
-  transform-origin: 40% 40%;
-  opacity: 0.6;
+  animation: buttonSize 30s linear infinite;
+  transform-origin: 45% 45%;
+  opacity: 0.5;
   // animation-iteration-count: infinite;
   + .bubble {
     background: var(--themeColor-strongest);
-    opacity: 0.05;
-    width: 40vw;
-    height: 40vw;
-    right: -25vw;
+    opacity: 0.075;
+    width: 30vw;
+    height: 30vw;
+    right: -15vw;
     top: 5vw;
     animation-delay: 4s;
-    animation-duration: 15s;
-    transform-origin: 60% 60%;
+    animation-duration: 30s;
+    transform-origin: 55% 60%;
+    mix-blend-mode: color-burn;
+    + .bubble {
+      width: 28vw;
+      height: 28vw;
+      right: -12vw;
+      top: -12vw;
+      transform-origin: 25% 60%;
+      animation-delay: 12s;
+    }
   }
 }
 
 @keyframes buttonSize {
   0% {
-    transform: translateY(0) scale3d(1, 1, 1);
+    transform: translateY(0) scale3d(1, 1, 1) rotate(0deg);
   }
   50% {
-    transform: translateY(0) scale3d(1.1, 1.1, 1.1);
+    transform: translateY(0) scale3d(0.8, 0.8, 0.8) rotate(180deg);
   }
   100% {
-    transform: translateY(0) scale3d(1, 1, 1);
+    transform: translateY(0) scale3d(1, 1, 1) rotate(360deg);
   }
 }

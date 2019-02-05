@@ -75,3 +75,10 @@ export const setTheme = theme => {
   rootElement.style.setProperty("--theme", theme || newTheme)
   rootElement.setAttribute("data-theme", theme || newTheme)
 }
+
+export const setDisplayMode = mode => {
+  const rootElement = document.getElementById("html")
+  const currentMode = rootElement.getAttribute("data-mode")
+  const newMode = currentMode === "condensed" ? "full" : "condensed"
+  rootElement.setAttribute("data-mode", mode || newMode)
+}
