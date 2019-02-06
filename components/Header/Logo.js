@@ -70,7 +70,9 @@ function Logo({ fill, arousal, valence, depth }) {
             fill="#FFFFFF"
             fill-rule="nonzero"
             style={{
-              transform: `translateY(7%) translateY(${getTransform(arousal)})`
+              transform: `translateY(7%) translateY(10px) translateY(${getTransform(
+                arousal
+              )})`
             }}
           />
           <path
@@ -80,7 +82,7 @@ function Logo({ fill, arousal, valence, depth }) {
             fill="#FFFFFF"
             fill-rule="nonzero"
             style={{
-              transform: `translateY(22%) translateX(1%) translateY(${getTransform(
+              transform: `translateY(22%) translateY(10px) translateX(1%) translateY(${getTransform(
                 valence
               )})`
             }}
@@ -92,7 +94,9 @@ function Logo({ fill, arousal, valence, depth }) {
             fill="#FFFFFF"
             fill-rule="nonzero"
             style={{
-              transform: `translateY(13%) translateY(${getTransform(depth)})`
+              transform: `translateY(13%) translateY(10px) translateY(${getTransform(
+                depth
+              )})`
             }}
           />
         </g>

@@ -9,6 +9,7 @@
 
 .PlayList {
   position: relative;
+  z-index: 2;
   .loadingWrap {
     position: absolute;
     z-index: 99;
