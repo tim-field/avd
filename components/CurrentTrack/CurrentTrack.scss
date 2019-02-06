@@ -52,11 +52,16 @@ html[data-mode="condensed"] .Header .bubbleWrap {
 }
 html[data-mode="condensed"] .PlayListWrap {
   border-top: none;
+  .PlayList,
+  .Listeners {
+    max-width: 100%;
+    padding: 0 3rem 2rem;
+  }
 }
 html[data-mode="condensed"] .CurrentTrack {
   margin: 0 auto 2rem auto;
   // max-width: unset;
-  max-width: 90%;
+  max-width: 100%;
   justify-content: center;
   align-items: flex-start;
   position: relative;
@@ -64,8 +69,8 @@ html[data-mode="condensed"] .CurrentTrack {
   position: sticky;
   z-index: 9;
   background: var(--backgroundColor);
-  padding: 1rem 0 2rem 0;
-  border-bottom: 1px solid var(--textColor);
+  padding: 1rem 3rem 2rem;
+  border-bottom: 1px solid var(--highlight);
   .player {
     flex-basis: 30%;
     height: 150px;
@@ -181,7 +186,9 @@ html[data-mode="full"] {
     padding: 2rem;
     .controls {
       .control {
+        position: relative;
         .inputRangeWrap {
+          position: relative;
           background: var(--highlight);
           border: 2px solid var(--textColor);
           label {
