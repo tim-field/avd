@@ -70,6 +70,37 @@ function Header({ user, doLogout, toggleUI, setDisplayMode, setFullScreen }) {
             <FontAwesomeIcon icon="compress-arrows-alt" />
           </div>
         </div>
+        <button className="playlistTrigger">
+          <FontAwesomeIcon icon="list" />
+          <FontAwesomeIcon icon="play" size=".5x" />
+          <div className="playlistText">
+            <span>Select playlist</span>
+            <FontAwesomeIcon icon="caret-down" size=".5x" />
+          </div>
+          <div className="playlistItems">
+            <div className="triangle">
+              <FontAwesomeIcon icon="caret-up" size="2x" />
+            </div>
+            <div
+              className="playlistItem"
+              onClick={() => console.log("TODO: hook up the playlist trigger")}
+            >
+              Chill and Positive
+            </div>
+            <div
+              className="playlistItem"
+              onClick={() => console.log("TODO: hook up the playlist trigger")}
+            >
+              Upbeat Vibes
+            </div>
+            <div
+              className="playlistItem"
+              onClick={() => console.log("TODO: hook up the playlist trigger")}
+            >
+              Melancholy & Weird
+            </div>
+          </div>
+        </button>
         <button className="logout" onClick={doLogout}>
           Logout
         </button>
