@@ -184,7 +184,8 @@ html[data-mode="condensed"] .CurrentTrack {
 }
 
 html[data-mode="full"] {
-  border-left-width: 0 !important;
+  // border-left-width: 0 !important;
+  border-left-color: var(--textColor) !important;
   .CurrentTrack {
     margin: 0 auto;
     padding: 2rem;

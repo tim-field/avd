@@ -194,7 +194,7 @@
     border-radius: 0;
     border-width: 0;
     background: transparent;
-    z-index: 99;
+    z-index: 999999;
     // background: #111;
     // color: #eee;
     // border-right: 2px solid var(--backgroundColor);
@@ -340,7 +340,7 @@ html[data-mode="condensed"] .Header .appTitle .logoWrap {
 html[data-mode="full"] .Header .appTitle .logoWrap {
   width: 2rem;
   height: 2rem;
-  left: 0;
+  // left: 0;
 }
 
 @keyframes buttonSize {
