@@ -4,14 +4,23 @@ import classNames from "classnames"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Logo from "./Logo"
 
-function Header({ user, doLogout, toggleUI, setDisplayMode, setFullScreen }) {
+function Header({
+  user,
+  doLogout,
+  toggleUI,
+  setDisplayMode,
+  setFullScreen,
+  arousal,
+  valence,
+  depth
+}) {
   // console.log('doLogout', doLogout)
   return (
     <div className="Header">
       <div className="appTitle">
         <span>A / V / D</span>
         <div className="logoWrap">
-          <Logo fill="blue" />
+          <Logo fill="blue" arousal={arousal} valence={valence} depth={depth} />
         </div>
       </div>
       <div className="appUser">

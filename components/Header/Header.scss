@@ -6,10 +6,10 @@
   justify-content: space-between;
   padding: 0.25rem 0.5rem;
   position: relative;
-  z-index: 2;
+  z-index: 1;
   + h1 {
     // FIX for hover of playlists
-    z-index: 1;
+    z-index: 0;
     position: relative;
   }
   button.playlistTrigger {
@@ -141,24 +141,39 @@
       left: 0;
       margin-left: 0;
       padding: 0.5rem;
+      display: none;
     }
     .logoWrap {
-      width: 36px;
-      height: 36px;
+      width: 4rem;
+      height: 4rem;
       position: absolute;
+      // left: 0.5rem;
+      padding: 2px;
       left: -2rem;
       top: 0;
-      transform: rotate(-90deg);
       z-index: 3;
+      background: var(--textColor);
+      // background: #111;
+      // transform: rotate(-90deg);
+      transition: 1s background-color ease;
       svg {
         width: 100%;
         height: auto;
         rect {
           fill: rgba(0, 0, 0, 0);
         }
+        path.letter {
+          fill: var(--backgroundColor);
+          transition: 1s fill ease, transform 0.3s ease;
+        }
+        path.bar {
+          fill: var(--themeColor);
+          transition: 1s fill ease, transform 0.3s ease;
+        }
       }
     }
   }
+
   .uiToggle {
     font-weight: bold;
     font-size: 0.75rem;
@@ -177,10 +192,12 @@
     border-radius: 0;
     border-width: 0;
     background: transparent;
-    border-right: 2px solid var(--backgroundColor);
     z-index: 99;
-    background: #111;
-    color: #eee;
+    // background: #111;
+    // color: #eee;
+    // border-right: 2px solid var(--backgroundColor);
+    @include variable(background, --textColor, #111);
+    @include variable(color, --backgroundColor, #eee);
     margin-left: 0;
     transform-origin: top left;
 
@@ -265,13 +282,14 @@ html[data-mode="full"] .exitFullScreen {
 }
 // BUBBLES
 .bubbleWrap {
-  z-index: -1;
+  z-index: -2;
   position: absolute;
   right: 0;
   top: 0;
   width: 90vw;
   // height: 100vh;
   height: 100%;
+  min-height: 100vh;
   overflow: hidden;
 }
 .bubble {
@@ -310,6 +328,16 @@ html[data-mode="full"] .exitFullScreen {
       background: var(--textColor);
     }
   }
+}
+
+html[data-mode="condensed"] .Header .appTitle .logoWrap {
+  width: 2rem !important;
+  height: 2rem !important;
+}
+html[data-mode="full"] .Header .appTitle .logoWrap {
+  width: 2rem;
+  height: 2rem;
+  left: 0;
 }
 
 @keyframes buttonSize {

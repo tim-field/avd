@@ -1,7 +1,31 @@
 import React from "react"
 // import "./Header.scss"
 
-function Logo({ fill }) {
+function getTransform(sourceValue) {
+  // const tempSource = 11;
+  const sourceMax = 12
+  const max = 256 //ie, the original svg height
+  // const min = 0;
+  const percentage = sourceValue / sourceMax
+  const availableSpaceRatio = 24.84 / 60
+  // console.log('magicValueLarge', availableSpaceRatio);
+  // console.log('sourceValue:', sourceValue);
+  const convertedAvailableSpace = max * availableSpaceRatio
+  // console.log('max', max);
+  // console.log('percentage', percentage, "%");
+  // console.log(`availableSpaceRatio (${availableSpaceRatio}) of the max (${max}px) is convertedAvailableSpace: (${convertedAvailableSpace})px`);
+  // console.log(`normalised percentage (${percentage}) of that is ${convertedAvailableSpace * percentage}px`);
+  // console.log(`thus we want  (${convertedAvailableSpace * percentage}px) / of max(${max}): ${convertedAvailableSpace * percentage / max}`);
+  // console.log(`move the bar up: ${convertedAvailableSpace * percentage / max}px`);
+  if (typeof percentage == "number") {
+    return `-${((convertedAvailableSpace * percentage) / max) * 100}%`
+  } else {
+    // console.log('no percentage found')
+    return `0px`
+  }
+}
+
+function Logo({ fill, arousal, valence, depth }) {
   return (
     <div className="Logo">
       <svg width="256px" height="256px" viewBox="0 0 256 256">
@@ -45,6 +69,9 @@ function Logo({ fill }) {
             id="Line-3"
             fill="#FFFFFF"
             fill-rule="nonzero"
+            style={{
+              transform: `translateY(7%) translateY(${getTransform(arousal)})`
+            }}
           />
           <path
             class="bar barV"
@@ -52,6 +79,11 @@ function Logo({ fill }) {
             id="Line-3-Copy"
             fill="#FFFFFF"
             fill-rule="nonzero"
+            style={{
+              transform: `translateY(22%) translateX(1%) translateY(${getTransform(
+                valence
+              )})`
+            }}
           />
           <path
             class="bar barD"
@@ -59,6 +91,9 @@ function Logo({ fill }) {
             id="Line-3-Copy-2"
             fill="#FFFFFF"
             fill-rule="nonzero"
+            style={{
+              transform: `translateY(13%) translateY(${getTransform(depth)})`
+            }}
           />
         </g>
       </svg>

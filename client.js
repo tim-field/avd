@@ -109,6 +109,9 @@ function AVD() {
             toggleUI={setTheme}
             setDisplayMode={setDisplayMode}
             setFullScreen={setFullScreen}
+            arousal={arousal}
+            valence={valence}
+            depth={depth}
           />
           <CurrentTrack
             spotifyService={spotifyService}

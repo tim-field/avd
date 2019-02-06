@@ -6,7 +6,10 @@
   align-items: flex-start;
   justify-content: stretch;
   // grid-template-columns: 1fr 1fr;
+  background: transparent;
   margin: 2rem 0;
+  z-index: 2;
+  position: relative;
   .title {
     display: none;
   }
