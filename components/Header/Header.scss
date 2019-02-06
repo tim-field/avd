@@ -9,19 +9,21 @@
     span {
       position: absolute;
       transform: rotate(-90deg);
-      left: 0px;
       transform-origin: left top;
       top: 3rem;
       padding: 0;
-      width: 3rem;
       text-align: left;
       font-weight: bold;
       color: var(--textColor);
       color: #eee;
       font-size: 0.75rem;
       margin-top: 1rem;
-      margin-left: 0.5rem;
       position: fixed;
+      width: 5rem;
+      height: 2rem;
+      left: 0;
+      margin-left: 0;
+      padding: 0.5rem;
     }
   }
   .uiToggle {

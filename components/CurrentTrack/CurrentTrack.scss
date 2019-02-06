@@ -40,6 +40,7 @@
 ////////////////////////////////////////////////
 // DISPLAY MODES.
 // Needs to be refactored into it's own file
+// LARGE VERSION (= default)
 // CONDENSED VERSION
 // FUll VERSION
 ////////////////////////////////////////////////
@@ -178,6 +179,20 @@ html[data-mode="full"] {
   .CurrentTrack {
     margin: 0 auto;
     padding: 2rem;
+    .controls {
+      .control {
+        .inputRangeWrap {
+          background: var(--highlight);
+          border: 2px solid var(--textColor);
+          label {
+            color: var(--textColor) !important;
+          }
+        }
+        + .control {
+          margin-left: -2px;
+        }
+      }
+    }
   }
   .PlayListWrap {
     border-top: 1px solid var(--highlight);
