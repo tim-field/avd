@@ -71,6 +71,7 @@ html[data-mode="condensed"] .CurrentTrack {
   background: var(--backgroundColor);
   padding: 1rem 3rem 2rem;
   border-bottom: 1px solid var(--highlight);
+  z-index: 1;
   .player {
     flex-basis: 30%;
     height: 150px;
