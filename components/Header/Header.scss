@@ -5,10 +5,18 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.25rem 0.5rem;
+  position: relative;
+  z-index: 2;
+  + h1 {
+    // FIX for hover of playlists
+    z-index: 1;
+    position: relative;
+  }
   button.playlistTrigger {
     border: none;
     transition: width 0.3s ease;
     width: 3rem;
+    position: relative;
     svg + svg {
       position: absolute;
       left: 50%;
@@ -32,6 +40,12 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      z-index: 9999999;
+      > svg {
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        transition-delay: 0.2s;
+      }
     }
     .playlistItems {
       opacity: 0;
@@ -53,10 +67,15 @@
       transform: translateY(0rem);
       transition: opacity 0.3s ease-in, transform 0.3s ease-in;
       transition-delay: 0.15s;
+
       .playlistItem {
         text-transform: capitalize;
         line-height: 1.5rem;
         color: var(--textColor);
+        &.new {
+          text-transform: uppercase;
+          color: var(--themeColor);
+        }
       }
       .triangle {
         position: absolute;
@@ -88,6 +107,11 @@
         .playlistItems {
           opacity: 1;
           visibility: visible;
+        }
+        .playlistText {
+          > svg {
+            opacity: 1;
+          }
         }
         .playlistItems {
           transform: translateY(0.5rem);

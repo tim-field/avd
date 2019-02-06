@@ -75,7 +75,7 @@ function Header({ user, doLogout, toggleUI, setDisplayMode, setFullScreen }) {
           <FontAwesomeIcon icon="play" size=".5x" />
           <div className="playlistText">
             <span>Select playlist</span>
-            <FontAwesomeIcon icon="caret-down" size=".5x" />
+            <FontAwesomeIcon icon="caret-down" />
           </div>
           <div className="playlistItems">
             <div className="triangle">
@@ -98,6 +98,12 @@ function Header({ user, doLogout, toggleUI, setDisplayMode, setFullScreen }) {
               onClick={() => console.log("TODO: hook up the playlist trigger")}
             >
               Melancholy & Weird
+            </div>
+            <div
+              className="playlistItem new"
+              onClick={() => console.log("TODO: hook up the playlist trigger")}
+            >
+              + New Playlist
             </div>
           </div>
         </button>
