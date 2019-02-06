@@ -142,6 +142,22 @@
       margin-left: 0;
       padding: 0.5rem;
     }
+    .logoWrap {
+      width: 36px;
+      height: 36px;
+      position: absolute;
+      left: -2rem;
+      top: 0;
+      transform: rotate(-90deg);
+      z-index: 3;
+      svg {
+        width: 100%;
+        height: auto;
+        rect {
+          fill: rgba(0, 0, 0, 0);
+        }
+      }
+    }
   }
   .uiToggle {
     font-weight: bold;

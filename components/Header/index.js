@@ -2,6 +2,7 @@ import React from "react"
 import "./Header.scss"
 import classNames from "classnames"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import Logo from "./Logo"
 
 function Header({ user, doLogout, toggleUI, setDisplayMode, setFullScreen }) {
   // console.log('doLogout', doLogout)
@@ -9,6 +10,9 @@ function Header({ user, doLogout, toggleUI, setDisplayMode, setFullScreen }) {
     <div className="Header">
       <div className="appTitle">
         <span>A / V / D</span>
+        <div className="logoWrap">
+          <Logo fill="blue" />
+        </div>
       </div>
       <div className="appUser">
         <div className="uiToggle">
@@ -72,7 +76,7 @@ function Header({ user, doLogout, toggleUI, setDisplayMode, setFullScreen }) {
         </div>
         <button className="playlistTrigger">
           <FontAwesomeIcon icon="list" />
-          <FontAwesomeIcon icon="play" size=".5x" />
+          <FontAwesomeIcon icon="play" />
           <div className="playlistText">
             <span>Select playlist</span>
             <FontAwesomeIcon icon="caret-down" />
