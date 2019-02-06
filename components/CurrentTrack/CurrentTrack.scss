@@ -11,9 +11,10 @@
     display: none;
   }
   &.noData {
-    border: 2px solid #eee;
+    border: 2px solid var(--themeColor);
     border-radius: 1rem;
     padding: 2rem;
+    background: var(--overlay);
     .player {
       background: var(--overlay);
       padding: 2rem;
@@ -35,7 +36,13 @@
     }
   }
 }
+
+////////////////////////////////////////////////
+// DISPLAY MODES.
+// Needs to be refactored into it's own file
 // CONDENSED VERSION
+// FUll VERSION
+////////////////////////////////////////////////
 html[data-mode="condensed"] .Header + h1 {
   display: none;
 }
@@ -165,6 +172,12 @@ html[data-mode="condensed"] .CurrentTrack {
     }
   }
 }
+
+html[data-mode="full"] {
+  border-left-width: 0 !important;
+}
+//END OF DISPLAY MODES
+////////////////////////////////////////////////
 .player {
   flex-basis: 50%;
   display: flex;

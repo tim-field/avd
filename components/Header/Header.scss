@@ -110,6 +110,25 @@
     }
   }
 }
+
+.exitFullScreen {
+  // display: flex;
+  display: none; // overrrden using html data attribute
+  position: absolute;
+  left: 100%;
+  top: 0;
+  margin-left: 0rem;
+  width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: #333;
+}
+html[data-mode="full"] .exitFullScreen {
+  display: flex;
+}
+// BUBBLES
 .bubbleWrap {
   z-index: -1;
   position: absolute;
@@ -151,6 +170,9 @@
       top: -12vw;
       transform-origin: 25% 60%;
       animation-delay: 12s;
+      opacity: 0.03;
+      // mix-blend-mode: overlay; // doesn't work. css variables??
+      background: var(--textColor);
     }
   }
 }

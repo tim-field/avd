@@ -88,3 +88,17 @@ export const setDisplayMode = mode => {
   const newMode = currentMode === "condensed" ? "full" : "condensed"
   rootElement.setAttribute("data-mode", mode || newMode)
 }
+
+export const setFullScreen = (viewMode = true) => {
+  if (!viewMode) {
+    // exit fullscreen
+    document.exitFullscreen()
+  }
+  if (document.fullscreenEnabled) {
+    // supported
+    // console.log('full screen is supported');
+    document.documentElement.requestFullscreen()
+  } else {
+    console.info("full screen not supported")
+  }
+}

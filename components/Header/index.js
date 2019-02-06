@@ -1,8 +1,9 @@
 import React from "react"
 import "./Header.scss"
 import classNames from "classnames"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
-function Header({ user, doLogout, toggleUI, setDisplayMode }) {
+function Header({ user, doLogout, toggleUI, setDisplayMode, setFullScreen }) {
   // console.log('doLogout', doLogout)
   return (
     <div className="Header">
@@ -45,11 +46,28 @@ function Header({ user, doLogout, toggleUI, setDisplayMode }) {
             </div>
             <div className="modesWrap">
               <h4>Mode</h4>
-              <button onClick={() => setDisplayMode("full")}>Full</button>
+              <button onClick={() => setDisplayMode("large")}>large</button>
               <button onClick={() => setDisplayMode("condensed")}>
                 condensed
               </button>
+              <button
+                onClick={() => {
+                  setDisplayMode("full")
+                  setFullScreen(true)
+                }}
+              >
+                Full screen
+              </button>
             </div>
+          </div>
+          <div
+            className="exitFullScreen"
+            onClick={() => {
+              setFullScreen(false)
+              setDisplayMode("large")
+            }}
+          >
+            <FontAwesomeIcon icon="compress-arrows-alt" />
           </div>
         </div>
         <button className="logout" onClick={doLogout}>

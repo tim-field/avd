@@ -9,7 +9,8 @@ import {
   faStepBackward,
   faStepForward,
   faTimes,
-  faTimesCircle
+  faTimesCircle,
+  faCompressArrowsAlt
 } from "@fortawesome/free-solid-svg-icons"
 import request, { fetchToken, AUTH_URL } from "./utils/spotify"
 import CurrentTrack from "./components/CurrentTrack"
@@ -21,7 +22,7 @@ import Store, { Provider } from "./store"
 require("typeface-open-sans")
 import "./style.css"
 import "./styles/_global.scss"
-import { setTheme, setDisplayMode } from "./actions"
+import { setTheme, setDisplayMode, setFullScreen } from "./actions"
 
 library.add(
   faThumbsUp,
@@ -31,7 +32,8 @@ library.add(
   faStepBackward,
   faStepForward,
   faTimes,
-  faTimesCircle
+  faTimesCircle,
+  faCompressArrowsAlt
 )
 
 function setTokenLocalStorage({ access_token, expires_in, refresh_token }) {
@@ -100,6 +102,7 @@ function AVD() {
             doLogout={doLogout}
             toggleUI={setTheme}
             setDisplayMode={setDisplayMode}
+            setFullScreen={setFullScreen}
           />
           <CurrentTrack
             spotifyService={spotifyService}

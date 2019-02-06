@@ -98,7 +98,6 @@ function getColors(colors) {
   // console.log("colors[4]: ", hexToHsl(colors[4]))
   // console.log("colors[4]: ", hexToHsl(colors[5]))
   const rootElement = document.getElementById("html")
-  console.log("rootelement: ", rootElement)
   rootElement.setAttribute("data-theme", "generated")
 
   // THese do the actual setting of css variables.
