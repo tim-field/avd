@@ -175,6 +175,23 @@ html[data-mode="condensed"] .CurrentTrack {
 
 html[data-mode="full"] {
   border-left-width: 0 !important;
+  .CurrentTrack {
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  .PlayListWrap {
+    border-top: 1px solid var(--highlight);
+    margin: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding-left: 3rem;
+
+    #playlistTracks {
+      display: none;
+    }
+  }
 }
 //END OF DISPLAY MODES
 ////////////////////////////////////////////////
