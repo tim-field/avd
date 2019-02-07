@@ -22,7 +22,8 @@ import Loading from "./components/Loading"
 import Header from "./components/Header"
 import api from "./utils/api"
 import Store, { Provider } from "./store"
-require("typeface-open-sans")
+// require("typeface-open-sans")
+require("typeface-poppins")
 import "./style.css"
 import "./styles/_global.scss"
 import { setTheme, setDisplayMode, setFullScreen } from "./actions"
