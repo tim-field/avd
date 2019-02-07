@@ -19,6 +19,7 @@ import request, { fetchToken, AUTH_URL } from "./utils/spotify"
 import CurrentTrack from "./components/CurrentTrack"
 import PlayList from "./components/PlayList"
 import Loading from "./components/Loading"
+import Logo from "./components/Header/Logo"
 import Header from "./components/Header"
 import api from "./utils/api"
 import Store, { Provider } from "./store"
@@ -26,6 +27,7 @@ import Store, { Provider } from "./store"
 require("typeface-poppins")
 import "./style.css"
 import "./styles/_global.scss"
+import "./components/Header/Logo.scss"
 import { setTheme, setDisplayMode, setFullScreen } from "./actions"
 
 library.add(
@@ -100,6 +102,9 @@ function AVD() {
     <div className="avd">
       {!token && (
         <div className="authLink">
+          <div className="logoWrap large">
+            <Logo />
+          </div>
           <a href={AUTH_URL}>Authorize</a>
         </div>
       )}
