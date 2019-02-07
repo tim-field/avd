@@ -6,7 +6,7 @@
   justify-content: space-between;
   padding: 0.25rem 0.5rem;
   position: relative;
-  z-index: 1;
+  z-index: 99;
   position: sticky;
   top: 0;
   + h1 {
@@ -174,6 +174,51 @@
         }
       }
     }
+    @media (hover: hover) {
+      &:hover {
+        + .about {
+          display: flex;
+          visibility: visible;
+          opacity: 1;
+        }
+      }
+    }
+  }
+  .about {
+    width: calc(100vw - 2rem);
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    background: #000;
+    position: absolute;
+    color: #fff;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    // display: none;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+    h2 {
+      font-size: 2rem;
+      font-weight: 300;
+      opacity: 0.7;
+      + p {
+        margin-top: 0;
+      }
+    }
+    h3 {
+      opacity: 0.7;
+      + p {
+        margin-top: 0;
+      }
+    }
+    section {
+      padding: 1rem;
+      margin: 0 auto;
+      max-width: 66rem;
+    }
   }
 
   .uiToggle {
@@ -290,10 +335,10 @@ html[data-mode="full"] .exitFullScreen {
   right: 0;
   top: 0;
   width: 90vw;
-  // height: 100vh;
   height: 100%;
   min-height: 100vh;
   overflow: hidden;
+  display: none; // hide for the moment;
 }
 .bubble {
   position: absolute;

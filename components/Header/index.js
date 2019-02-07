@@ -23,6 +23,31 @@ function Header({
           <Logo fill="blue" arousal={arousal} valence={valence} depth={depth} />
         </div>
       </div>
+      <div className="about">
+        <section>
+          <h2>What is This?</h2>
+          <p>
+            AVD is a community driven playlist generator based on attributes of
+            music, rather than genre.
+          </p>
+          <h2>Playlists</h2>
+          <p>Create a playlist by filtering the attributes you want.</p>
+          <p>
+            Alternatively, once a track is rated you can generate a playist of
+            similar tracks.
+          </p>
+          <h2>Rating Tracks</h2>
+          <p>
+            While a track is playing, change the sliders to rate your opinion.
+          </p>
+          <h3>Arousal</h3>
+          <p>how energetic a track is.</p>
+          <h3>Valence</h3>
+          <p>The mood of a track.</p>
+          <h3>Depth</h3>
+          <p>How much effort the track requires from the listener.</p>
+        </section>
+      </div>
       <div className="appUser">
         <div className="uiToggle">
           UI mode
