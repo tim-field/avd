@@ -8,6 +8,7 @@ import React, {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import api from "../../utils/api"
 import Control from "./Control"
+import Graph from "./Graph"
 import { isErrorNoActiveDevice } from "../../utils/spotify"
 import Following from "../Following"
 import Store, { connect } from "../../store"
@@ -101,7 +102,7 @@ function PlayList({
         data: {
           uris: tracks.map(track => `spotify:track:${track.id}`)
         },
-        method: "PUT"
+        method: "POST"
       }),
       api({
         action: "playlist",
@@ -303,6 +304,9 @@ function PlayList({
             setMin={value => setMin("depth", value)}
             setMax={value => setMax("depth", value)}
           />
+          <div>
+            <Graph />
+          </div>
           <div className="PlayListOptions">
             <h4>Options</h4>
             <label>
