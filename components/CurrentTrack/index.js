@@ -1,5 +1,6 @@
 import React, { useEffect, useContext, useState, Fragment, useRef } from "react"
 import debounce from "lodash.debounce"
+import { ColorExtractor } from "react-color-extractor"
 import Control from "../Control"
 import api from "../../utils/api"
 import PlayControls from "../PlayControls"
@@ -7,6 +8,7 @@ import LikeControls from "../LikeControls"
 import Listeners from "../Listeners"
 import Store from "../../store"
 
+import { getColors } from "./colors"
 import "./CurrentTrack.scss"
 
 const saveAVD = debounce(data => {
@@ -146,7 +148,9 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
             }}
           />
           <div className="coverWrap">
-            <img className="image" src={track.image.url} />
+            <ColorExtractor getColors={colors => getColors(colors)}>
+              <img className="image" src={track.image.url} />
+            </ColorExtractor>
             <div className="back">
               <div>
                 <span className="title">track: </span>
@@ -157,14 +161,26 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
                 <span className="subtitle">{track.artist}</span>
               </div>
               <div>
-                <span className="title">{track.raw.item.album && track.raw.item.album.album_type}:</span>
-                <span className="subtitle">{track.raw.item.album && track.raw.item.album.name}</span>
-                
+                <span className="title">
+                  {track.raw.item.album && track.raw.item.album.album_type}:
+                </span>
+                <span className="subtitle">
+                  {track.raw.item.album && track.raw.item.album.name}
+                </span>
               </div>
-              {track.raw.item.album && track.raw.item.album.external_urls && track.raw.item.album.external_urls.spotify && 
-                <div className="albumLinkWrap"><a target="_blank" className="albumLink" href={track.raw.item.album.external_urls.spotify}>View in Spotify</a>
-              </div>
-              }
+              {track.raw.item.album &&
+                track.raw.item.album.external_urls &&
+                track.raw.item.album.external_urls.spotify && (
+                  <div className="albumLinkWrap">
+                    <a
+                      target="_blank"
+                      className="albumLink"
+                      href={track.raw.item.album.external_urls.spotify}
+                    >
+                      View in Spotify
+                    </a>
+                  </div>
+                )}
             </div>
           </div>
           <LikeControls
