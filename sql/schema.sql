@@ -46,3 +46,20 @@ create table playlist (
 	primary key (id, user_id)
 );
 
+-- DROP FUNCTION closest(numeric,numeric,numeric,text);
+create or replace function closest(a numeric,v numeric,d numeric ,user_id text, skip text[] default array[]::text[])
+returns track as $$
+	select track.*
+	from 
+		track 
+	left join 
+		user_track on user_track.track_id = track.id 
+	where 
+		user_track.user_id = user_id
+		and not (track.id = ANY (skip))
+	order by 
+		abs(coalesce(user_track.arousal, track.arousal) - a) 
+		+ abs(coalesce(user_track.valence, track.valence) - v) 
+		+ abs(coalesce(user_track."depth", track."depth") - d) 
+	limit 1;
+$$ language sql stable;
