@@ -91,16 +91,13 @@ function getColors(colors) {
     return false
   }
   // console.log('colors[0]: ', hexToRgb(colors[0]));
-  console.log("colors[0]: ", hexToHsl(colors[0]))
-  console.log("colors[1]: ", hexToHsl(colors[1]))
-  console.log("colors[2]: ", hexToHsl(colors[2]))
-  console.log("colors[3]: ", hexToHsl(colors[3]))
-  console.log("colors[4]: ", hexToHsl(colors[4]))
-  console.log("colors[4]: ", hexToHsl(colors[5]))
-  // this.setState(state => ({ colors: [...state.colors, ...colors] }))
-  // setColors(colors);
+  // console.log("colors[0]: ", hexToHsl(colors[0]))
+  // console.log("colors[1]: ", hexToHsl(colors[1]))
+  // console.log("colors[2]: ", hexToHsl(colors[2]))
+  // console.log("colors[3]: ", hexToHsl(colors[3]))
+  // console.log("colors[4]: ", hexToHsl(colors[4]))
+  // console.log("colors[4]: ", hexToHsl(colors[5]))
   const rootElement = document.getElementById("html")
-  console.log("rootelement: ", rootElement)
   rootElement.setAttribute("data-theme", "generated")
 
   // THese do the actual setting of css variables.
@@ -234,6 +231,12 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
         {track.name}
         <span>by {track.artist}</span>
       </h1>
+      {/* 
+        // progress bar idea
+      <div className="progress">
+        <div className="bar" id="progressBar"/>
+      </div>
+      */}
       <div className="CurrentTrack">
         <div className="player">
           <PlayControls
@@ -308,6 +311,14 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
             }}
           />
         </div>
+        {1 === 1 && (
+          <div className="title">
+            <h1>
+              {track.name}
+              <span>by {track.artist}</span>
+            </h1>
+          </div>
+        )}
         {userId && (
           <Fragment>
             <div className="controls">
@@ -353,7 +364,14 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
         )}
       </div>
     </Fragment>
-  ) : null
+  ) : (
+    <div className="CurrentTrack noData">
+      <div className="player">no track</div>
+      <div className="controls">
+        Play a song in Spotify, or select a playlist
+      </div>
+    </div>
+  )
 }
 
 export default CurrentTrack

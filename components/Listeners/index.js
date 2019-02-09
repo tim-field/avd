@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useContext } from "react"
 import api from "../../utils/api"
 import Store from "../../store"
 import UserImage from "../UserImage"
-import "./Listeners.scss";
+import "./Listeners.scss"
 
 function reducer(state, action) {
   switch (action.type) {
@@ -52,7 +52,7 @@ function Listeners({ trackId, userId }) {
       <h4>Listeners</h4>
       <ul className="ListenersList">
         {users.map(user => (
-          <li key={user.id}>
+          <li key={user.id} className="avatar">
             <button onClick={() => followUser(user.id)}>
               <UserImage user={user} />
             </button>

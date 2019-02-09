@@ -7,19 +7,28 @@ import {
   faPause,
   faPlay,
   faStepBackward,
-  faStepForward
+  faStepForward,
+  faTimes,
+  faTimesCircle,
+  faCompressArrowsAlt,
+  faList,
+  faCaretDown,
+  faCaretUp
 } from "@fortawesome/free-solid-svg-icons"
 import request, { fetchToken, AUTH_URL } from "./utils/spotify"
 import CurrentTrack from "./components/CurrentTrack"
 import PlayList from "./components/PlayList"
 import Loading from "./components/Loading"
+import Logo from "./components/Header/Logo"
 import Header from "./components/Header"
 import api from "./utils/api"
 import Store, { Provider } from "./store"
-require("typeface-open-sans")
+// require("typeface-open-sans")
+require("typeface-poppins")
 import "./style.css"
 import "./styles/_global.scss"
-import { setTheme } from "./actions"
+import "./components/Header/Logo.scss"
+import { setTheme, setDisplayMode, setFullScreen } from "./actions"
 
 library.add(
   faThumbsUp,
@@ -27,7 +36,13 @@ library.add(
   faPause,
   faPlay,
   faStepBackward,
-  faStepForward
+  faStepForward,
+  faTimes,
+  faTimesCircle,
+  faCompressArrowsAlt,
+  faList,
+  faCaretDown,
+  faCaretUp
 )
 
 function setTokenLocalStorage({ access_token, expires_in, refresh_token }) {
@@ -87,12 +102,23 @@ function AVD() {
     <div className="avd">
       {!token && (
         <div className="authLink">
+          <div className="logoWrap large">
+            <Logo />
+          </div>
           <a href={AUTH_URL}>Authorize</a>
         </div>
       )}
       {token && userId && (
         <Fragment>
-          <Header doLogout={doLogout} toggleUI={setTheme} />
+          <Header
+            doLogout={doLogout}
+            toggleUI={setTheme}
+            setDisplayMode={setDisplayMode}
+            setFullScreen={setFullScreen}
+            arousal={arousal}
+            valence={valence}
+            depth={depth}
+          />
           <CurrentTrack
             spotifyService={spotifyService}
             userId={userId}

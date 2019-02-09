@@ -15,7 +15,6 @@ export const getTracks = (query = {}) => {
       filterUsers,
       ...rest
     } = apiQuery
-
     // Don't query unless we have some avd values
     if (
       arousal
@@ -23,6 +22,7 @@ export const getTracks = (query = {}) => {
         .concat(depth)
         .find(x => x > 0)
     ) {
+      dispatch({ type: "set-loading-playlist", value: true })
       api({
         action: "tracks",
         method: "GET",
@@ -35,9 +35,15 @@ export const getTracks = (query = {}) => {
           depth: depth.join(","),
           userId: state.userId
         }
-      }).then(tracks => {
-        dispatch({ type: "set-tracks", tracks })
       })
+        .then(tracks => {
+          dispatch({ type: "set-tracks", tracks })
+          dispatch({ type: "set-loading-playlist", value: false })
+        })
+        .catch(e => {
+          dispatch({ type: "set-loading-playlist", value: false })
+          throw e
+        })
     }
   }
 }
@@ -74,4 +80,25 @@ export const setTheme = theme => {
   const newTheme = currentTheme === "dark" ? "light" : "dark"
   rootElement.style.setProperty("--theme", theme || newTheme)
   rootElement.setAttribute("data-theme", theme || newTheme)
+}
+
+export const setDisplayMode = mode => {
+  const rootElement = document.getElementById("html")
+  const currentMode = rootElement.getAttribute("data-mode")
+  const newMode = currentMode === "condensed" ? "full" : "condensed"
+  rootElement.setAttribute("data-mode", mode || newMode)
+}
+
+export const setFullScreen = (viewMode = true) => {
+  if (!viewMode) {
+    // exit fullscreen
+    document.exitFullscreen()
+  }
+  if (document.fullscreenEnabled) {
+    // supported
+    // console.log('full screen is supported');
+    document.documentElement.requestFullscreen()
+  } else {
+    console.info("full screen not supported")
+  }
 }

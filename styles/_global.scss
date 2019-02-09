@@ -50,6 +50,7 @@ button {
   border-radius: 2rem;
   padding: 0.5rem 1rem;
   text-transform: uppercase;
+  white-space: nowrap;
   &.active {
     @include variable(background, --textColor, orange);
     @include variable(color, --backgroundColor, orange);
@@ -73,13 +74,29 @@ button {
   }
 }
 
+// DIALOG & EDIT BITS
+.dialog {
+  box-shadow: 0 0.2rem 1rem -0.25rem rgba(0, 0, 0, 0.2);
+}
 // MISC
 .authLink {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   height: 100vh;
+  .logoWrap {
+    height: 150px;
+    overflow: hidden;
+    margin-bottom: -1rem;
+    margin-top: -2rem;
+    z-index: 0;
+    svg {
+      height: 150px;
+    }
+  }
   a {
+    z-index: 2;
     background: var(--themeColor-weakest);
     color: var(--themeColor-strongest);
     padding: 1rem 2rem;

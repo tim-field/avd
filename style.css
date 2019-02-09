@@ -1,33 +1,31 @@
-.logout {
-  float: right;
-}
-html{
-  font-family: Poppins, Roboto, 'Helvetica Neue', 'sans-serif';
-  padding: 0; 
+html {
+  font-family: Poppins, Roboto, "Helvetica Neue", "sans-serif";
+  padding: 0;
   margin: 0;
   font-size: 16px;
   /* this is the root rem size that all other sizing derives from */
 }
-body{
-  padding: 0; 
+body {
+  padding: 0;
   margin: 0;
   min-height: 100vh;
 }
 
-button{
+button {
   border: 2px solid var(--textColor);
   background: var(--overlay);
   color: var(--textColor);
 }
-button + button{
-  margin-left: .5rem;
+button + button {
+  margin-left: 0.5rem;
 }
 
-.PlayList, .Listeners{
+.PlayList,
+.Listeners {
   max-width: 66rem;
   margin: 1rem auto;
 }
-.CurrentTrack{
+.CurrentTrack {
   max-width: 66rem;
   margin: 3rem auto;
 }

@@ -1,5 +1,28 @@
 @import "../../styles/_variables.scss";
+.PlayListWrap {
+  // border-top: 1px dashed rgba(0,0,0,.2);
+  border-top: 1px solid var(--highlight);
+  padding-top: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  position: relative;
+  z-index: 0;
+}
 
+.PlayList {
+  position: relative;
+  z-index: 2;
+  .loadingWrap {
+    position: absolute;
+    z-index: 99;
+    width: 100%;
+  }
+  &.loading {
+    .PlayListTracks {
+      opacity: 0;
+    }
+  }
+}
 #playlistTracks .playlistTrack {
   display: flex;
 }
@@ -10,18 +33,48 @@ h3 {
 h4 {
   margin: 0.5rem 0;
   padding: 0;
+  padding-right: 0.5rem;
   position: relative;
   text-transform: uppercase;
   text-align: center;
   font-size: 0.875rem;
   font-weight: 600;
 }
+
+// MAIN HEADER FOR GROUPING OF PLAYLIST FUNCTIONALITY
+.PlayListsHeader {
+  display: flex;
+  // .PlayListPlay {
+  //   padding-right: 0.5rem;
+  // }
+  .PlayListTitleWrap {
+    flex-grow: 1;
+    h4 {
+      text-align: left;
+    }
+  }
+  .searchButtonWrap {
+    justify-self: flex-end;
+    padding-left: 0.5rem;
+    button {
+      white-space: nowrap;
+    }
+  }
+}
+
+// SEARCH BOX
 .PlayListControlsWrap {
+  position: relative;
   margin-top: 1rem;
   padding: 1rem;
   border-radius: 0rem;
-  background: var(--highlight);
+  background: var(--themeColor);
   color: var(--themeColor-strongest);
+  h3 {
+    border-bottom: 1px solid var(--overlay);
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
 }
 .PlayListControls {
   display: flex;
@@ -75,6 +128,15 @@ h4 {
     }
   }
 }
+.closeButton {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  button {
+    border: none;
+    font-size: 1rem;
+  }
+}
 .PlayListOptions {
   padding: 0.5rem;
   display: flex;
@@ -82,33 +144,71 @@ h4 {
   flex-basis: 25%;
 }
 .PlayListsEdit {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  border: 2px solid var(--highlight);
-  padding: 2rem;
-  border-radius: 1rem;
-  background: var(--overlay);
+  &.edit {
+    // border: 2px solid var(--highlight);
+    margin-top: 1rem;
+    padding: 1rem 1.5rem;
+    // border-radius: 1rem;
+    background: var(--themeColor);
+    display: block;
+    h3 {
+      border-bottom: 1px solid var(--overlay);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    h4 {
+      text-align: left;
+    }
+    .row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0 0.5rem 0 0;
+    }
+    label {
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      min-height: 1rem;
+      opacity: 0.8;
+    }
+    button {
+      white-space: nowrap;
+    }
+  }
   .inputWrap {
-    flex-basis: 200px;
+    // flex-basis: 200px;
     display: inline-flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    margin: 0 1rem;
+    width: 100%;
+    // margin: 0 1rem;
     input[type="text"] {
+      width: 100%;
+      min-width: 200px;
       border: 2px solid var(--textColor);
       height: 2rem;
-      border-radius: 0.5rem 0 0 0.5rem;
+      border-radius: 2px;
+      // border-radius: 0.5rem 0 0 0.5rem;
       font-weight: normal;
-      box-shadow: 0 0 0 1px var(--themeColor) inset;
+      // box-shadow: 0 0 0 1px var(--themeColor) inset;
       // box-shadow: 0 0 35px rgba(0,0,0,.2) inset;
     }
     button {
       white-space: nowrap;
       height: 2rem;
-      border-radius: 0 0.5rem 0.5rem 0;
+      margin-left: 0.5rem;
+      // border-radius: 0 0.5rem 0.5rem 0;
     }
   }
 }
@@ -120,11 +220,14 @@ h4 {
   padding: 0.5rem 0;
 }
 .PlayListSelect {
+  flex-basis: 50%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  padding: 0 0.5rem;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   // width: 200px;
-  padding: 1rem 0;
   h4 {
     white-space: nowrap;
   }
@@ -136,9 +239,51 @@ h4 {
   // background: var(--textColor);
   // color: var(--themeColor-weaker);
   border-radius: 1rem;
+  opacity: 1;
+  transition: opacity 0.1s ease-in-out;
   caption {
     padding: 0.5rem;
     font-size: 2rem;
+  }
+  .PlayListHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 1rem 0;
+    .PlayListPlay {
+      flex-basis: 5.5rem;
+      padding: 0.5rem 1.25rem 0 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      button {
+        height: 3rem;
+        width: 100%;
+        // margin-right: .5rem;
+      }
+    }
+    .PlayListTitle {
+      flex-basis: 100%;
+      flex-grow: 1;
+      flex-shrink: 1;
+    }
+    .PlayListActions {
+      flex-basis: 20%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-end;
+    }
+    h2 {
+      font-weight: normal;
+      font-size: 2rem;
+      margin: 0;
+      padding: 0;
+    }
+    .subTitle {
+      font-size: 0.835rem;
+      margin: 0;
+    }
   }
   table {
     width: 100%;
@@ -175,6 +320,22 @@ h4 {
         @include variable(background, --highlight, orange);
         // @include variable(color, --backgroundColor, orange);
         cursor: pointer;
+      }
+    }
+    &.active {
+      // background: var(--highlight);
+      background: rgba(255, 255, 255, 0.1);
+      font-weight: bold;
+      > td {
+        border-top: 1px solid var(--highlight);
+        border-bottom: 1px solid var(--highlight);
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        &:first-child {
+          button {
+            background: var(--themeColor);
+          }
+        }
       }
     }
   }

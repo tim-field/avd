@@ -3,6 +3,7 @@ export const initialState = {
   valence: 0,
   depth: 0,
   loading: false,
+  loadingPlaylist: false,
   token: localStorage.getItem("access_token"),
   userId: localStorage.getItem("userId"),
   following: [],
@@ -43,6 +44,11 @@ export function reducer(state, action) {
       return {
         ...state,
         loading: action.value
+      }
+    case "set-loading-playlist":
+      return {
+        ...state,
+        loadingPlaylist: action.value
       }
     case "set-token":
       return {
