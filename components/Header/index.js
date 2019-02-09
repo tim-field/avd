@@ -46,6 +46,7 @@ function Header({
           <p>The mood of a track.</p>
           <h3>Depth</h3>
           <p>How much effort the track requires from the listener.</p>
+          <h3>Task, Personality, Mood</h3>
         </section>
       </div>
       <div className="appUser">
