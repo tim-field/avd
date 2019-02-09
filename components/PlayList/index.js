@@ -18,6 +18,7 @@ import {
   filterLiked as filterLikedAction
 } from "../../actions/index"
 import Loading from "../Loading"
+import PlayListSelector from "../PlayListSelector"
 import "./PlayList.scss"
 
 const initialState = {
@@ -305,6 +306,19 @@ function PlayList({
     <div className="PlayListWrap">
       <div className={`PlayList ${loading && "loading"}`}>
         <div className="PlayListsHeader">
+          <PlayListSelector
+            playlists={playlists}
+            activePlayList={activePlaylist && activePlaylist.id}
+            displayMode="expanded"
+            loading={false} // @TIM: how can i discover when playlists are being retrieved?
+            onSelectPlayList={value => loadPlaylist(value)}
+            onSelectCreatePlayList={() =>
+              dispatch({
+                type: "set-show-search",
+                value: !showSearch
+              })
+            }
+          />
           {playlists.length > 0 && (
             <div className="PlayListSelect">
               <h4>Playlist</h4>
@@ -322,6 +336,8 @@ function PlayList({
               </select>
             </div>
           )}
+
+          {/* {hidden until i decide I dont want them} */}
           {/* {!name && (
             <div className="PlayListTitleWrap">
               <h4>{tracks.length > 0 && <span>Unnamed Playlist</span>}</h4>

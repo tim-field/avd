@@ -55,6 +55,7 @@ html[data-mode="condensed"] .Header .bubbleWrap {
 }
 html[data-mode="condensed"] .PlayListWrap {
   border-top: none;
+  padding-bottom: 20rem; // offsets the sticky header
   .PlayList,
   .Listeners {
     max-width: 100%;

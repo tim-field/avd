@@ -3,6 +3,7 @@ import "./Header.scss"
 import classNames from "classnames"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Logo from "./Logo"
+import PlayListSelector from "../PlayListSelector"
 
 function Header({
   user,
@@ -49,67 +50,70 @@ function Header({
           <h3>Task, Personality, Mood</h3>
         </section>
       </div>
-      <div className="appUser">
-        <div className="uiToggle">
-          UI mode
-          <div className="uiControls">
-            <div className="themePanel">
-              <div className={classNames("swatchSet", "light")}>
-                <div className="swatch" />
-                <div className="swatch" />
-                <div className="swatch" />
-                <div className="swatch" />
-                <div className="swatch" />
-              </div>
-              <button onClick={() => toggleUI("light")}>light</button>
+      <div className="uiToggle">
+        UI mode
+        <div className="uiControls">
+          <div className="themePanel">
+            <div className={classNames("swatchSet", "light")}>
+              <div className="swatch" />
+              <div className="swatch" />
+              <div className="swatch" />
+              <div className="swatch" />
+              <div className="swatch" />
             </div>
-            <div className="themePanel">
-              <div className={classNames("swatchSet", "dark")}>
-                <div className="swatch" />
-                <div className="swatch" />
-                <div className="swatch" />
-                <div className="swatch" />
-                <div className="swatch" />
-              </div>
-              <button onClick={() => toggleUI("dark")}>dark</button>
-            </div>
-            <div className="themePanel">
-              <div className={classNames("swatchSet", "generated")}>
-                <div className="swatch" />
-                <div className="swatch" />
-                <div className="swatch" />
-                <div className="swatch" />
-                <div className="swatch" />
-              </div>
-              <button onClick={() => toggleUI("generated")}>generated</button>
-            </div>
-            <div className="modesWrap">
-              <h4>Mode</h4>
-              <button onClick={() => setDisplayMode("large")}>large</button>
-              <button onClick={() => setDisplayMode("condensed")}>
-                condensed
-              </button>
-              <button
-                onClick={() => {
-                  setDisplayMode("full")
-                  setFullScreen(true)
-                }}
-              >
-                Full screen
-              </button>
-            </div>
+            <button onClick={() => toggleUI("light")}>light</button>
           </div>
-          <div
-            className="exitFullScreen"
-            onClick={() => {
-              setFullScreen(false)
-              setDisplayMode("large")
-            }}
-          >
-            <FontAwesomeIcon icon="compress-arrows-alt" />
+          <div className="themePanel">
+            <div className={classNames("swatchSet", "dark")}>
+              <div className="swatch" />
+              <div className="swatch" />
+              <div className="swatch" />
+              <div className="swatch" />
+              <div className="swatch" />
+            </div>
+            <button onClick={() => toggleUI("dark")}>dark</button>
+          </div>
+          <div className="themePanel">
+            <div className={classNames("swatchSet", "generated")}>
+              <div className="swatch" />
+              <div className="swatch" />
+              <div className="swatch" />
+              <div className="swatch" />
+              <div className="swatch" />
+            </div>
+            <button onClick={() => toggleUI("generated")}>generated</button>
+          </div>
+          <div className="modesWrap">
+            <h4>Mode</h4>
+            <button onClick={() => setDisplayMode("large")}>large</button>
+            <button onClick={() => setDisplayMode("condensed")}>
+              condensed
+            </button>
+            <button
+              onClick={() => {
+                setDisplayMode("full")
+                setFullScreen(true)
+              }}
+            >
+              Full screen
+            </button>
           </div>
         </div>
-        <button className="playlistTrigger">
+        <div
+          className="exitFullScreen"
+          onClick={() => {
+            setFullScreen(false)
+            setDisplayMode("large")
+          }}
+        >
+          <FontAwesomeIcon icon="compress-arrows-alt" />
+        </div>
+      </div>
+
+      <div className="appUser">
+        <PlayListSelector displayMode="compressed" />
+
+        {/* <button className="playlistTrigger">
           <FontAwesomeIcon icon="list" />
           <FontAwesomeIcon icon="play" />
           <div className="playlistText">
@@ -145,7 +149,7 @@ function Header({
               + New Playlist
             </div>
           </div>
-        </button>
+        </button> */}
         <button className="logout" onClick={doLogout}>
           Logout
         </button>
