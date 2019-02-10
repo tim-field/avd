@@ -28,20 +28,24 @@ server {
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
 
     location / {
-        try_files $uri $uri/ /index.html;
+        return 301 https://www.djavd.com$request_uri;
     }
 
-    location /index.html {
-        add_header 'Cache-Control' 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-    	expires off;
-    }
+ #   location / {
+ #       try_files $uri $uri/ /index.html;
+ #   }
 
-    location /api {
-      rewrite /api/(.*) /$1 break;
-      proxy_pass http://127.0.0.1:1235;
-      proxy_redirect off;
-      proxy_buffering off;
-      proxy_set_header Host $host;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    }
+ #   location /index.html {
+ #       add_header 'Cache-Control' 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+ #   	expires off;
+ #   }
+
+ #   location /api {
+ #     rewrite /api/(.*) /$1 break;
+ #     proxy_pass http://127.0.0.1:1235;
+ #     proxy_redirect off;
+ #     proxy_buffering off;
+ #     proxy_set_header Host $host;
+ #     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+ #   }
 }

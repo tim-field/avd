@@ -14,7 +14,15 @@ const { getListeners, getTracks, getAVD } = require("./services/avd")
 
 const { PORT, URL, SPOTIFY_CLIENT_ID, SPOTIFY_SECRET } = process.env
 const app = express()
-app.use(cors({ origin: ["https://www.mohiohio.com", "http://localhost:1234"] }))
+app.use(
+  cors({
+    origin: [
+      "https://www.mohiohio.com",
+      "http://localhost:1234",
+      "http://www.djavd.com"
+    ]
+  })
+)
 app.use(bodyParser.json())
 
 app.get("/authorize", (req, res) => {
