@@ -42,6 +42,30 @@ export const getTracks = (query = {}) => {
   }
 }
 
+export const getGraphTracks = (query = {}) => {
+  return (dispatch, state) => {
+    const apiQuery = {
+      ...state.query,
+      ...query
+    }
+    const { series, userFilter, filterLiked, filterUsers, ...rest } = apiQuery
+
+    api({
+      action: "graph-tracks",
+      method: "POST",
+      data: {
+        ...rest,
+        ...(filterUsers && { userFilter: userFilter.join(",") }),
+        ...(filterLiked && { filterLiked: true }),
+        series,
+        userId: state.userId
+      }
+    }).then(tracks => {
+      dispatch({ type: "set-tracks", tracks })
+    })
+  }
+}
+
 export const filterWithUser = (followingId, active) => {
   return (dispatch, state) => {
     dispatch({ type: "filter-with-user", userId: followingId, active })

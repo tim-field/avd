@@ -8,6 +8,7 @@ export const initialState = {
   following: [],
   tracks: [],
   trackQuery: {
+    series: {},
     arousal: [0, 0],
     valence: [0, 0],
     depth: [0, 0],

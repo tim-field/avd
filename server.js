@@ -10,7 +10,12 @@ const {
   getFollowing,
   unFollow
 } = require("./services/user")
-const { getListeners, getTracks, getAVD } = require("./services/avd")
+const {
+  getListeners,
+  getTracks,
+  getGraphTracks,
+  getAVD
+} = require("./services/avd")
 
 const { PORT, URL, SPOTIFY_CLIENT_ID, SPOTIFY_SECRET } = process.env
 const app = express()
@@ -182,6 +187,12 @@ app.post("/track", async (req, res) => {
 
 app.get("/tracks", async (req, res) => {
   const tracks = await getTracks(req.query)
+  return res.status(200).json(tracks)
+})
+
+// Only a post method due to needing the body to be json
+app.post("/graph-tracks", async (req, res) => {
+  const tracks = await getGraphTracks(req.body)
   return res.status(200).json(tracks)
 })
 

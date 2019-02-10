@@ -265,13 +265,10 @@ function PlayList({
     getTracksDebounced(updated)
   }
 
-  useEffect(
-    () => {
-      loadPlaylists()
-      getTracksDebounced(avd)
-    },
-    [userId]
-  )
+  useEffect(() => {
+    loadPlaylists()
+    getTracksDebounced(avd)
+  }, [userId])
 
   const { arousal, valence, depth } = avd
 
@@ -405,9 +402,9 @@ function PlayList({
               </tr>
             </thead>
             <tbody>
-              {tracks.map(track => {
+              {tracks.map((track, i) => {
                 return (
-                  <tr key={track.id}>
+                  <tr key={`${track.id}-${i}`}>
                     <td>
                       <button onClick={() => playTrack(track.id)}>
                         <FontAwesomeIcon icon="play" />
