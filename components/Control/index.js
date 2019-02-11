@@ -34,7 +34,7 @@ function Control({
         <input
           type="range"
           value={value}
-          orient="vertical"
+          // orient="vertical"
           onChange={onChange}
           id={id}
           min={min}

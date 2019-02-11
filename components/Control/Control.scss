@@ -7,86 +7,91 @@
   padding: 0;
   margin: 0;
   margin-left: 1px;
-  &:first-child{
+  &:first-child {
     margin-left: 0;
-    .inputRangeWrap{
-      border-radius: .5rem 0 0 .5rem;
+    .inputRangeWrap {
+      border-radius: 0.5rem 0 0 0.5rem;
     }
   }
-  &:last-child{
-    .inputRangeWrap{
-      border-radius: 0 .5rem .5rem 0;
+  &:last-child {
+    .inputRangeWrap {
+      border-radius: 0 0.5rem 0.5rem 0;
     }
   }
-  input, label{
+  input,
+  label {
     margin: 0 auto;
   }
-  label{
+  label {
     text-align: center;
   }
-  legend{
+  legend {
     width: 100%;
     position: relative;
     top: 1rem;
     margin-bottom: 1rem;
     text-transform: uppercase;
     text-align: center;
-    font-size: .875rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    letter-spacing: .1rem;
+    letter-spacing: 0.1rem;
   }
-  .inputNumberWrap{
+  .inputNumberWrap {
     display: flex;
-    margin: .5rem auto;
-    
-    input{
+    margin: 0.5rem auto;
+
+    input {
       display: block;
       background: var(--textColor);
       color: var(--themeColor);
       border: none;
       box-shadow: none;
-      padding: .25rem 0rem .25rem .5rem;
+      padding: 0.25rem 0rem 0.25rem 0.5rem;
       font-weight: bold;
       outline: none;
-      border-radius: .25rem;
+      border-radius: 0.25rem;
       text-align: center;
       max-width: 3rem;
     }
   }
-  .inputRangeWrap{
+  .inputRangeWrap {
     background: var(--textColor);
     // background: var(--themeColor-strongest);
-    margin: .5rem auto;
+    margin: 0.5rem auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     margin-top: 1rem;
     padding: 1rem 0;
     width: 100%;
-    input{
+    height: 200px;
+    input {
       margin: 0.5rem auto;
+      transform: rotate(-90deg);
+      // width: unset;
+      height: 2.1rem; // alows for shadow in ms
     }
-    label{
-      font-size: .75rem;
-      color: var(--themeColor-weakest)
+    label {
+      font-size: 0.75rem;
+      color: var(--themeColor-weakest);
     }
   }
 }
 
-
 /*overrides defaults*/
-input[type=range]:focus {
+input[type="range"]:focus {
   outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
 }
-input[type=range]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
   // -webkit-appearance: none;
 }
 
 $thumbBorder: 0px solid white;
-$thumbShadow: 0 1px 2px -0px rgba(0,0,0,.2);
+$thumbShadow: 0 1px 2px -0px rgba(0, 0, 0, 0.2);
 // $thumbBackground: var(--themeColor-strongest);
-$thumbBackground: var(--textColor);
+$thumbBackground: var(--textColor, #fff);
+$thumbBackgroundAlt: var(--themeColor, #fff);
 $thumbBackgroundVertical: var(--themeColor-stronger);
 // $thumbBackground: linear-gradient(to right, var(--themeColor-strongest) 45%, var(--themeColor-stronger) 47.5%, var(--textColor) 52.5%, var(--themeColor-strongest) 55%);
 $thumbBorderRadius: 1rem;
@@ -101,17 +106,27 @@ $trackBackgroundVertical: var(--backgroundColor);
 $trackRadius: 2px;
 $trackBorder: 0px solid black;
 
-input[type=range] {
-  height: $thumbDiameter * 2;
-  width: $trackLongSide;
+input[type="range"] {
+  // height: $thumbDiameter * 2;
+  // width: $trackLongSide;
   -webkit-appearance: none;
   background: transparent;
   // margin: 1rem 0;
   // width: 100%;
 }
+
+//////////////////////////////////////////////////////
+// NOTE
+// Due to webkjit display issues, I'm using a tranform hack
+// to make the appearance of a vertical range, rather than
+// use the html attribute orient="vertical"
+// THerefore, the [orient="vertical"] styles are not
+// actually used, but I kept them here for reference
+////////////////////////////////////
+
 input[type="range"][orient="vertical"] {
   writing-mode: bt-lr; /* IE */
-  -webkit-appearance: slider-vertical; /* WebKit */
+  // -webkit-appearance: slider-vertical; /* WebKit */
   width: $trackShortSide;
   height: $trackLongSideVertical;
   // padding: 0 5px;
@@ -119,12 +134,11 @@ input[type="range"][orient="vertical"] {
   outline: none;
   // -webkit-appearance: none;
   // /*-webkit-appearance: slider-vertical; /*if we remove this slider-vertical then horizondally range bar styles applies correctly*/
-  // transform: translateY(30px) rotate(90deg);
-  // transform-origin:bottom;  
+  // transform: translateY(30px) rotate(360deg);
+  // transform-origin:bottom;
 }
 
-
-input[type=range]::-webkit-slider-runnable-track {
+input[type="range"]::-webkit-slider-runnable-track {
   height: $trackShortSide;
   width: $trackLongSide;
   cursor: pointer;
@@ -137,10 +151,10 @@ input[type=range]::-webkit-slider-runnable-track {
 input[type="range"][orient="vertical"]::-webkit-slider-runnable-track {
   width: $trackShortSide;
   height: $trackLongSideVertical;
-  background: $trackBackgroundVertical; 
+  background: $trackBackgroundVertical;
 }
 
-input[type=range]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
   box-shadow: $thumbShadow;
   border: $thumbBorder;
   height: $thumbDiameter;
@@ -151,18 +165,27 @@ input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
   margin-top: -($thumbDiameter / 4);
 }
+.control input[type="range"]::-webkit-slider-thumb {
+  transform: rotate(90deg);
+}
 input[type="range"][orient="vertical"]::-webkit-slider-thumb {
   // margin-left: -($thumbDiameter / 4);
-  transform: translateX(-.25rem) translateY(.5rem);
+  transform: translateX(-0.25rem) translateY(0.5rem);
   width: $thumbDiameter;
   height: $thumbDiameter * 2;
   background: $thumbBackgroundVertical;
 }
+.controls input[type="range"]::-webkit-slider-thumb,
+.controls input[type="range"][orient="vertical"]::-webkit-slider-thumb {
+  background: $thumbBackgroundAlt;
+}
 
-input[type=range]:focus::-webkit-slider-runnable-track {
+input[type="range"]:focus::-webkit-slider-runnable-track {
   background: $trackBackground;
 }
-input[type=range]::-moz-range-track {
+
+// MOZ STYLES
+input[type="range"]::-moz-range-track {
   height: $trackShortSide;
   width: $trackLongSide;
   cursor: pointer;
@@ -175,9 +198,9 @@ input[type=range]::-moz-range-track {
 input[type="range"][orient="vertical"]::-moz-range-track {
   width: $trackShortSide;
   height: $trackLongSideVertical;
-  background: $trackBackgroundVertical; 
+  background: $trackBackgroundVertical;
 }
-input[type=range]::-moz-range-thumb {
+input[type="range"]::-moz-range-thumb {
   box-shadow: $thumbShadow;
   border: $thumbBorder;
   height: $thumbDiameter;
@@ -186,10 +209,21 @@ input[type=range]::-moz-range-thumb {
   background: $thumbBackground;
   cursor: pointer;
 }
+.control input[type="range"]::-moz-range-thumb {
+  transform: rotate(90deg);
+  background: $thumbBackgroundVertical;
+}
 input[type="range"][orient="vertical"]::-moz-range-thumb {
   background: $thumbBackgroundVertical;
 }
-input[type=range]::-ms-track {
+.controls input[type="range"]::-moz-range-thumb,
+.controls input[type="range"][orient="vertical"]::-moz-range-thumb {
+  background: $thumbBackgroundAlt;
+}
+
+// MS STYLES
+
+input[type="range"]::-ms-track {
   height: $trackShortSide;
   width: $trackLongSideVertical;
   cursor: pointer;
@@ -201,21 +235,31 @@ input[type=range]::-ms-track {
 input[type="range"][orient="vertical"]::-ms-track {
   width: $trackShortSide;
   height: $trackLongSide;
-  background: $trackBackgroundVertical; 
+  background: $trackBackgroundVertical;
 }
-input[type=range]::-ms-fill-lower {
+input[type="range"]::-ms-fill-lower {
   background: $trackBackground;
+  background-image: linear-gradient(
+    to bottom,
+    $trackBackground 0%,
+    $trackBackground 100%
+  );
   border: $trackBorder;
   border-radius: $trackRadius;
   box-shadow: $trackShadow;
 }
-input[type=range]::-ms-fill-upper {
+input[type="range"]::-ms-fill-upper {
   background: $trackBackground;
+  background-image: linear-gradient(
+    to bottom,
+    $trackBackground 0%,
+    $trackBackground 100%
+  );
   border: $trackBorder;
   border-radius: $trackRadius;
   box-shadow: $trackShadow;
 }
-input[type=range]::-ms-thumb {
+input[type="range"]::-ms-thumb {
   margin-top: 1px;
   box-shadow: $thumbShadow;
   border: $thumbBorder;
@@ -223,14 +267,192 @@ input[type=range]::-ms-thumb {
   width: $thumbDiameter * 2;
   border-radius: $thumbBorderRadius;
   background: $thumbBackground;
+  background-image: linear-gradient(
+    to bottom,
+    $thumbBackground 0%,
+    $thumbBackground 100%
+  );
   cursor: pointer;
 }
-input[type=range][orient="vertical"]::-ms-thumb {
+
+input[type="range"][orient="vertical"]::-ms-thumb {
   background: $thumbBackgroundVertical;
+  background-image: linear-gradient(
+    to bottom,
+    $thumbBackgroundVertical 0%,
+    $thumbBackgroundVertical 100%
+  );
 }
-input[type=range]:focus::-ms-fill-lower {
+.controls input[type="range"]::-ms-thumb,
+.controls input[type="range"][orient="vertical"]::-ms-thumb {
+  background: $thumbBackgroundAlt;
+  background-image: linear-gradient(
+    to bottom,
+    $thumbBackgroundAlt 0%,
+    $thumbBackgroundAlt 100%
+  );
+  transform: rotate(90deg);
+}
+input[type="range"]:focus::-ms-fill-lower {
   background: $trackBackground;
+  background-image: linear-gradient(
+    to bottom,
+    $trackBackground 0%,
+    $trackBackground 100%
+  );
 }
-input[type=range]:focus::-ms-fill-upper {
+input[type="range"]:focus::-ms-fill-upper {
   background: $trackBackground;
+  background-image: linear-gradient(
+    to bottom,
+    $trackBackground 0%,
+    $trackBackground 100%
+  );
 }
+
+// input[type=range] {
+//   -webkit-appearance: none;
+//     width: $trackShortSide;
+//     height: $trackLongSideVertical;
+//     // padding: 0 5px;
+//     background: transparent;
+//     outline: none;
+// }
+// input[type=range]:focus {
+//   outline: none;
+// }
+// input[type=range]::-webkit-slider-runnable-track {
+//   // width: 100%;
+//   // height: 8.4px;
+//   // cursor: pointer;
+//   // animate: 0.2s;
+//   // box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+//   // background: #3071a9;
+//   // border-radius: 1.3px;
+//   // border: 0.2px solid #010101;
+
+//     height: $trackShortSide;
+//   width: $trackLongSide;
+//   cursor: pointer;
+//   animate: 0.2s;
+//   box-shadow: $trackShadow;
+//   background: $trackBackground;
+//   border-radius: $trackRadius;
+//   border: $trackBorder;
+// }
+// input[type=range]::-webkit-slider-thumb {
+//   // box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+//   // border: 1px solid #000000;
+//   // height: 36px;
+//   // width: 16px;
+//   // border-radius: 3px;
+//   // background: #ffffff;
+//   // cursor: pointer;
+//   // -webkit-appearance: none;
+//   // margin-top: -14px;
+
+//   box-shadow: $thumbShadow;
+//   border: $thumbBorder;
+//   height: $thumbDiameter;
+//   width: $thumbDiameter * 2;
+//   border-radius: $thumbBorderRadius;
+//   background: $thumbBackground;
+//   cursor: pointer;
+//   -webkit-appearance: none;
+//   margin-top: -($thumbDiameter / 4);
+// }
+// input[type=range]:focus::-webkit-slider-runnable-track {
+//   background: #367ebd;
+// }
+// input[type=range]::-moz-range-track {
+//   // width: 100%;
+//   // height: 8.4px;
+//   // cursor: pointer;
+//   // animate: 0.2s;
+//   // box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+//   // background: #3071a9;
+//   // border-radius: 1.3px;
+//   // border: 0.2px solid #010101;
+//   height: $trackShortSide;
+//   width: $trackLongSide;
+//   cursor: pointer;
+//   animate: 0.2s;
+//   box-shadow: $trackShadow;
+//   background: $trackBackground;
+//   border-radius: $trackRadius;
+//   border: $trackBorder;
+// }
+// input[type=range]::-moz-range-thumb {
+//   // box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+//   // border: 1px solid #000000;
+//   // height: 36px;
+//   // width: 16px;
+//   // border-radius: 3px;
+//   // background: #ffffff;
+//   // cursor: pointer;
+//   box-shadow: $thumbShadow;
+//   border: $thumbBorder;
+//   height: $thumbDiameter;
+//   width: $thumbDiameter * 2;
+//   border-radius: $thumbBorderRadius;
+//   background: $thumbBackground;
+//   cursor: pointer;
+//   -webkit-appearance: none;
+//   margin-top: -($thumbDiameter / 4);
+// }
+// input[type=range]::-ms-track {
+//   // width: 100%;
+//   // height: 8.4px;
+//   // cursor: pointer;
+//   // animate: 0.2s;
+//   // background: transparent;
+//   // border-color: transparent;
+//   // border-width: 16px 0;
+//   // color: transparent;
+
+//   height: $trackShortSide;
+//   width: $trackLongSide;
+//   cursor: pointer;
+//   animate: 0.2s;
+//   box-shadow: $trackShadow;
+//   background: $trackBackground;
+//   border-radius: $trackRadius;
+//   border: $trackBorder;
+// }
+// input[type=range]::-ms-fill-lower {
+//   background: #2a6495;
+//   border: 0.2px solid #010101;
+//   border-radius: 2.6px;
+//   box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+// }
+// input[type=range]::-ms-fill-upper {
+//   background: #3071a9;
+//   border: 0.2px solid #010101;
+//   border-radius: 2.6px;
+//   box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+// }
+// input[type=range]::-ms-thumb {
+//   // box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+//   // border: 1px solid #000000;
+//   // height: 36px;
+//   // width: 16px;
+//   // border-radius: 3px;
+//   // background: #ffffff;
+//   // cursor: pointer;
+
+//   box-shadow: $thumbShadow;
+//   border: $thumbBorder;
+//   height: $thumbDiameter;
+//   width: $thumbDiameter * 2;
+//   border-radius: $thumbBorderRadius;
+//   background: $thumbBackground;
+//   background-image: linear-gradient(to bottom, var(--backgroundColor) 0%, var(--backgroundColor) 100%);
+//   cursor: pointer;
+//   margin-top: -($thumbDiameter / 4);
+// }
+// input[type=range]:focus::-ms-fill-lower {
+//   background: #3071a9;
+// }
+// input[type=range]:focus::-ms-fill-upper {
+//   background: #367ebd;
+// }

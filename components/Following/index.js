@@ -3,7 +3,7 @@ import api from "../../utils/api"
 import { connect } from "../../store"
 import UserImage from "../UserImage"
 import { filterWithUser } from "../../actions/index"
-import styles from "./Following.module.scss"
+import "./Following.scss"
 
 function Following({
   dispatch,
@@ -13,19 +13,16 @@ function Following({
   // unFollowUser,
   userFilter
 }) {
-  useEffect(
-    () => {
-      loadUsers(user)
-    },
-    [user.id]
-  )
+  useEffect(() => {
+    loadUsers(user)
+  }, [user.id])
 
   // function unFollow(followingId) {
   //   unFollowUser(userId, followingId)
   // }
 
   return (
-    <fieldset className={styles.Following}>
+    <fieldset className="Following">
       <legend>Following</legend>
       <ul>
         {[user].concat(following).map(f => (

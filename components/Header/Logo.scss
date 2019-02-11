@@ -1,0 +1,19 @@
+@import "../../styles/_variables.scss";
+.Logo {
+  svg {
+    width: 100%;
+    height: auto;
+    rect {
+      fill: rgba(0, 0, 0, 0);
+      display: none;
+    }
+    path.letter {
+      // fill: var(--backgroundColor);
+      transition: 1s fill ease, transform 0.3s ease;
+    }
+    path.bar {
+      // fill: var(--themeColor);
+      transition: 1s fill ease, transform 0.3s ease;
+    }
+  }
+}

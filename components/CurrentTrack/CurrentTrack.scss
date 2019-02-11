@@ -1,14 +1,232 @@
 @import "../../styles/_variables.scss";
 
-.CurrentTrack{
+.CurrentTrack {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   justify-content: stretch;
   // grid-template-columns: 1fr 1fr;
+  background: transparent;
   margin: 2rem 0;
+  z-index: 2;
+  position: relative;
+  .title {
+    display: none;
+  }
+  &.noData {
+    border: 2px solid var(--themeColor);
+    border-radius: 1rem;
+    padding: 2rem;
+    background: var(--overlay);
+    .player {
+      background: var(--overlay);
+      padding: 2rem;
+      box-shadow: 0 2px 1rem -0.25rem rgba(0, 0, 0, 0.5);
+      flex-basis: 10rem;
+      height: 10rem;
+      flex-shrink: 0;
+      flex-grow: 0;
+    }
+    .controls {
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-basis: 100%;
+      height: 10rem;
+      flex-shrink: 1;
+      flex-grow: 1;
+    }
+  }
 }
-.player{
+
+////////////////////////////////////////////////
+// DISPLAY MODES.
+// Needs to be refactored into it's own file
+// LARGE VERSION (= default)
+// CONDENSED VERSION
+// FUll VERSION
+////////////////////////////////////////////////
+html[data-mode="condensed"] .Header + h1 {
+  display: none;
+}
+html[data-mode="condensed"] .Header .bubbleWrap {
+  display: none;
+}
+html[data-mode="condensed"] .PlayListWrap {
+  border-top: none;
+  padding-bottom: 20rem; // offsets the sticky header
+  .PlayList,
+  .Listeners {
+    max-width: 100%;
+    padding: 0 3rem 2rem;
+  }
+}
+html[data-mode="condensed"] .CurrentTrack {
+  margin: 0 auto 2rem auto;
+  // max-width: unset;
+  max-width: 100%;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  top: 0rem;
+  position: sticky;
+  z-index: 9;
+  background: var(--backgroundColor);
+  padding: 1rem 3rem 2rem;
+  border-bottom: 1px solid var(--highlight);
+  z-index: 1;
+  .player {
+    flex-basis: 30%;
+    height: 150px;
+    flex-wrap: wrap;
+    position: relative;
+    top: 1rem;
+    .playControls {
+      order: 2;
+      margin-bottom: 0;
+      padding: 0 1rem;
+      flex-basis: 30%;
+      button:nth-child(2) {
+        padding: 1rem 1.5rem;
+      }
+    }
+    .coverWrap {
+      order: 1;
+      width: 124px;
+      height: 124px;
+      // flex-basis: 100%;
+      // margin-top: 4.4rem;
+      img {
+        width: 100%;
+      }
+      .back > div {
+        display: none;
+      }
+    }
+    .likeControls {
+      order: 3;
+      margin-bottom: 0;
+      padding: 0 1rem;
+      flex-basis: 30%;
+      button {
+        padding: 0.25rem.5rem;
+      }
+    }
+  }
+  .title {
+    flex-basis: 30%;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    h1 {
+      font-size: 1.3rem;
+      text-align: left;
+      margin: 0;
+    }
+  }
+  .controls {
+    flex-basis: 50%;
+    margin-top: -1rem;
+    .control legend {
+      display: inline-block;
+      width: 50%;
+      left: 0;
+      text-align: left;
+      margin: 0 0 0 0.5rem;
+      padding: 0;
+    }
+    .control .inputNumberWrap {
+      margin: 0 0.25rem;
+      input {
+        margin: 0 0.25rem 0 auto;
+      }
+    }
+    .control .inputRangeWrap {
+      margin: 0.25rem 0;
+      padding: 0.25rem 0;
+      position: relative;
+      align-items: flex-start;
+      justify-content: flex-start;
+      height: 120px;
+      input {
+        // height: 90px;
+        // margin-left: 15%;
+        transform: rotate(0);
+        margin-top: 2rem;
+      }
+      label {
+        position: absolute;
+        bottom: 1rem;
+        &.endLabel {
+          right: 1rem;
+        }
+        &.startLabel {
+          left: 1rem;
+        }
+      }
+    }
+  }
+  .Listeners {
+    display: none;
+    flex-basis: 20%;
+    padding: 0 1rem;
+    h4 {
+      text-align: left;
+      margin-top: 0;
+    }
+    .ListenersList {
+      flex-direction: row;
+      .avatar {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+}
+
+html[data-mode="full"] {
+  // border-left-width: 0 !important;
+  border-left-color: var(--textColor) !important;
+  .CurrentTrack {
+    margin: 0 auto;
+    padding: 2rem;
+    .controls {
+      .control {
+        position: relative;
+        .inputRangeWrap {
+          position: relative;
+          background: var(--highlight);
+          border: 2px solid var(--textColor);
+          label {
+            color: var(--textColor) !important;
+          }
+        }
+        + .control {
+          margin-left: -2px;
+        }
+      }
+    }
+  }
+  .PlayListWrap {
+    border-top: 1px solid var(--highlight);
+    margin: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding-left: 3rem;
+
+    #playlistTracks {
+      display: none;
+    }
+  }
+}
+//END OF DISPLAY MODES
+////////////////////////////////////////////////
+.player {
   flex-basis: 50%;
   display: flex;
   flex-direction: column;
@@ -21,47 +239,47 @@
   grid-template-columns: 1fr 1fr 1fr;
 }
 
-.playControls{
+.playControls {
   margin-bottom: 1rem;
 }
-.likeControls{
+.likeControls {
   margin-top: 1rem;
 }
-.coverWrap{
+.coverWrap {
   width: 300px;
   height: 300px;
   position: relative;
   perspective: 1000px;
   @media (hover: hover) {
-    &:hover{
-      .image{
-        transform: translateY(-.5rem) rotateY(180deg);
-      // transform: rotateY(180deg);
+    &:hover {
+      .image {
+        transform: translateY(-0.5rem) rotateY(180deg);
+        // transform: rotateY(180deg);
         box-shadow: 0 1rem 4rem -0.5rem rgba(0, 0, 0, 0.5);
       }
-      .back{
-        transform: translateY(-.5rem) rotateY(360deg);
+      .back {
+        transform: translateY(-0.5rem) rotateY(360deg);
       }
     }
   }
 }
 
-.image{
+.image {
   box-shadow: 0 0.5rem 3rem -0.5rem rgba(0, 0, 0, 0.5);
   transform: translateY(0) rotateY(0deg);
-  transition: transform .3s ease-in-out, box-shadow .3s ease-in-out;
-  animation: imageAppear .5s linear 1;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  animation: imageAppear 0.5s linear 1;
   animation-fill-mode: backwards;
   backface-visibility: hidden;
   z-index: 2;
   position: relative;
   @media (hover: hover) {
-    &:hover{
+    &:hover {
     }
   }
 }
 
-.back{
+.back {
   position: absolute;
   left: 0;
   top: 0;
@@ -72,49 +290,49 @@
   color: var(--themeColor);
   padding: 1rem;
   transform: translateY(0) rotateY(180deg);
-  transition: transform .3s ease-in-out, box-shadow .3s ease-in-out;
-  animation: backAppear .5s linear 1;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  animation: backAppear 0.5s linear 1;
   animation-fill-mode: backwards;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  
-  h4{
+
+  h4 {
     text-align: left;
-    padding: 0; 
+    padding: 0;
   }
-  .subtitle{
-    font-size: .875rem;
+  .subtitle {
+    font-size: 0.875rem;
     text-align: left;
   }
-  >div {
-    span.title{
+  > div {
+    span.title {
       font-weight: 600;
       font-weight: 300;
       // text-transform: capitalize;
       text-transform: uppercase;
       min-width: 5rem;
       display: inline-block;
-      font-size: .75rem;
+      font-size: 0.75rem;
       text-align: left;
-      padding: .25rem;
-      opacity: .8;
-      letter-spacing: .1rem;
+      padding: 0.25rem;
+      opacity: 0.8;
+      letter-spacing: 0.1rem;
     }
   }
-  .albumLinkWrap{
+  .albumLinkWrap {
     display: block;
-    padding: .5rem 0;
+    padding: 0.5rem 0;
     align-self: center;
     justify-self: center;
     flex-basis: 100%;
     display: flex;
   }
-  .albumLink{
+  .albumLink {
     background: var(--backgroundColor);
     color: var(--textColor);
-    padding: .5rem 1rem;
+    padding: 0.5rem 1rem;
     border-radius: 2rem;
     position: relative;
     line-height: 2rem;
@@ -127,12 +345,25 @@
 }
 
 // AVL CONTROLS
-.controls{
-  
+.controls {
 }
-
-
-
+// progress bar
+.progress {
+  width: calc(100% - 2rem);
+  height: 0.25rem;
+  left: 2rem;
+  top: 0;
+  background: transparent;
+  position: absolute;
+  .bar {
+    height: 0.25rem;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2rem;
+    background: var(--textColor);
+  }
+}
 
 @keyframes imageAppear {
   0% {

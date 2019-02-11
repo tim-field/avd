@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useContext } from "react"
 import api from "../../utils/api"
 import Store from "../../store"
 import UserImage from "../UserImage"
-import "./Listeners.scss";
+import "./Listeners.scss"
 
 function reducer(state, action) {
   switch (action.type) {
@@ -27,17 +27,14 @@ const initialState = { users: [], loading: false }
 function Listeners({ trackId, userId }) {
   const { dispatch: appDispatch } = useContext(Store)
   const [{ users }, dispatch] = useReducer(reducer, initialState)
-  useEffect(
-    () => {
-      if (trackId) {
-        dispatch({ type: "set-loading", value: true })
-        api({ action: `avd/users?trackId=${trackId}` }).then(res => {
-          dispatch({ type: "set-users", users: res })
-        })
-      }
-    },
-    [trackId]
-  )
+  useEffect(() => {
+    if (trackId) {
+      dispatch({ type: "set-loading", value: true })
+      api({ action: `avd/users?trackId=${trackId}` }).then(res => {
+        dispatch({ type: "set-users", users: res })
+      })
+    }
+  }, [trackId])
 
   function followUser(followId) {
     if (userId !== followId) {
@@ -52,7 +49,7 @@ function Listeners({ trackId, userId }) {
       <h4>Listeners</h4>
       <ul className="ListenersList">
         {users.map(user => (
-          <li key={user.id}>
+          <li key={user.id} className="avatar">
             <button onClick={() => followUser(user.id)}>
               <UserImage user={user} />
             </button>

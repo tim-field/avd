@@ -75,42 +75,34 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
     return () => clearTimeout(timeoutRef.current)
   }, [])
 
-  useEffect(
-    () => {
-      if (track) {
-        document.title = `AVD - ${track.name}`
-        api({ action: `avd?userId=${userId}&trackId=${track.id}` }).then(
-          res => {
-            setAVD({
-              arousal: res.arousal || 0,
-              valence: res.valence || 0,
-              depth: res.depth || 0
-            })
-            setLiked(res.liked)
-          }
-        )
-        api({
-          action: "track",
-          data: {
-            userId,
-            trackId,
-            track: track.raw
-          }
+  useEffect(() => {
+    if (track) {
+      document.title = `AVD - ${track.name}`
+      api({ action: `avd?userId=${userId}&trackId=${track.id}` }).then(res => {
+        setAVD({
+          arousal: res.arousal || 0,
+          valence: res.valence || 0,
+          depth: res.depth || 0
         })
-        dispatch({ type: "set-current-track-id", trackId })
-      }
-    },
-    [trackId]
-  )
+        setLiked(res.liked)
+      })
+      api({
+        action: "track",
+        data: {
+          userId,
+          trackId,
+          track: track.raw
+        }
+      })
+      dispatch({ type: "set-current-track-id", trackId })
+    }
+  }, [trackId])
 
-  useEffect(
-    () => {
-      if (arousal || valence || depth) {
-        saveAVD({ userId, trackId, arousal, valence, depth })
-      }
-    },
-    [arousal, valence, depth]
-  )
+  useEffect(() => {
+    if (arousal || valence || depth) {
+      saveAVD({ userId, trackId, arousal, valence, depth })
+    }
+  }, [arousal, valence, depth])
 
   return track ? (
     <Fragment>
@@ -118,6 +110,12 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
         {track.name}
         <span>by {track.artist}</span>
       </h1>
+      {/* 
+        // progress bar idea
+      <div className="progress">
+        <div className="bar" id="progressBar"/>
+      </div>
+      */}
       <div className="CurrentTrack">
         <div className="player">
           <PlayControls
@@ -192,6 +190,14 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
             }}
           />
         </div>
+        {1 === 1 && (
+          <div className="title">
+            <h1>
+              {track.name}
+              <span>by {track.artist}</span>
+            </h1>
+          </div>
+        )}
         {userId && (
           <Fragment>
             <div className="controls">
@@ -237,7 +243,14 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
         )}
       </div>
     </Fragment>
-  ) : null
+  ) : (
+    <div className="CurrentTrack noData">
+      <div className="player">no track</div>
+      <div className="controls">
+        Play a song in Spotify, or select a playlist
+      </div>
+    </div>
+  )
 }
 
 export default CurrentTrack
