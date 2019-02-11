@@ -72,7 +72,6 @@ function hexToHsl(hex, mode = "default") {
 }
 
 export function getColors(colors) {
-  console.log(colors)
   // gets colours form image, then applies them to document root css variables
   if (colors.length < 1) {
     console.error("no colors")
