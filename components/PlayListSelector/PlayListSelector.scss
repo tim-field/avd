@@ -46,14 +46,14 @@
       top: 100%;
       width: 100%;
       border-radius: 0.25rem;
-      padding: 0.5rem;
+      // padding: 0.5rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
       background: #fff;
 
       flex-direction: column;
-      align-items: flex-start;
+      align-items: stretch;
       justify-content: flex-start;
       transform: translateY(0rem);
       transition: opacity 0.3s ease-in, transform 0.3s ease-in;
@@ -62,10 +62,16 @@
       .playlistItem {
         text-transform: capitalize;
         line-height: 1.5rem;
+        flex-basis: 100%;
+        padding: 0.125rem 0.5rem;
         color: var(--backgroundColor);
         &.new {
           text-transform: uppercase;
           color: var(--themeColor);
+        }
+        &:hover {
+          background: var(--themeColor);
+          color: var(--backgroundColor);
         }
       }
       .triangle {
@@ -85,6 +91,29 @@
         svg path {
           fill: #fff;
         }
+      }
+    }
+    &.isActive {
+      width: 300px;
+      text-align: left;
+      svg + svg {
+        left: 1.6rem;
+      }
+      .playlistText,
+      .playlistItems {
+        opacity: 1;
+        visibility: visible;
+      }
+      .playlistItems {
+        display: flex;
+      }
+      .playlistText {
+        > svg {
+          opacity: 1;
+        }
+      }
+      .playlistItems {
+        transform: translateY(0.5rem);
       }
     }
     @media (hover: hover) {

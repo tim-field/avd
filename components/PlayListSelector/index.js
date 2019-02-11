@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import classNames from "classnames"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import "./PlayListSelector.scss"
@@ -12,9 +12,21 @@ function PlayListSelector({
   onSelectPlayList,
   onSelectCreatePlayList
 }) {
+  const [isActive, setIsActive] = useState(false)
   return (
-    <div className={classNames("PlayListSelector", displayMode)}>
-      <button className="playlistTrigger">
+    <div
+      className={classNames(
+        "PlayListSelector",
+        displayMode,
+        isActive ? "isActive" : ""
+      )}
+    >
+      <button
+        className={classNames("playlistTrigger", isActive ? "isActive" : "")}
+        onClick={() => setIsActive(true)}
+        onMouseOver={() => setIsActive(true)}
+        onMouseOut={() => setIsActive(false)}
+      >
         <FontAwesomeIcon icon="list" />
         <FontAwesomeIcon icon="play" />
         <div className="playlistText">
@@ -33,7 +45,10 @@ function PlayListSelector({
                 <div
                   key={playlist.id}
                   className="playlistItem"
-                  onClick={() => onSelectPlayList(playlist.id)}
+                  onClick={() => {
+                    setIsActive(false)
+                    onSelectPlayList(playlist.id)
+                  }}
                 >
                   {playlist.name}
                 </div>
@@ -41,7 +56,10 @@ function PlayListSelector({
             })}
           <div
             className="playlistItem new"
-            onClick={() => onSelectCreatePlayList()}
+            onClick={() => {
+              setIsActive(false)
+              onSelectCreatePlayList()
+            }}
           >
             + New Playlist
           </div>
