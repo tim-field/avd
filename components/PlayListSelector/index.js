@@ -20,11 +20,12 @@ function PlayListSelector({
         displayMode,
         isActive ? "isActive" : ""
       )}
+      onClick={() => setIsActive(!isActive)}
+      onMouseOver={() => setIsActive(true)}
     >
       <button
         className={classNames("playlistTrigger", isActive ? "isActive" : "")}
-        onClick={() => setIsActive(true)}
-        onMouseOver={() => setIsActive(true)}
+
         // onMouseOut={() => setIsActive(false)}
       >
         <FontAwesomeIcon icon="list" />
@@ -35,36 +36,36 @@ function PlayListSelector({
           </span>
           <FontAwesomeIcon icon="caret-down" />
         </div>
-        <div className="playlistItems">
-          <div className="triangle">
-            <FontAwesomeIcon icon="caret-up" size="2x" />
-          </div>
-          {playlists &&
-            playlists.map(playlist => {
-              return (
-                <div
-                  key={playlist.id}
-                  className="playlistItem"
-                  onClick={() => {
-                    setIsActive(false)
-                    onSelectPlayList(playlist.id)
-                  }}
-                >
-                  {playlist.name}
-                </div>
-              )
-            })}
-          <div
-            className="playlistItem new"
-            onClick={() => {
-              setIsActive(false)
-              onSelectCreatePlayList()
-            }}
-          >
-            + New Playlist
-          </div>
-        </div>
       </button>
+      <div className="playlistItems" onMouseOut={() => setIsActive(false)}>
+        <div className="triangle">
+          <FontAwesomeIcon icon="caret-up" size="2x" />
+        </div>
+        {playlists &&
+          playlists.map(playlist => {
+            return (
+              <div
+                key={playlist.id}
+                className="playlistItem"
+                onClick={() => {
+                  setIsActive(false)
+                  onSelectPlayList(playlist.id)
+                }}
+              >
+                {playlist.name}
+              </div>
+            )
+          })}
+        <div
+          className="playlistItem new"
+          onClick={() => {
+            setIsActive(false)
+            onSelectCreatePlayList()
+          }}
+        >
+          + New Playlist
+        </div>
+      </div>
     </div>
   )
 }
