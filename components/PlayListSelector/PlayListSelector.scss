@@ -3,7 +3,7 @@
   position: relative;
   button.playlistTrigger {
     border: none;
-    transition: width 0.3s ease;
+    transition: width 0.3s ease, background-color 0.3s ease;
     width: 3rem;
     position: relative;
     z-index: 100;
@@ -39,6 +39,9 @@
     }
 
     &.isActive {
+      background: var(--textColor);
+      color: var(--backgroundColor);
+      cursor: pointer;
       width: 300px;
       text-align: left;
       svg + svg {
@@ -121,6 +124,11 @@
       &:hover {
         background: var(--themeColor-stronger);
         color: var(--backgroundColor);
+        &.new {
+          text-transform: uppercase;
+          color: var(--themeColor);
+          background: none;
+        }
       }
     }
     .triangle {
