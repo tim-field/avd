@@ -115,4 +115,24 @@ $$ language sql stable;
 -- where arousal is not null and valence is not null and depth is not null
 -- ) as subquery
 -- where track.id = subquery.id;
+l
+create or replace function set_avd_cube()
+ returns trigger
+ language plpgsql
+as $$
+begin
+  new.avd := cube(array[new.arousal, new.valence, new.depth]);
+  return new;
+end;
+$$;
 
+
+create trigger set_avd_value
+after update on track 
+for each row
+execute procedure set_avd_cube();
+
+create trigger set_avd_value_insert
+after insert on track 
+for each row
+execute procedure set_avd_cube();
