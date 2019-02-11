@@ -25,7 +25,7 @@ function PlayListSelector({
         className={classNames("playlistTrigger", isActive ? "isActive" : "")}
         onClick={() => setIsActive(true)}
         onMouseOver={() => setIsActive(true)}
-        onMouseOut={() => setIsActive(false)}
+        // onMouseOut={() => setIsActive(false)}
       >
         <FontAwesomeIcon icon="list" />
         <FontAwesomeIcon icon="play" />
