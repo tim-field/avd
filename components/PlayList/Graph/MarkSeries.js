@@ -9,7 +9,7 @@ import { warning } from "react-vis/dist/utils/react-utils"
 import { DEFAULT_SIZE, DEFAULT_OPACITY } from "react-vis/dist/theme"
 
 import AbstractSeries from "react-vis/dist/plot/series/abstract-series"
-import { passiveCaptureEventObj } from "../utils"
+import { passiveCaptureEventObj } from "./utils"
 
 const predefinedClassName = "rv-xy-plot__series rv-xy-plot__series--mark"
 const DEFAULT_STROKE_WIDTH = 1

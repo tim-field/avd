@@ -127,12 +127,14 @@ end;
 $$;
 
 
+drop trigger set_avd_value on track;
 create trigger set_avd_value
-after update on track 
+before update on track 
 for each row
 execute procedure set_avd_cube();
 
+drop trigger set_avd_value_insert on track;
 create trigger set_avd_value_insert
-after insert on track 
+before insert on track 
 for each row
 execute procedure set_avd_cube();

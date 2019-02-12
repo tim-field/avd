@@ -1,30 +1,16 @@
 import React, { useState, useContext, useRef } from "react"
+import { findIndex, propEq, update } from "ramda"
+import {
+  FlexibleXYPlot,
+  VerticalGridLines,
+  HorizontalGridLines,
+  XAxis,
+  YAxis
+} from "react-vis"
 import Store from "../../../store"
-import DragginChart from "../DragginChart"
+import LineMarkSeries from "./LineMarkSeries"
 import { getGraphTracks } from "../../../actions"
-
-// function HoverComponent({ isDragging, dataPoint: { id, x, y } }) {
-//   return (
-//     <div className={cx("point-description", { isDragging })}>
-//       <h4 className="point-description-header">{`ID: ${id}`}</h4>
-//       <span className="point-description-content">
-//         {`the X value for this point is ${Math.round(x * 10000) / 100}%`}
-//         <br />
-//         {`the Y value for this point is ${Math.round(y * 10000) / 100}%`}
-//       </span>
-//     </div>
-//   )
-// }
-
-// function reducer(state, action) {
-//   switch (action.type) {
-//     case "set-series":
-//       return {
-//         ...state,
-//         [action.series]: action.updatedCoords
-//       }
-//   }
-// }
+import "./Graph.scss"
 
 const withIds = (name, arr) =>
   arr.map(({ x, y }, i) => ({ x, y, id: `${name}_${i}` }))
@@ -61,13 +47,19 @@ const Graph = () => {
   const { dispatch } = useContext(Store)
   const getTracksTimeout = useRef()
 
-  const onPointDrag = (updatedCoords, series) => {
-    const updatedSeriesData = {
-      ...seriesData,
-      [series]: updatedCoords
+  const onValueDrag = series => (oldVal, { chartCoords }) => {
+    const data = seriesData[series]
+    const index = findIndex(propEq("id", oldVal.id))(data)
+    if (index > -1) {
+      // const newData = update(index, { ...oldVal, ...chartCoords }, data)
+      const newData = update(index, { ...oldVal, y: chartCoords.y }, data) // prevent x axis moving
+      const updatedSeriesData = {
+        ...seriesData,
+        [series]: newData
+      }
+      setSeriesData(updatedSeriesData)
+      getTracksDebounced(updatedSeriesData)
     }
-    setSeriesData(updatedSeriesData)
-    getTracksDebounced(updatedSeriesData)
   }
 
   const getTracksDebounced = (data, wait = 400) => {
@@ -80,16 +72,35 @@ const Graph = () => {
   }
 
   return (
-    <div>
-      <DragginChart
-        onPointDrag={onPointDrag}
-        // hoverComponent={HoverComponent}
-        seriesData={seriesData}
+    <div className="__draggin-chart-container">
+      <FlexibleXYPlot
+        animation
+        dontCheckIfEmpty
+        xDomain={xDomain}
+        yDomain={yDomain}
         width={300}
         height={300}
-        yDomain={yDomain}
-        xDomain={xDomain}
-      />
+        colorType="linear"
+        colorDomain={[0, 9]}
+        colorRange={["yellow", "orange"]}
+      >
+        <VerticalGridLines />
+        <HorizontalGridLines />
+        <XAxis />
+        <YAxis />
+        {Object.entries(seriesData).map(([series, data], idx) => {
+          return (
+            <LineMarkSeries
+              key={series}
+              color={idx}
+              data={data}
+              curve={"curveMonotoneX"}
+              onValueDrag={onValueDrag(series)}
+              animation={false}
+            />
+          )
+        })}
+      </FlexibleXYPlot>
     </div>
   )
 }
