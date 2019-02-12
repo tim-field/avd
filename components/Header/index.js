@@ -1,7 +1,9 @@
-import React from "react"
+import React, { useState } from "react"
 import "./Header.scss"
 import classNames from "classnames"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import domtoimage from "dom-to-image"
+
 import Logo from "./Logo"
 import PlayListSelector from "../PlayListSelector"
 
@@ -15,13 +17,35 @@ function Header({
   valence,
   depth
 }) {
+  const [favIcon, setFavIcon] = useState("")
   // console.log('doLogout', doLogout)
+  function svg2Image(element = "generatedLogo") {
+    if (!element) {
+      return false
+    }
+    const theDom = document.getElementById(element)
+    const image = domtoimage.toJpeg(theDom, { quality: 1 }).then(dataUrl => {
+      // console.log('dataUrl:', dataUrl)
+      setFavIcon(dataUrl)
+      return dataUrl
+    })
+    return "data:image/svg+xml;base64," + image
+  }
+
   return (
     <div className="Header">
       <div className="appTitle">
         <span>A / V / D</span>
         <div className="logoWrap">
-          <Logo fill="blue" arousal={arousal} valence={valence} depth={depth} />
+          <Logo
+            fill="blue"
+            arousal={arousal}
+            valence={valence}
+            depth={depth}
+            favIcon={favIcon}
+            generateImage={false}
+            svg2Image={svg2Image}
+          />
         </div>
       </div>
       <div className="about">

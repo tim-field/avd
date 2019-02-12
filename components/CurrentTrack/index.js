@@ -1,15 +1,48 @@
 import React, { useEffect, useContext, useState, Fragment, useRef } from "react"
 import debounce from "lodash.debounce"
 import { ColorExtractor } from "react-color-extractor"
+// import Favicon from 'react-favicon';
 import Control from "../Control"
 import api from "../../utils/api"
 import PlayControls from "../PlayControls"
 import LikeControls from "../LikeControls"
 import Listeners from "../Listeners"
 import Store from "../../store"
-
 import { getColors } from "./colors"
 import "./CurrentTrack.scss"
+// import domtoimage from "dom-to-image";
+
+// function setFavicon(){
+//   const [favIcon, setFavIcon] = useState(null)
+//   if(document.getElementById('logoElement')){
+//     console.log('exists')
+//     document.getElementById('generatedLogo')
+//     .setAttribute(
+//       // 'src', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
+//       'src', encodeSvg(document.getElementById('logoElement').outerHTML)
+//     );
+//     setFavIcon(encodeSvg(document.getElementById('logoElement').outerHTML))
+//   }
+// }
+
+function encodeSvg(element) {
+  if (!document.getElementById("generatedLogo")) {
+    return false
+  }
+  // console.log(document.getElementById("generatedLogo"));
+  const s = new XMLSerializer().serializeToString(
+    document.getElementById("generatedLogo")
+  )
+  var encodedData = window.btoa(unescape(encodeURIComponent(s)))
+  const theSource = document.getElementById("generatedLogo")
+  if (theSource) {
+    domtoimage.toJpeg(theSource, { quality: 1 }).then(dataUrl => {
+      console.log("dataUrl:", dataUrl)
+      // setFavIcon(dataUrl)
+    })
+  }
+  // return 'data:image/svg+xml;base64,' + encodedData;
+}
 
 const saveAVD = debounce(data => {
   return api({ action: "avd/", data })
@@ -24,6 +57,7 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
   const [track, setTrack] = useState(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [liked, setLiked] = useState(null)
+  const [favIcon] = useState()
   const timeoutRef = useRef()
   const trackId = track && track.id
 
@@ -41,7 +75,6 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }
-
     return spotifyService({ action: "v1/me/player" })
       .then(spotifyTrack => {
         if (spotifyTrack.item) {
@@ -248,6 +281,15 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
             </div>
             <Listeners trackId={trackId} userId={userId} />
           </Fragment>
+        )}
+        {document.getElementById("generatedLogo") && (
+          <div
+          //dangerouslySetInnerHTML={{
+          // __html: svgString2Image(document.getElementById("generatedLogo").src)
+          //}}
+          >
+            <img id="testImage" />
+          </div>
         )}
       </div>
     </Fragment>
