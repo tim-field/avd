@@ -1,11 +1,12 @@
 @import "../../styles/_variables.scss";
 .PlayListSelector {
+  position: relative;
   button.playlistTrigger {
     border: none;
-    transition: width 0.3s ease;
+    transition: width 0.3s ease, background-color 0.3s ease;
     width: 3rem;
     position: relative;
-    z-index: 9999;
+    z-index: 100;
     svg + svg {
       position: absolute;
       left: 50%;
@@ -36,54 +37,28 @@
         transition-delay: 0.2s;
       }
     }
-    .playlistItems {
-      opacity: 0;
-      // display: flex;
-      display: none;
-      visibility: hidden;
-      position: absolute;
-      left: 0;
-      top: 100%;
-      width: 100%;
-      border-radius: 0.25rem;
-      padding: 0.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #fff;
 
-      flex-direction: column;
-      align-items: flex-start;
-      justify-content: flex-start;
-      transform: translateY(0rem);
-      transition: opacity 0.3s ease-in, transform 0.3s ease-in;
-      transition-delay: 0.15s;
-
-      .playlistItem {
-        text-transform: capitalize;
-        line-height: 1.5rem;
-        color: var(--backgroundColor);
-        &.new {
-          text-transform: uppercase;
-          color: var(--themeColor);
-        }
+    &.isActive {
+      background: var(--textColor);
+      color: var(--backgroundColor);
+      cursor: pointer;
+      width: 300px;
+      text-align: left;
+      svg + svg {
+        left: 1.6rem;
       }
-      .triangle {
-        position: absolute;
-        left: 0;
-        top: -1rem;
-        right: 0;
-        height: 1.3rem;
-        text-align: center;
+      .playlistText,
+      ~ .playlistItems {
+        opacity: 1;
+        visibility: visible;
+      }
+      ~ .playlistItems {
         display: flex;
-        align-items: flex-end;
-        justify-content: center;
-        svg {
-          position: relative;
-          top: 0.25rem;
-        }
-        svg path {
-          fill: #fff;
+        transform: translateY(0.5rem);
+      }
+      .playlistText {
+        > svg {
+          opacity: 1;
         }
       }
     }
@@ -95,21 +70,83 @@
           left: 1.6rem;
         }
         .playlistText,
-        .playlistItems {
+        ~ .playlistItems {
           opacity: 1;
           visibility: visible;
         }
-        .playlistItems {
+        ~ .playlistItems {
           display: flex;
+          transform: translateY(0.5rem);
         }
         .playlistText {
           > svg {
             opacity: 1;
           }
         }
-        .playlistItems {
-          transform: translateY(0.5rem);
+      }
+    }
+  }
+  .playlistItems {
+    opacity: 0;
+    // display: flex;
+    display: none;
+    visibility: hidden;
+    z-index: 101;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    width: 100%;
+    border-radius: 0.25rem;
+    // padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    transform: translateY(0rem);
+    transition: opacity 0.3s ease-in, transform 0.3s ease-in;
+    transition-delay: 0.15s;
+
+    .playlistItem {
+      text-transform: capitalize;
+      line-height: 1.5rem;
+      flex-basis: 100%;
+      padding: 0.125rem 0.5rem;
+      color: var(--backgroundColor);
+      cursor: pointer;
+      &.new {
+        text-transform: uppercase;
+        color: var(--themeColor);
+      }
+      &:hover {
+        background: var(--themeColor-stronger);
+        color: var(--backgroundColor);
+        &.new {
+          text-transform: uppercase;
+          color: var(--themeColor);
+          background: none;
         }
+      }
+    }
+    .triangle {
+      position: absolute;
+      left: 0;
+      top: -0.75rem;
+      right: 0;
+      height: 1.3rem;
+      text-align: center;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      svg {
+        position: relative;
+        top: 0.25rem;
+      }
+      svg path {
+        fill: #fff;
       }
     }
   }
