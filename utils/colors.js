@@ -12,7 +12,7 @@ const HEX_REGEX = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
 //     : null
 // }
 
-function hexToHsl(hex, mode = "default") {
+export function hexToHsl(hex, mode = "default") {
   // converts hex color into hsl colour.
   // 'mode' sets whether to return the whole string 'hsl(12, 34%, 12%)', or a single value h = 23
   var result = HEX_REGEX.exec(hex)
@@ -69,39 +69,4 @@ function hexToHsl(hex, mode = "default") {
       returnValue = colorInHSL
   }
   return returnValue
-}
-
-export function getColors(colors) {
-  // gets colours form image, then applies them to document root css variables
-  if (colors.length < 1) {
-    console.error("no colors")
-    return false
-  }
-
-  // setColors(colors);
-  const rootElement = document.getElementById("html")
-  rootElement.setAttribute("data-theme", "generated")
-
-  // These do the actual setting of css variables.
-  // needs to be abstracted into another function so it can be called manually.
-  document.documentElement.style.setProperty("--backgroundColor", colors[0])
-  document.documentElement.style.setProperty("--themeColor", colors[1])
-  document.documentElement.style.setProperty("--themeColor-weaker", colors[0])
-  document.documentElement.style.setProperty("--themeColor-stronger", colors[5])
-  document.documentElement.style.setProperty("--themeColor-weakest", colors[3])
-  document.documentElement.style.setProperty(
-    "--themeColor-strongest",
-    colors[5]
-  )
-  // this bit determines whether text colour should be dark (on a light background), or vice versa
-  if (hexToHsl(colors[0], "l") < 40) {
-    // console.log("less than 40: ", hexToHsl(colors[0], "l"))
-    document.documentElement.style.setProperty(
-      "--textColor",
-      "rgba(229,229,229,.9)"
-    )
-  } else {
-    // console.log("more than 40: ", hexToHsl(colors[0], "l"))
-    document.documentElement.style.setProperty("--textColor", "rgba(0,0,0,.9)")
-  }
 }

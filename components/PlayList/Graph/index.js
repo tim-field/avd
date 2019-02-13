@@ -5,9 +5,10 @@ import {
   VerticalGridLines,
   HorizontalGridLines,
   XAxis,
-  YAxis
+  YAxis,
+  DiscreteColorLegend
 } from "react-vis"
-import Store from "../../../store"
+import Store, { connect } from "../../../store"
 import LineMarkSeries from "./LineMarkSeries"
 import { getGraphTracks } from "../../../actions"
 import "./Graph.scss"
@@ -22,11 +23,11 @@ const seriesState = {
     { x: 30, y: 5 }
   ]),
   valence: withIds("valence", [
-    { x: 1, y: 6 },
-    { x: 15, y: 6 },
-    { x: 30, y: 6 }
+    { x: 1, y: 5 },
+    { x: 15, y: 5 },
+    { x: 30, y: 5 }
   ]),
-  depth: withIds("depth", [{ x: 1, y: 7 }, { x: 15, y: 7 }, { x: 30, y: 7 }])
+  depth: withIds("depth", [{ x: 1, y: 5 }, { x: 15, y: 5 }, { x: 30, y: 5 }])
 }
 
 const yDomain = [1, 11]
@@ -42,7 +43,7 @@ const getQueryData = seriesData => {
   )
 }
 
-const Graph = () => {
+const Graph = ({ colors }) => {
   const [seriesData, setSeriesData] = useState(seriesState)
   const { dispatch } = useContext(Store)
   const getTracksTimeout = useRef()
@@ -80,19 +81,28 @@ const Graph = () => {
         yDomain={yDomain}
         width={300}
         height={300}
-        colorType="linear"
-        colorDomain={[0, 9]}
-        colorRange={["yellow", "orange"]}
+        // colorType="linear"
+        // colorDomain={[0, 3]}
+        // colorRange={[colors.weaker, colors.stronger]}
       >
         <VerticalGridLines />
         <HorizontalGridLines />
         <XAxis />
         <YAxis />
+        <DiscreteColorLegend
+          orientation="horizontal"
+          items={[
+            // set mapStateToProps function below for where these come from
+            { title: "arousal", color: colors[0] },
+            { title: "valence", color: colors[1] },
+            { title: "depth", color: colors[2] }
+          ]}
+        />
         {Object.entries(seriesData).map(([series, data], idx) => {
           return (
             <LineMarkSeries
               key={series}
-              color={idx}
+              color={colors[idx]}
               data={data}
               curve={"curveMonotoneX"}
               onValueDrag={onValueDrag(series)}
@@ -105,4 +115,10 @@ const Graph = () => {
   )
 }
 
-export default Graph
+const mapStateToProps = state => {
+  return {
+    colors: [state.colors.stronger, state.colors.text, state.colors.weaker]
+  }
+}
+
+export default connect({ mapStateToProps })(Graph)

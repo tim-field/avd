@@ -16,15 +16,23 @@ export const initialState = {
     userFilter: [],
     filterUsers: false,
     filterLiked: false
+  },
+  colors: {
+    text: "#333",
+    color: "#b9638b",
+    weakest: "#1d0e1d",
+    weaker: "#410a24",
+    stronger: "#521452",
+    strongest: "#dbbcdb"
   }
 }
 
 export function reducer(state, action) {
   switch (action.type) {
-    case "logout":
+    case "set-loading":
       return {
-        ...initialState,
-        token: null
+        ...state,
+        loading: action.value
       }
     case "set-avd": {
       const { arousal, valence, depth } = action
@@ -41,11 +49,12 @@ export function reducer(state, action) {
         trackId: action.trackId
       }
     }
-    case "set-loading":
+    case "set-colors": {
       return {
         ...state,
-        loading: action.value
+        colors: action.values
       }
+    }
     case "set-loading-playlist":
       return {
         ...state,
@@ -112,6 +121,12 @@ export function reducer(state, action) {
           filterLiked: action.liked
         }
       }
+    case "logout":
+      return {
+        ...initialState,
+        token: null
+      }
+
     default:
       return state
   }

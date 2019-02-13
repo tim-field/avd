@@ -1,4 +1,5 @@
 import api from "../utils/api"
+import { hexToHsl } from "../utils/colors"
 
 export const getTracks = (query = {}) => {
   return (dispatch, state) => {
@@ -125,4 +126,31 @@ export const setFullScreen = (viewMode = true) => {
   } else {
     console.info("full screen not supported")
   }
+}
+
+export const setColors = colors => {
+  const values = {
+    colors,
+    color: colors[1],
+    weaker: colors[0],
+    weakest: colors[3],
+    stronger: colors[5],
+    text:
+      hexToHsl(colors[0], "l") < 40 ? "rgba(229,229,229,.9)" : "rgba(0,0,0,.9)"
+  }
+  setDocumentColors(values)
+  return { type: "set-colors", values }
+}
+
+export function setDocumentColors({ color, weaker, stronger, weakest, text }) {
+  const rootElement = document.getElementById("html")
+  rootElement.setAttribute("data-theme", "generated")
+
+  document.documentElement.style.setProperty("--backgroundColor", weaker)
+  document.documentElement.style.setProperty("--themeColor", color)
+  document.documentElement.style.setProperty("--themeColor-weaker", weaker)
+  document.documentElement.style.setProperty("--themeColor-stronger", stronger)
+  document.documentElement.style.setProperty("--themeColor-weakest", weakest)
+  document.documentElement.style.setProperty("--themeColor-strongest", stronger)
+  document.documentElement.style.setProperty("--textColor", text)
 }

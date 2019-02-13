@@ -8,8 +8,8 @@ import LikeControls from "../LikeControls"
 import Listeners from "../Listeners"
 import Store from "../../store"
 
-import { getColors } from "./colors"
 import "./CurrentTrack.scss"
+import { setColors } from "../../actions"
 
 const saveAVD = debounce(data => {
   return api({ action: "avd/", data })
@@ -146,7 +146,7 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
             }}
           />
           <div className="coverWrap">
-            <ColorExtractor getColors={colors => getColors(colors)}>
+            <ColorExtractor getColors={colors => dispatch(setColors(colors))}>
               <img className="image" src={track.image.url} />
             </ColorExtractor>
             <div className="back">
