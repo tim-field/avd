@@ -121,7 +121,9 @@ create or replace function set_avd_cube()
  language plpgsql
 as $$
 begin
-  new.avd := cube(array[new.arousal, new.valence, new.depth]);
+  if(new.arousal is not null and new.valence is not null and new.depth is not null) then
+  	new.avd := cube(array[new.arousal, new.valence, new.depth]);
+  end if;
   return new;
 end;
 $$;
