@@ -8,41 +8,10 @@ import PlayControls from "../PlayControls"
 import LikeControls from "../LikeControls"
 import Listeners from "../Listeners"
 import Store from "../../store"
-import { getColors } from "./colors"
+
 import "./CurrentTrack.scss"
-// import domtoimage from "dom-to-image";
-
-// function setFavicon(){
-//   const [favIcon, setFavIcon] = useState(null)
-//   if(document.getElementById('logoElement')){
-//     console.log('exists')
-//     document.getElementById('generatedLogo')
-//     .setAttribute(
-//       // 'src', 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=='
-//       'src', encodeSvg(document.getElementById('logoElement').outerHTML)
-//     );
-//     setFavIcon(encodeSvg(document.getElementById('logoElement').outerHTML))
-//   }
-// }
-
-function encodeSvg(element) {
-  if (!document.getElementById("generatedLogo")) {
-    return false
-  }
-  // console.log(document.getElementById("generatedLogo"));
-  const s = new XMLSerializer().serializeToString(
-    document.getElementById("generatedLogo")
-  )
-  var encodedData = window.btoa(unescape(encodeURIComponent(s)))
-  const theSource = document.getElementById("generatedLogo")
-  if (theSource) {
-    domtoimage.toJpeg(theSource, { quality: 1 }).then(dataUrl => {
-      console.log("dataUrl:", dataUrl)
-      // setFavIcon(dataUrl)
-    })
-  }
-  // return 'data:image/svg+xml;base64,' + encodedData;
-}
+import { setColors, setCurrentTrack } from "../../actions"
+import spotifyService from "../../spotify"
 
 const saveAVD = debounce(data => {
   return api({ action: "avd/", data })
@@ -52,9 +21,8 @@ function saveLiked(userId, trackId, isLiked) {
   return api({ action: "avd/like", data: { userId, trackId, liked: isLiked } })
 }
 
-function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
+function CurrentTrack({ track, userId, arousal, valence, depth }) {
   const { dispatch } = useContext(Store)
-  const [track, setTrack] = useState(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [liked, setLiked] = useState(null)
   const [favIcon] = useState()
@@ -78,21 +46,7 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
     return spotifyService({ action: "v1/me/player" })
       .then(spotifyTrack => {
         if (spotifyTrack.item) {
-          const {
-            item: {
-              name,
-              id,
-              artists,
-              album: { images }
-            }
-          } = spotifyTrack
-          setTrack({
-            name,
-            id,
-            artist: artists.map(({ name }) => name).join(", "),
-            image: images.find(i => i.height === 300) || images[1],
-            raw: spotifyTrack
-          })
+          dispatch(setCurrentTrack(spotifyTrack))
           setIsPlaying(spotifyTrack.is_playing)
         }
         timeoutRef.current = setTimeout(doRequest, 5000)
@@ -108,42 +62,34 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
     return () => clearTimeout(timeoutRef.current)
   }, [])
 
-  useEffect(
-    () => {
-      if (track) {
-        document.title = `AVD - ${track.name}`
-        api({ action: `avd?userId=${userId}&trackId=${track.id}` }).then(
-          res => {
-            setAVD({
-              arousal: res.arousal || 0,
-              valence: res.valence || 0,
-              depth: res.depth || 0
-            })
-            setLiked(res.liked)
-          }
-        )
-        api({
-          action: "track",
-          data: {
-            userId,
-            trackId,
-            track: track.raw
-          }
+  useEffect(() => {
+    if (track) {
+      document.title = `AVD - ${track.name}`
+      api({ action: `avd?userId=${userId}&trackId=${track.id}` }).then(res => {
+        setAVD({
+          arousal: res.arousal || 0,
+          valence: res.valence || 0,
+          depth: res.depth || 0
         })
-        dispatch({ type: "set-current-track-id", trackId })
-      }
-    },
-    [trackId]
-  )
+        setLiked(res.liked)
+      })
+      api({
+        action: "track",
+        data: {
+          userId,
+          trackId,
+          track: track.raw
+        }
+      })
+      dispatch({ type: "set-current-track-id", trackId })
+    }
+  }, [trackId])
 
-  useEffect(
-    () => {
-      if (arousal || valence || depth) {
-        saveAVD({ userId, trackId, arousal, valence, depth })
-      }
-    },
-    [arousal, valence, depth]
-  )
+  useEffect(() => {
+    if (arousal || valence || depth) {
+      saveAVD({ userId, trackId, arousal, valence, depth })
+    }
+  }, [arousal, valence, depth])
 
   return track ? (
     <Fragment>
@@ -187,7 +133,7 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
             }}
           />
           <div className="coverWrap">
-            <ColorExtractor getColors={colors => getColors(colors)}>
+            <ColorExtractor getColors={colors => dispatch(setColors(colors))}>
               <img className="image" src={track.image.url} />
             </ColorExtractor>
             <div className="back">

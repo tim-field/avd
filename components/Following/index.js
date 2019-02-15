@@ -13,12 +13,9 @@ function Following({
   // unFollowUser,
   userFilter
 }) {
-  useEffect(
-    () => {
-      loadUsers(user)
-    },
-    [user.id]
-  )
+  useEffect(() => {
+    loadUsers(user)
+  }, [user.id])
 
   // function unFollow(followingId) {
   //   unFollowUser(userId, followingId)

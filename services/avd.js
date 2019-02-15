@@ -32,15 +32,111 @@ function getAVD(trackId, userId) {
   return getRow(sql, [trackId, userId])
 }
 
+async function getGraphTracks({ userId, userFilter, series, filterLiked }) {
+  console.log(series)
+  const seriesCount = series.arousal.length
+  const perStep = 15
+  const each = Array.from({ length: seriesCount - 1 }).map((_, idx) => idx)
+  const steps = each.map(idx => {
+    const step = idx + 1
+    const arousal = `${series.arousal[idx]}::numeric`
+    const arousalEnd = `${series.arousal[idx + 1]}::numeric`
+    const valence = `${series.valence[idx]}::numeric`
+    const valenceEnd = `${series.valence[idx + 1]}::numeric`
+    const depth = `${series.depth[idx]}::numeric`
+    const depthEnd = `${series.depth[idx + 1]}::numeric`
+
+    return `step${step}(a, sa, v, sv, d, sd, id, path) as (
+      select 
+      ${arousal}, -- starting
+      (${arousal} - ${arousalEnd}) / (${perStep}-1), -- each step towards next value
+      ${valence},
+      (${valence} - ${valenceEnd}) / (${perStep}-1),
+      ${depth},
+      (${depth} - ${depthEnd}) / (${perStep}-1),
+      c.id,
+      ${
+        step === 1
+          ? "array[c.id]"
+          : `(select step${step - 1}.path from step${step -
+              1} order by array_length(step${step - 1}.path,1) desc limit 1)`
+      }
+      from closest(${arousal}, ${valence}, ${depth}, ${userId}::text) as c
+    union all
+      select
+      a-sa, sa, v-sv, sv, d-sd, sd, c.id, path || c.id 
+      from step${step}, closest(a-sa, v-sv, d-sd, ${userId}::text, path) as c
+      where array_length(path,1) < ${perStep * step}
+    )`
+  })
+
+  const filterUsers = userFilter ? userFilter.split(",") : []
+  const withUserFilter = filterLiked || filterUsers.length > 0
+
+  const userFilterJoin = withUserFilter
+    ? `join user_track as user_filter on user_filter.track_id = t.id`
+    : ""
+
+  const [userFilterValues, userFilterConditions] = reduceConditionValues(
+    filterUsers,
+    position => `user_filter.user_id = $${position}`
+  )
+
+  const userFilterCondition =
+    userFilterConditions.length > 0
+      ? [`( ${userFilterConditions.join(" or ")} )\n`]
+      : []
+
+  const userFilterLikedCondition = filterLiked
+    ? "user_filter.liked = true" // tracks user has liked
+    : "(ut.liked is null or ut.liked = true)" // tracks user hasn't disliked
+
+  const whereConditions = userFilterCondition.concat(userFilterLikedCondition)
+  const where = whereConditions.length
+    ? `where ${whereConditions.join(" and ")}`
+    : ""
+  const values = withUserFilter ? userFilterValues.concat(userId) : [userId]
+
+  const userIdPosition = values.length
+
+  const selects = each.map(idx => {
+    const step = idx + 1
+    return `select
+        t.id, 
+        ut.liked,
+        coalesce(ut.arousal, t.arousal)::numeric::integer arousal, 
+        coalesce(ut.valence, t.valence)::numeric::integer valence, 
+        coalesce(ut.depth, t.depth)::numeric::integer depth,
+        t.json->'item'->>'name' as name, 
+        t.json->'item'->'artists'->0->>'name' as artist
+      from step${step} 
+      join track t on t.id = step${step}.id
+      left join user_track ut on ut.track_id = t.id and ut.user_id = $${userIdPosition}
+      ${userFilterJoin}
+      ${where}
+      `
+  })
+  const sql = `with recursive ${steps.join(",\n")} 
+  ${selects.join("\n union all \n")}`
+
+  // console.log(sql)
+  // return []
+
+  const dbRes = await query(sql, values)
+  return dbRes.rows.length ? dbRes.rows : []
+}
+
 async function getTracks({
   userId,
   userFilter,
   arousal,
   valence,
   depth,
+  exclude,
   filterLiked
-}) {
+} = {}) {
   const avd = { arousal, valence, depth }
+
   const avdWhere = Object.entries(avd).reduce((conditions, [field, value]) => {
     if (value && value.indexOf(",")) {
       const [min, max] = value
@@ -88,7 +184,11 @@ async function getTracks({
     const values = withUserFilter ? userFilterValues.concat(userId) : [userId]
     const userIdPosition = values.length
 
-    const where = playlistWhere.join(" and ")
+    const excludeTracksConditions = exclude
+      ? exclude.split(",").map(trackId => `t.id != '${trackId}'::text`)
+      : []
+
+    const where = playlistWhere.concat(excludeTracksConditions).join(" and ")
 
     const sql = `
     select
@@ -124,5 +224,6 @@ async function getTracks({
 module.exports = {
   getListeners,
   getTracks,
+  getGraphTracks,
   getAVD
 }
