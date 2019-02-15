@@ -9,7 +9,8 @@ import Listeners from "../Listeners"
 import Store from "../../store"
 
 import "./CurrentTrack.scss"
-import { setColors } from "../../actions"
+import { setColors, setCurrentTrack } from "../../actions"
+import spotifyService from "../../spotify"
 
 const saveAVD = debounce(data => {
   return api({ action: "avd/", data })
@@ -19,9 +20,8 @@ function saveLiked(userId, trackId, isLiked) {
   return api({ action: "avd/like", data: { userId, trackId, liked: isLiked } })
 }
 
-function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
+function CurrentTrack({ track, userId, arousal, valence, depth }) {
   const { dispatch } = useContext(Store)
-  const [track, setTrack] = useState(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [liked, setLiked] = useState(null)
   const timeoutRef = useRef()
@@ -45,21 +45,7 @@ function CurrentTrack({ spotifyService, userId, arousal, valence, depth }) {
     return spotifyService({ action: "v1/me/player" })
       .then(spotifyTrack => {
         if (spotifyTrack.item) {
-          const {
-            item: {
-              name,
-              id,
-              artists,
-              album: { images }
-            }
-          } = spotifyTrack
-          setTrack({
-            name,
-            id,
-            artist: artists.map(({ name }) => name).join(", "),
-            image: images.find(i => i.height === 300) || images[1],
-            raw: spotifyTrack
-          })
+          dispatch(setCurrentTrack(spotifyTrack))
           setIsPlaying(spotifyTrack.is_playing)
         }
         timeoutRef.current = setTimeout(doRequest, 5000)

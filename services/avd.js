@@ -132,11 +132,12 @@ async function getTracks({
   arousal,
   valence,
   depth,
+  exclude,
   filterLiked
-}) {
+} = {}) {
   const avd = { arousal, valence, depth }
 
-  avdWhere = Object.entries(avd).reduce((conditions, [field, value]) => {
+  const avdWhere = Object.entries(avd).reduce((conditions, [field, value]) => {
     if (value && value.indexOf(",")) {
       const [min, max] = value
         .split(",")
@@ -183,7 +184,11 @@ async function getTracks({
     const values = withUserFilter ? userFilterValues.concat(userId) : [userId]
     const userIdPosition = values.length
 
-    const where = playlistWhere.join(" and ")
+    const excludeTracksConditions = exclude
+      ? exclude.split(",").map(trackId => `t.id != '${trackId}'::text`)
+      : []
+
+    const where = playlistWhere.concat(excludeTracksConditions).join(" and ")
 
     const sql = `
     select

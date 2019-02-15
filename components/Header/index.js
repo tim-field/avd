@@ -1,9 +1,13 @@
-import React from "react"
-import "./Header.scss"
+import React, { useContext } from "react"
+import propTypes from "prop-types"
 import classNames from "classnames"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Logo from "./Logo"
 import PlayListSelector from "../PlayListSelector"
+import Store, { connect } from "../../store"
+import { playlistType } from "../../utils/propTypes"
+import { loadPlaylist } from "../../actions"
+import "./Header.scss"
 
 function Header({
   user,
@@ -13,8 +17,11 @@ function Header({
   setFullScreen,
   arousal,
   valence,
-  depth
+  depth,
+  playlists,
+  playlistsLoading
 }) {
+  const { dispatch } = useContext(Store)
   // console.log('doLogout', doLogout)
   return (
     <div className="Header">
@@ -111,7 +118,12 @@ function Header({
       </div>
 
       <div className="appUser">
-        <PlayListSelector displayMode="compressed" />
+        <PlayListSelector
+          playlists={playlists}
+          loading={playlistsLoading}
+          onSelectPlayList={playlistId => dispatch(loadPlaylist(playlistId))}
+          displayMode="compressed"
+        />
 
         {/* <button className="playlistTrigger">
           <FontAwesomeIcon icon="list" />
@@ -163,4 +175,17 @@ function Header({
   )
 }
 
-export default Header
+Header.propTypes = {
+  playlists: propTypes.arrayOf(playlistType),
+  playlistsLoading: propTypes.bool
+}
+
+const mapStateToProps = state => {
+  const { playlists, playlistsLoading } = state
+  return {
+    playlists,
+    playlistsLoading
+  }
+}
+
+export default connect({ mapStateToProps })(Header)

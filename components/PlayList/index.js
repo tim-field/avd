@@ -1,10 +1,5 @@
-import React, {
-  useReducer,
-  Fragment,
-  useEffect,
-  useRef,
-  useContext
-} from "react"
+import React, { Fragment, useEffect, useRef, useContext, useState } from "react"
+import propTypes from "prop-types"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import classNames from "classnames"
 import api from "../../utils/api"
@@ -16,64 +11,17 @@ import Store, { connect } from "../../store"
 import {
   getTracks,
   filterUsers as filterUsersAction,
-  filterLiked as filterLikedAction
+  filterLiked as filterLikedAction,
+  loadPlaylists,
+  loadPlaylist
 } from "../../actions/index"
 import Loading from "../Loading"
 import PlayListSelector from "../PlayListSelector"
 import "./PlayList.scss"
-
-const initialState = {
-  playlists: [],
-  name: "",
-  saved: false,
-  havePlayer: true,
-  showSearch: false,
-  showSave: false
-}
-
-function reducer(state, action) {
-  switch (action.type) {
-    case "set-name":
-      return {
-        ...state,
-        saved: false,
-        name: action.value
-      }
-    case "set-playlists":
-      return {
-        ...state,
-        playlists: action.playlists
-      }
-    case "set-active-playlist":
-      return {
-        ...state,
-        saved: true,
-        name: action.playlist.name,
-        activePlaylist: action.playlist
-      }
-    case "set-have-player":
-      return {
-        ...state,
-        havePlayer: action.value
-      }
-    // @TIM: is this how I set a state??
-    case "set-show-search":
-      return {
-        ...state,
-        showSearch: action.value
-      }
-    case "set-show-save":
-      return {
-        ...state,
-        showSave: action.value
-      }
-    default:
-      return state
-  }
-}
+import { trackType, playlistType } from "../../utils/propTypes"
+import spotifyService from "../../spotify"
 
 function PlayList({
-  spotifyService,
   userId,
   currentTrack,
   tracks,
@@ -81,35 +29,25 @@ function PlayList({
   currentValence = 0,
   currentDepth = 0,
   trackQuery,
-  loading
+  loading,
+  activePlaylist,
+  saved,
+  name,
+  playlists,
+  playlistsLoading,
+  havePlayer
 }) {
   const { userFilter, filterUsers, liked: filterLiked, ...avd } = trackQuery
-  const [
-    {
-      name,
-      playlists,
-      activePlaylist,
-      saved,
-      havePlayer,
-      showSearch,
-      showSave
-    },
-    dispatch
-  ] = useReducer(reducer, initialState)
-  const { dispatch: appDispatch } = useContext(Store)
+  const currentTrackId = currentTrack ? currentTrack.id : null
+  const [showSearch, setShowSearch] = useState(false)
+  const [showSave, setShowSave] = useState(false)
+  const { dispatch } = useContext(Store)
   const getTracksTimeout = useRef()
 
-  async function loadPlaylists() {
-    const usersPlaylists = await api({
-      action: `playlists?userId=${userId}`
-    })
-    dispatch({
-      type: "set-playlists",
-      playlists: usersPlaylists
-    })
-  }
-
   async function savePlaylist() {
+    if (!activePlaylist) {
+      return createPlaylist()
+    }
     await Promise.all([
       spotifyService({
         action: `v1/playlists/${activePlaylist.id}`,
@@ -130,7 +68,9 @@ function PlayList({
       })
     ])
 
-    loadPlaylists()
+    setShowSave(false)
+
+    dispatch(loadPlaylists(userId))
   }
 
   async function createPlaylist() {
@@ -162,58 +102,13 @@ function PlayList({
       method: "POST"
     })
 
-    loadPlaylists()
+    setShowSave(false)
+    dispatch(loadPlaylists(userId))
   }
 
   function playPlaylist() {
     if (activePlaylist) {
-      spotifyService({
-        action: "v1/me/player/play",
-        data: { context_uri: activePlaylist.uri },
-        method: "PUT"
-      })
-    }
-  }
-
-  function loadPlaylist(playlistId) {
-    if (playlistId) {
-      appDispatch({
-        type: "set-loading-playlist",
-        value: true
-      })
-      api({ action: `/playlist?id=${playlistId}` }).then(res => {
-        appDispatch({
-          type: "set-track-query",
-          query: res.trackQuery || {
-            // handles legacy table columns
-            arousal: res.arousal,
-            valence: res.valence,
-            depth: res.depth
-          }
-        })
-      })
-
-      spotifyService({
-        action: `v1/playlists/${playlistId}`
-      }).then(playlist => {
-        console.log("playlist: ", playlist)
-        appDispatch({
-          type: "set-tracks",
-          tracks: playlist.tracks.items.map(({ track }) => ({
-            name: track.name,
-            id: track.id,
-            artist: track.artists.map(artist => artist.name).join(", ")
-          }))
-        })
-        dispatch({
-          type: "set-active-playlist",
-          playlist
-        })
-        appDispatch({
-          type: "set-loading-playlist",
-          value: false
-        })
-      })
+      playTrack(tracks[0].id)
     }
   }
 
@@ -248,7 +143,7 @@ function PlayList({
     clearTimeout(getTracksTimeout.current)
     getTracksTimeout.current = setTimeout(
       () =>
-        appDispatch(
+        dispatch(
           getTracks({
             userIds: userFilter,
             ...avd,
@@ -271,8 +166,8 @@ function PlayList({
         ? [Math.max(currentDepth - 1, 0), Math.min(currentDepth + 1, 11)]
         : [0, 0]
     }
-    appDispatch({ type: "set-track-query", query: updated })
-    appDispatch(getTracks(updated))
+    dispatch({ type: "set-track-query", query: updated })
+    dispatch(getTracks(updated, true))
   }
 
   function setMin(key, value) {
@@ -280,7 +175,7 @@ function PlayList({
       ...avd,
       [key]: [Number(value), Math.max(Number(value), avd[key][1])]
     }
-    appDispatch({ type: "set-track-query", query: updated })
+    dispatch({ type: "set-track-query", query: updated })
     getTracksDebounced(updated)
   }
 
@@ -289,12 +184,12 @@ function PlayList({
       ...avd,
       [key]: [Math.min(avd[key][0], Number(value)), Number(value)]
     }
-    appDispatch({ type: "set-track-query", query: updated })
+    dispatch({ type: "set-track-query", query: updated })
     getTracksDebounced(updated)
   }
 
   useEffect(() => {
-    loadPlaylists()
+    dispatch(loadPlaylists(userId))
     getTracksDebounced(avd)
   }, [userId])
 
@@ -308,14 +203,9 @@ function PlayList({
             playlists={playlists}
             activePlayList={activePlaylist && activePlaylist.id}
             displayMode="expanded"
-            loading={false} // @TIM: how can i discover when playlists are being retrieved?
-            onSelectPlayList={value => loadPlaylist(value)}
-            onSelectCreatePlayList={() =>
-              dispatch({
-                type: "set-show-search",
-                value: !showSearch
-              })
-            }
+            loading={playlistsLoading}
+            onSelectPlayList={id => dispatch(loadPlaylist(id))}
+            onSelectCreatePlayList={() => setShowSearch(!showSearch)}
           />
           {playlists.length > 0 && (
             <div className="PlayListSelect">
@@ -386,21 +276,14 @@ function PlayList({
             // )
           }
 
-          {currentTrack &&
+          {currentTrackId &&
             (currentArousal > 0 || currentDepth > 0 || currentValence > 0) && (
-              <button onClick={() => findSimilar()}>
-                Find Similar to this track
-              </button>
+              <button onClick={findSimilar}>Find Similar to this track</button>
             )}
           <div className="searchButtonWrap">
             <button
               className={classNames(showSearch ? "active" : "")}
-              onClick={() =>
-                dispatch({
-                  type: "set-show-search",
-                  value: !showSearch
-                })
-              }
+              onClick={() => setShowSearch(!showSearch)}
             >
               Create New Playlist
             </button>
@@ -410,14 +293,7 @@ function PlayList({
           <div className="PlayListControlsWrap dialog">
             <h3>Search</h3>
             <div className="closeButton">
-              <button
-                onClick={() =>
-                  dispatch({
-                    type: "set-show-search",
-                    value: false
-                  })
-                }
-              >
+              <button onClick={() => setShowSearch(false)}>
                 <FontAwesomeIcon icon="times" />
               </button>
             </div>
@@ -451,7 +327,7 @@ function PlayList({
                     type="checkbox"
                     checked={filterLiked}
                     onChange={({ target: { checked } }) =>
-                      appDispatch(filterLikedAction(checked))
+                      dispatch(filterLikedAction(checked))
                     }
                   />
                   Liked
@@ -461,7 +337,7 @@ function PlayList({
                     type="checkbox"
                     checked={filterUsers}
                     onChange={({ target: { checked } }) =>
-                      appDispatch(filterUsersAction(checked))
+                      dispatch(filterUsersAction(checked))
                     }
                   />
                   Filter Users
@@ -475,14 +351,7 @@ function PlayList({
           <div className="PlayListsEdit edit dialog">
             <h3>Save playlist</h3>
             <div className="closeButton">
-              <button
-                onClick={() =>
-                  dispatch({
-                    type: "set-show-save",
-                    value: false
-                  })
-                }
-              >
+              <button onClick={() => setShowSave(false)}>
                 <FontAwesomeIcon icon="times" />
               </button>
             </div>
@@ -495,7 +364,7 @@ function PlayList({
                     type="text"
                     value={name || "unnamed playlist"}
                     onChange={({ target: { value } }) =>
-                      dispatch({ type: "set-name", value })
+                      dispatch({ type: "set-playlist-name", value })
                     }
                   />
                 </div>
@@ -505,7 +374,9 @@ function PlayList({
                 {!activePlaylist && name && (
                   <button onClick={createPlaylist}>Create Playlist</button>
                 )}
-                <button onClick={() => savePlaylist()}>Save Playlist</button>
+                {activePlaylist && (
+                  <button onClick={savePlaylist}>Save Playlist</button>
+                )}
               </div>
             </div>
           </div>
@@ -544,12 +415,7 @@ function PlayList({
                 {tracks.length > 0 && (
                   <button
                     className={classNames(showSave ? "active" : "")}
-                    onClick={() =>
-                      dispatch({
-                        type: "set-show-save",
-                        value: !showSave
-                      })
-                    }
+                    onClick={() => setShowSave(!showSave)}
                   >
                     Save Playlist...
                   </button>
@@ -578,12 +444,14 @@ function PlayList({
                   return (
                     <tr
                       key={`${track.id}_${idx}`}
-                      className={track.id === currentTrack ? "active" : ""}
+                      className={track.id === currentTrackId ? "active" : ""}
                     >
                       <td>
                         <button onClick={() => playTrack(track.id)}>
                           <FontAwesomeIcon
-                            icon={track.id === currentTrack ? "pause" : "play"}
+                            icon={
+                              track.id === currentTrackId ? "pause" : "play"
+                            }
                           />
                         </button>
                       </td>
@@ -604,16 +472,39 @@ function PlayList({
   )
 }
 
+PlayList.propTypes = {
+  userId: propTypes.string.isRequired,
+  currentTrack: trackType,
+  tracks: propTypes.arrayOf(trackType),
+  currentArousal: propTypes.number,
+  currentValence: propTypes.number,
+  currentDepth: propTypes.number,
+  trackQuery: propTypes.object,
+  loading: propTypes.bool,
+  activePlaylist: playlistType,
+  name: propTypes.string,
+  saved: propTypes.bool,
+  playlists: propTypes.arrayOf(playlistType),
+  playlistsLoading: propTypes.bool,
+  havePlayer: propTypes.bool
+}
+
 const mapStateToProps = state => {
   const {
     userId,
-    trackId: currentTrack,
+    currentTrack,
     arousal: currentArousal,
     valence: currentValence,
     depth: currentDepth,
     tracks,
     trackQuery,
-    loadingPlaylist: loading
+    loadingPlaylist: loading,
+    activePlaylist,
+    playlistName: name,
+    playlistSaved: saved,
+    playlists,
+    playlistsLoading,
+    havePlayer
   } = state
   return {
     userId,
@@ -623,7 +514,13 @@ const mapStateToProps = state => {
     currentDepth,
     tracks,
     trackQuery,
-    loading
+    loading,
+    activePlaylist,
+    name,
+    saved,
+    playlists,
+    playlistsLoading,
+    havePlayer
   }
 }
 

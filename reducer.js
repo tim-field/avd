@@ -1,9 +1,14 @@
+import { omit } from "ramda"
 export const initialState = {
   arousal: 0,
   valence: 0,
   depth: 0,
   loading: false,
   loadingPlaylist: false,
+  playlistName: "",
+  playlistSaved: false,
+  playlistsLoading: false,
+  playlists: [],
   token: localStorage.getItem("access_token"),
   userId: localStorage.getItem("userId"),
   following: [],
@@ -24,7 +29,8 @@ export const initialState = {
     weaker: "#410a24",
     stronger: "#521452",
     strongest: "#dbbcdb"
-  }
+  },
+  havePlayer: true
 }
 
 export function reducer(state, action) {
@@ -43,12 +49,43 @@ export function reducer(state, action) {
         depth
       }
     }
-    case "set-current-track-id": {
+    case "set-playlist-name":
       return {
         ...state,
-        trackId: action.trackId
+        playlistName: action.value,
+        playlistSaved: false
       }
+    case "set-active-playlist":
+      return {
+        ...state,
+        playlistSaved: true,
+        playlistName: action.playlist.name,
+        activePlaylist: action.playlist
+      }
+    case "set-playlists":
+      return {
+        ...state,
+        playlists: action.playlists
+      }
+    case "playlists-loading":
+      return {
+        ...state,
+        playlistsLoading: action.value
+      }
+    case "set-current-track": {
+      return action.track
+        ? {
+            ...state,
+            trackId: action.track && action.track.id,
+            currentTrack: action.track
+          }
+        : omit(["trackId", "currentTrack"], state)
     }
+    case "set-have-player":
+      return {
+        ...state,
+        havePlayer: action.value
+      }
     case "set-colors": {
       return {
         ...state,
@@ -91,12 +128,13 @@ export function reducer(state, action) {
             : state.trackQuery.userFilter.filter(id => id !== action.userId)
         }
       }
-    case "set-tracks":
+    case "set-tracks": {
       return {
         ...state,
         playlistSaved: false,
         tracks: action.tracks
       }
+    }
     case "set-track-query":
       return {
         ...state,

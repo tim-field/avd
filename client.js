@@ -15,7 +15,7 @@ import {
   faCaretDown,
   faCaretUp
 } from "@fortawesome/free-solid-svg-icons"
-import request, { fetchToken, AUTH_URL } from "./utils/spotify"
+import { fetchToken, AUTH_URL } from "./utils/spotify"
 import CurrentTrack from "./components/CurrentTrack"
 import PlayList from "./components/PlayList"
 import Loading from "./components/Loading"
@@ -29,6 +29,7 @@ import "./style.css"
 import "./styles/_global.scss"
 import "./components/Header/Logo.scss"
 import { setTheme, setDisplayMode, setFullScreen } from "./actions"
+import spotifyService, { setTokenLocalStorage } from "./spotify"
 
 library.add(
   faThumbsUp,
@@ -45,27 +46,17 @@ library.add(
   faCaretUp
 )
 
-function setTokenLocalStorage({ access_token, expires_in, refresh_token }) {
-  if (access_token) {
-    localStorage.setItem("access_token", access_token)
-  }
-  // if (expires_in) {
-  //   localStorage.setItem("expires_in", Date.now() + expires_in * 1000)
-  // }
-  if (refresh_token) {
-    localStorage.setItem("refresh_token", refresh_token)
-  }
-}
-
-const spotifyService = request(
-  () => localStorage.getItem("access_token"),
-  () => localStorage.getItem("refresh_token"),
-  setTokenLocalStorage
-)
-
 function AVD() {
   const { state, dispatch } = useContext(Store)
-  const { token, userId, loading, arousal, valence, depth } = state
+  const {
+    token,
+    currentTrack,
+    userId,
+    loading,
+    arousal,
+    valence,
+    depth
+  } = state
 
   useEffect(() => {
     const url = new URL(location)
@@ -117,13 +108,13 @@ function AVD() {
             depth={depth}
           />
           <CurrentTrack
-            spotifyService={spotifyService}
+            track={currentTrack}
             userId={userId}
             arousal={arousal}
             valence={valence}
             depth={depth}
           />
-          <PlayList spotifyService={spotifyService} />
+          <PlayList />
         </Fragment>
       )}
       {loading && <Loading />}
