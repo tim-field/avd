@@ -1,6 +1,6 @@
 import React from "react"
 // import base64 from "base-64";
-import Favicon from "react-favicon"
+// import Favicon from "react-favicon"
 import defaultFavicon from "../../assets/defaultFavicon.jpeg"
 // import "./Header.scss"
 
