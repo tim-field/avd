@@ -61,11 +61,11 @@ async function getGraphTracks({ userId, userFilter, series, filterLiked }) {
           : `(select step${step - 1}.path from step${step -
               1} order by array_length(step${step - 1}.path,1) desc limit 1)`
       }
-      from closest(${arousal}, ${valence}, ${depth}, ${userId}::text) as c
+      from closest(${arousal}, ${valence}, ${depth}, '${userId}'::text) as c
     union all
       select
       a-sa, sa, v-sv, sv, d-sd, sd, c.id, path || c.id 
-      from step${step}, closest(a-sa, v-sv, d-sd, ${userId}::text, path) as c
+      from step${step}, closest(a-sa, v-sv, d-sd, '${userId}'::text, path) as c
       where array_length(path,1) < ${perStep * step}
     )`
   })
