@@ -13,7 +13,7 @@ function Control({
   max = 11
 }) {
   return (
-    <fieldset className="control">
+    <fieldset className={`control ${value > 0 ? "hasValue" : "noValue"}`}>
       <legend>{label}</legend>
       <div className="inputNumberWrap">
         <input

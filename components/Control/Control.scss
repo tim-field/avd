@@ -70,11 +70,28 @@
       margin: 0.5rem auto;
       transform: rotate(-90deg);
       // width: unset;
-      height: 2.1rem; // alows for shadow in ms
+      // height: 2.1rem; // alows for shadow in ms
+      height: 70%;
+      width: 70%;
     }
     label {
       font-size: 0.75rem;
       color: var(--themeColor-weakest);
+    }
+  }
+  &.hasValue {
+    .inputRangeWrap {
+      background: var(--textColor);
+      transition: background-color 0.3s ease;
+    }
+  }
+  &.noValue {
+    // background: var(--backgroundColor);
+    .inputRangeWrap {
+      background: var(--themeColor-strongest);
+      // mix-blend-mode: multiply;
+      background-blend-mode: multiply;
+      transition: background-color 0.3s ease;
     }
   }
 }
@@ -188,6 +205,7 @@ input[type="range"]:focus::-webkit-slider-runnable-track {
 input[type="range"]::-moz-range-track {
   height: $trackShortSide;
   width: $trackLongSide;
+
   cursor: pointer;
   animate: 0.2s;
   box-shadow: $trackShadow;
@@ -199,12 +217,13 @@ input[type="range"][orient="vertical"]::-moz-range-track {
   width: $trackShortSide;
   height: $trackLongSideVertical;
   background: $trackBackgroundVertical;
+  margin-top: 1rem;
 }
 input[type="range"]::-moz-range-thumb {
   box-shadow: $thumbShadow;
   border: $thumbBorder;
-  height: $thumbDiameter;
-  width: $thumbDiameter * 2;
+  height: $thumbDiameter * 2;
+  width: $thumbDiameter; // * 2
   border-radius: $thumbBorderRadius;
   background: $thumbBackground;
   cursor: pointer;
@@ -215,6 +234,8 @@ input[type="range"]::-moz-range-thumb {
 }
 input[type="range"][orient="vertical"]::-moz-range-thumb {
   background: $thumbBackgroundVertical;
+  width: $thumbDiameter * 2;
+  height: $thumbDiameter; // * 2
 }
 .controls input[type="range"]::-moz-range-thumb,
 .controls input[type="range"][orient="vertical"]::-moz-range-thumb {
