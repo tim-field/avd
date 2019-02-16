@@ -1,54 +1,33 @@
-import React, { useEffect, useReducer, useContext } from "react"
+import React, { useEffect, useContext } from "react"
+import propTypes from "prop-types"
 import api from "../../utils/api"
-import Store from "../../store"
+import { userType } from "../../utils/propTypes"
+import Store, { connect } from "../../store"
 import UserImage from "../UserImage"
 import "./Listeners.scss"
+import { loadListeners } from "../../actions"
 
-function reducer(state, action) {
-  switch (action.type) {
-    case "set-users":
-      return {
-        ...state,
-        loading: false,
-        users: action.users
-      }
-    case "loading":
-      return {
-        ...state,
-        loading: action.value
-      }
-    default:
-      return state
-  }
-}
-
-const initialState = { users: [], loading: false }
-
-function Listeners({ trackId, userId }) {
-  const { dispatch: appDispatch } = useContext(Store)
-  const [{ users }, dispatch] = useReducer(reducer, initialState)
+function Listeners({ trackId, userId, listeners }) {
+  const { dispatch } = useContext(Store)
   useEffect(() => {
     if (trackId) {
-      dispatch({ type: "set-loading", value: true })
-      api({ action: `avd/users?trackId=${trackId}` }).then(res => {
-        dispatch({ type: "set-users", users: res })
-      })
+      dispatch(loadListeners(trackId))
     }
   }, [trackId])
 
   function followUser(followId) {
     if (userId !== followId) {
       api({ action: "/user/follow", data: { userId, followId } }).then(
-        following => appDispatch({ type: "set-following", following })
+        following => dispatch({ type: "set-following", following })
       )
     }
   }
 
-  return users.length ? (
+  return listeners.length ? (
     <div className="Listeners">
       <h4>Listeners</h4>
       <ul className="ListenersList">
-        {users.map(user => (
+        {listeners.map(user => (
           <li key={user.id} className="avatar">
             <button onClick={() => followUser(user.id)}>
               <UserImage user={user} />
@@ -64,4 +43,14 @@ function Listeners({ trackId, userId }) {
   )
 }
 
-export default Listeners
+Listeners.propTypes = {
+  trackId: propTypes.string.isRequired,
+  userId: propTypes.string.isRequired,
+  listeners: propTypes.arrayOf(userType)
+}
+
+const mapStateToProps = ({ listeners }) => ({
+  listeners
+})
+
+export default connect({ mapStateToProps })(Listeners)
