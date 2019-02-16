@@ -489,39 +489,36 @@ PlayList.propTypes = {
   havePlayer: propTypes.bool
 }
 
-const mapStateToProps = state => {
-  const {
-    userId,
-    currentTrack,
-    arousal: currentArousal,
-    valence: currentValence,
-    depth: currentDepth,
-    tracks,
-    trackQuery,
-    loadingPlaylist: loading,
-    activePlaylist,
-    playlistName: name,
-    playlistSaved: saved,
-    playlists,
-    playlistsLoading,
-    havePlayer
-  } = state
-  return {
-    userId,
-    currentTrack,
-    currentArousal,
-    currentValence,
-    currentDepth,
-    tracks,
-    trackQuery,
-    loading,
-    activePlaylist,
-    name,
-    saved,
-    playlists,
-    playlistsLoading,
-    havePlayer
-  }
-}
+const mapStateToProps = ({
+  userId,
+  currentTrack,
+  arousal: currentArousal,
+  valence: currentValence,
+  depth: currentDepth,
+  tracks,
+  trackQuery,
+  loadingPlaylist: loading,
+  activePlaylist,
+  playlistName: name,
+  playlistSaved: saved,
+  playlists,
+  playlistsLoading,
+  havePlayer
+}) => ({
+  userId,
+  currentTrack,
+  currentArousal,
+  currentValence,
+  currentDepth,
+  tracks,
+  trackQuery,
+  loading,
+  activePlaylist,
+  name,
+  saved,
+  playlists,
+  playlistsLoading,
+  havePlayer
+})
 
 export default connect({ mapStateToProps })(PlayList)

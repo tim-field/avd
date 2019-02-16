@@ -30,7 +30,8 @@ export const initialState = {
     stronger: "#521452",
     strongest: "#dbbcdb"
   },
-  havePlayer: true
+  havePlayer: true,
+  listeners: []
 }
 
 export function reducer(state, action) {
@@ -49,6 +50,17 @@ export function reducer(state, action) {
         depth
       }
     }
+    case "set-listeners":
+      return {
+        ...state,
+        loadingListeners: false,
+        listeners: action.listeners
+      }
+    case "set-loading-listeners":
+      return {
+        ...state,
+        loadingListeners: action.value
+      }
     case "set-playlist-name":
       return {
         ...state,

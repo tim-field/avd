@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState, Fragment, useRef } from "react"
-import debounce from "lodash.debounce"
+import propTypes from "prop-types"
 import { ColorExtractor } from "react-color-extractor"
 // import Favicon from 'react-favicon';
 import Control from "../Control"
@@ -10,12 +10,9 @@ import Listeners from "../Listeners"
 import Store from "../../store"
 
 import "./CurrentTrack.scss"
-import { setColors, setCurrentTrack } from "../../actions"
+import { setColors, setCurrentTrack, loadListeners } from "../../actions"
 import spotifyService from "../../spotify"
-
-const saveAVD = debounce(data => {
-  return api({ action: "avd/", data })
-}, 300)
+import { trackType } from "../../utils/propTypes"
 
 function saveLiked(userId, trackId, isLiked) {
   return api({ action: "avd/like", data: { userId, trackId, liked: isLiked } })
@@ -27,28 +24,45 @@ function CurrentTrack({ track, userId, arousal, valence, depth }) {
   const [liked, setLiked] = useState(null)
   const [favIcon] = useState()
   const timeoutRef = useRef()
+  const debounceSaveRef = useRef()
   const trackId = track && track.id
 
-  function setAVD(updates) {
-    dispatch({
+  const setAVD = (updates = {}) => {
+    const data = {
       valence,
       depth,
       arousal,
-      ...updates,
+      ...updates
+    }
+    dispatch({
+      ...data,
       type: "set-avd"
     })
+
+    clearTimeout(debounceSaveRef.current)
+    debounceSaveRef.current = setTimeout(() => {
+      api({
+        action: "avd/",
+        method: "POST",
+        data: {
+          ...data,
+          userId,
+          trackId
+        }
+      })
+      dispatch(loadListeners(trackId))
+    }, 400)
   }
 
   const doRequest = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-    }
+    clearTimeout(timeoutRef.current)
     return spotifyService({ action: "v1/me/player" })
       .then(spotifyTrack => {
         if (spotifyTrack.item) {
           dispatch(setCurrentTrack(spotifyTrack))
           setIsPlaying(spotifyTrack.is_playing)
         }
+        // todo use track length here
         timeoutRef.current = setTimeout(doRequest, 5000)
       })
       .catch(e => {
@@ -58,14 +72,16 @@ function CurrentTrack({ track, userId, arousal, valence, depth }) {
   }
 
   useEffect(() => {
-    doRequest()
-    return () => clearTimeout(timeoutRef.current)
-  }, [])
-
-  useEffect(() => {
     if (track) {
       document.title = `AVD - ${track.name}`
-      api({ action: `avd?userId=${userId}&trackId=${track.id}` }).then(res => {
+      api({
+        action: "avd",
+        method: "GET",
+        data: {
+          userId,
+          trackId: track.id
+        }
+      }).then(res => {
         setAVD({
           arousal: res.arousal || 0,
           valence: res.valence || 0,
@@ -83,13 +99,12 @@ function CurrentTrack({ track, userId, arousal, valence, depth }) {
       })
       dispatch({ type: "set-current-track-id", trackId })
     }
-  }, [trackId])
+  }, [trackId, userId])
 
   useEffect(() => {
-    if (arousal || valence || depth) {
-      saveAVD({ userId, trackId, arousal, valence, depth })
-    }
-  }, [arousal, valence, depth])
+    doRequest()
+    return () => clearTimeout(timeoutRef.current)
+  }, [])
 
   return track ? (
     <Fragment>
@@ -247,6 +262,14 @@ function CurrentTrack({ track, userId, arousal, valence, depth }) {
       </div>
     </div>
   )
+}
+
+CurrentTrack.propTypes = {
+  track: trackType,
+  userId: propTypes.string.isRequired,
+  arousal: propTypes.number,
+  valence: propTypes.number,
+  depth: propTypes.number
 }
 
 export default CurrentTrack

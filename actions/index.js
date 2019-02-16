@@ -136,71 +136,74 @@ export const setCurrentTrack = spotifyTrack => {
   }
 }
 
-export const loadPlaylists = userId => {
-  return dispatch => {
-    dispatch({ type: "playlists-loading", value: true })
-    api({
-      action: "playlists",
-      data: {
-        userId
-      },
-      method: "GET"
+export const loadPlaylists = userId => dispatch => {
+  dispatch({ type: "playlists-loading", value: true })
+  api({
+    action: "playlists",
+    data: {
+      userId
+    },
+    method: "GET"
+  })
+    .then(usersPlaylists => {
+      dispatch({ type: "playlists-loading", value: false })
+      dispatch({
+        type: "set-playlists",
+        playlists: usersPlaylists
+      })
     })
-      .then(usersPlaylists => {
-        dispatch({ type: "playlists-loading", value: false })
-        dispatch({
-          type: "set-playlists",
-          playlists: usersPlaylists
-        })
+    .catch(e => {
+      console.error(e)
+      dispatch({ type: "playlists-loading", value: false })
+    })
+}
+
+export const loadPlaylist = playlistId => dispatch => {
+  if (playlistId) {
+    dispatch({
+      type: "set-loading-playlist",
+      value: true
+    })
+    api({ action: `/playlist?id=${playlistId}` }).then(res => {
+      dispatch({
+        type: "set-track-query",
+        query: res.trackQuery || {
+          // handles legacy table columns
+          arousal: res.arousal,
+          valence: res.valence,
+          depth: res.depth
+        }
       })
-      .catch(e => {
-        console.error(e)
-        dispatch({ type: "playlists-loading", value: false })
+    })
+
+    spotifyService({
+      action: `v1/playlists/${playlistId}`
+    }).then(playlist => {
+      dispatch({
+        type: "set-tracks",
+        tracks: playlist.tracks.items.map(({ track }) => ({
+          name: track.name,
+          id: track.id,
+          artist: track.artists.map(artist => artist.name).join(", ")
+        }))
       })
+      dispatch({
+        type: "set-active-playlist",
+        playlist
+      })
+      dispatch({
+        type: "set-loading-playlist",
+        value: false
+      })
+    })
   }
 }
 
-export const loadPlaylist = playlistId => {
-  return dispatch => {
-    if (playlistId) {
-      dispatch({
-        type: "set-loading-playlist",
-        value: true
-      })
-      api({ action: `/playlist?id=${playlistId}` }).then(res => {
-        dispatch({
-          type: "set-track-query",
-          query: res.trackQuery || {
-            // handles legacy table columns
-            arousal: res.arousal,
-            valence: res.valence,
-            depth: res.depth
-          }
-        })
-      })
-
-      spotifyService({
-        action: `v1/playlists/${playlistId}`
-      }).then(playlist => {
-        dispatch({
-          type: "set-tracks",
-          tracks: playlist.tracks.items.map(({ track }) => ({
-            name: track.name,
-            id: track.id,
-            artist: track.artists.map(artist => artist.name).join(", ")
-          }))
-        })
-        dispatch({
-          type: "set-active-playlist",
-          playlist
-        })
-        dispatch({
-          type: "set-loading-playlist",
-          value: false
-        })
-      })
-    }
-  }
+export const loadListeners = trackId => dispatch => {
+  dispatch({ type: "set-loading-listeners", value: true })
+  api({ action: `avd/users?trackId=${trackId}` }).then(listeners => {
+    dispatch({ type: "set-listeners", listeners })
+  })
 }
 
 export const setTheme = theme => {

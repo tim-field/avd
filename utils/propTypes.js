@@ -17,3 +17,13 @@ export const playlistType = propTypes.shape({
   uri: propTypes.string,
   name: propTypes.string.isRequired
 })
+
+export const userType = propTypes.shape({
+  id: propTypes.string.isRequired,
+  display_name: propTypes.string.isRequired,
+  images: propTypes.arrayOf(
+    propTypes.shape({
+      url: propTypes.string
+    })
+  )
+})

@@ -1,5 +1,6 @@
 import React from "react"
 import { lensPath, view } from "ramda"
+import { userType } from "../../utils/propTypes"
 import "./UserImage.scss"
 
 const imagePath = lensPath(["images", 0, "url"])
@@ -16,6 +17,10 @@ function UserImage({ user }) {
       />
     </div>
   )
+}
+
+UserImage.propTypes = {
+  user: userType
 }
 
 export default UserImage
