@@ -1,7 +1,10 @@
+import "./Header.scss"
 import React, { useContext } from "react"
 import propTypes from "prop-types"
 import classNames from "classnames"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+// import domtoimage from "dom-to-image"
+
 import Logo from "./Logo"
 import PlayListSelector from "../PlayListSelector"
 import Store, { connect } from "../../store"
@@ -23,12 +26,33 @@ function Header({
 }) {
   const { dispatch } = useContext(Store)
   // console.log('doLogout', doLogout)
+  // function svg2Image(element = "generatedLogo") {
+  //   if (!element) {
+  //     return false
+  //   }
+  //   const theDom = document.getElementById(element)
+  //   const image = domtoimage.toJpeg(theDom, { quality: 1 }).then(dataUrl => {
+  //     // console.log('dataUrl:', dataUrl)
+  //     setFavIcon(dataUrl)
+  //     return dataUrl
+  //   })
+  //   return "data:image/svg+xml;base64," + image
+  // }
+
   return (
     <div className="Header">
       <div className="appTitle">
         <span>A / V / D</span>
         <div className="logoWrap">
-          <Logo fill="blue" arousal={arousal} valence={valence} depth={depth} />
+          <Logo
+            fill="blue"
+            arousal={arousal}
+            valence={valence}
+            depth={depth}
+            // favIcon={favIcon}
+            generateImage={false}
+            // svg2Image={svg2Image}
+          />
         </div>
       </div>
       <div className="about">
@@ -125,43 +149,6 @@ function Header({
           displayMode="compressed"
         />
 
-        {/* <button className="playlistTrigger">
-          <FontAwesomeIcon icon="list" />
-          <FontAwesomeIcon icon="play" />
-          <div className="playlistText">
-            <span>Select playlist</span>
-            <FontAwesomeIcon icon="caret-down" />
-          </div>
-          <div className="playlistItems">
-            <div className="triangle">
-              <FontAwesomeIcon icon="caret-up" size="2x" />
-            </div>
-            <div
-              className="playlistItem"
-              onClick={() => console.log("TODO: hook up the playlist trigger")}
-            >
-              Chill and Positive
-            </div>
-            <div
-              className="playlistItem"
-              onClick={() => console.log("TODO: hook up the playlist trigger")}
-            >
-              Upbeat Vibes
-            </div>
-            <div
-              className="playlistItem"
-              onClick={() => console.log("TODO: hook up the playlist trigger")}
-            >
-              Melancholy & Weird
-            </div>
-            <div
-              className="playlistItem new"
-              onClick={() => console.log("TODO: hook up the playlist trigger")}
-            >
-              + New Playlist
-            </div>
-          </div>
-        </button> */}
         <button className="logout" onClick={doLogout}>
           Logout
         </button>

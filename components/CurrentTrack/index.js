@@ -1,6 +1,7 @@
 import React, { useEffect, useContext, useState, Fragment, useRef } from "react"
 import propTypes from "prop-types"
 import { ColorExtractor } from "react-color-extractor"
+// import Favicon from 'react-favicon';
 import Control from "../Control"
 import api from "../../utils/api"
 import PlayControls from "../PlayControls"
@@ -21,6 +22,7 @@ function CurrentTrack({ track, userId, arousal, valence, depth }) {
   const { dispatch } = useContext(Store)
   const [isPlaying, setIsPlaying] = useState(false)
   const [liked, setLiked] = useState(null)
+  const [favIcon] = useState()
   const timeoutRef = useRef()
   const debounceSaveRef = useRef()
   const trackId = track && track.id
@@ -240,6 +242,15 @@ function CurrentTrack({ track, userId, arousal, valence, depth }) {
             </div>
             <Listeners trackId={trackId} userId={userId} />
           </Fragment>
+        )}
+        {document.getElementById("generatedLogo") && (
+          <div
+          //dangerouslySetInnerHTML={{
+          // __html: svgString2Image(document.getElementById("generatedLogo").src)
+          //}}
+          >
+            <img id="testImage" />
+          </div>
         )}
       </div>
     </Fragment>

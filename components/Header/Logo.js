@@ -1,4 +1,7 @@
 import React from "react"
+// import base64 from "base-64";
+// import Favicon from "react-favicon"
+import defaultFavicon from "../../assets/defaultFavicon.jpeg"
 // import "./Header.scss"
 
 function getTransform(sourceValue) {
@@ -25,10 +28,31 @@ function getTransform(sourceValue) {
   }
 }
 
-function Logo({ fill, arousal, valence, depth }) {
+function Logo({
+  fill,
+  arousal,
+  valence,
+  depth,
+  generateImage,
+  favIcon,
+  svg2Image
+}) {
+  // TEST THE LOGO GENERATION
+  if (generateImage && document.getElementById("logoElement")) {
+    document
+      .getElementById("generatedLogo")
+      .setAttribute(
+        "src",
+        encodeSvg(document.getElementById("logoElement").outerHTML)
+      )
+    svg2Image("generatedLogo")
+  }
   return (
-    <div className="Logo">
-      <svg width="256px" height="256px" viewBox="0 0 256 256">
+    <div
+      className="Logo"
+      onClick={() => generateImage && svg2Image("generatedLogo")}
+    >
+      <svg width="256px" height="256px" viewBox="0 0 256 256" id="logoElement">
         <g
           id="logo-filled"
           stroke="none"
@@ -101,8 +125,30 @@ function Logo({ fill, arousal, valence, depth }) {
           />
         </g>
       </svg>
+      {generateImage && (
+        <div id="test">
+          <img src="" id="generatedLogo" />
+        </div>
+      )}
+      {generateImage && (
+        <div id="test">
+          <img src={favIcon} />
+        </div>
+      )}
+      {generateImage && <Favicon url={favIcon || defaultFavicon} />}
     </div>
   )
+}
+
+function encodeSvg(element) {
+  const s = new XMLSerializer().serializeToString(
+    document.getElementById("logoElement")
+  )
+  var encodedData = window.btoa(unescape(encodeURIComponent(s)))
+  // const theBase64 =  Buffer.from(element).toString('base64');
+  // const encoded = base64.encode(element);
+  // console.log('encoded: ', encoded);
+  return "data:image/svg+xml;base64," + encodedData
 }
 
 export default Logo
