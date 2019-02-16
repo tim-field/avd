@@ -31,7 +31,8 @@ export const initialState = {
     strongest: "#dbbcdb"
   },
   havePlayer: true,
-  listeners: []
+  listeners: [],
+  messages: []
 }
 
 export function reducer(state, action) {
@@ -176,7 +177,23 @@ export function reducer(state, action) {
         ...initialState,
         token: null
       }
-
+    case "set-message":
+      return {
+        ...state,
+        messages: [
+          ...state.messages.filter(m => m.id !== action.id),
+          {
+            id: action.id,
+            message: action.message,
+            level: action.level
+          }
+        ]
+      }
+    case "clear-message":
+      return {
+        ...state,
+        messages: state.messages.filter(m => m.id !== action.id)
+      }
     default:
       return state
   }

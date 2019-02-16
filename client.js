@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, Fragment } from "react"
+import React, { Component, useContext, useEffect, Fragment } from "react"
 import ReactDOM from "react-dom"
 import { library } from "@fortawesome/fontawesome-svg-core"
 import {
@@ -24,12 +24,23 @@ import Header from "./components/Header"
 import api from "./utils/api"
 import Store, { Provider } from "./store"
 // require("typeface-open-sans")
-require("typeface-poppins")
+import "typeface-poppins"
 import "./style.css"
 import "./styles/_global.scss"
 import "./components/Header/Logo.scss"
-import { setTheme, setDisplayMode, setFullScreen } from "./actions"
+import {
+  setTheme,
+  setDisplayMode,
+  setFullScreen,
+  setErrorMessage
+} from "./actions"
 import spotifyService, { setTokenLocalStorage } from "./spotify"
+import {
+  showReportDialog,
+  haveReportDialog,
+  captureError
+} from "./utils/errors"
+import Messages from "./components/Messages"
 
 library.add(
   faThumbsUp,
@@ -72,11 +83,16 @@ function AVD() {
     }
     if (token) {
       dispatch({ type: "set-loading", value: true })
-      spotifyService({ action: "v1/me" }).then(user => {
-        api({ action: "user", data: { user } })
-        dispatch({ type: "set-user", user })
-        dispatch({ type: "set-loading", value: false })
-      })
+      spotifyService({ action: "v1/me" })
+        .then(user => {
+          api({ action: "user", data: { user } })
+          dispatch({ type: "set-user", user })
+          dispatch({ type: "set-loading", value: false })
+        })
+        .catch(e => {
+          captureError(e)
+          dispatch(setErrorMessage("v1/me", "Unable to talk with Spotify :("))
+        })
     }
   }, [token])
 
@@ -115,6 +131,7 @@ function AVD() {
             depth={depth}
           />
           <PlayList />
+          <Messages />
         </Fragment>
       )}
       {loading && <Loading />}
@@ -122,12 +139,30 @@ function AVD() {
   )
 }
 
-function App() {
-  return (
-    <Provider>
-      <AVD />
-    </Provider>
-  )
+class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { error: null }
+  }
+  componentDidCatch(error, errorInfo) {
+    this.setState({ error })
+    captureError(error, errorInfo)
+  }
+  render() {
+    return (
+      <Provider>
+        {this.state.error && (
+          <div>
+            <p>Pants.</p>
+            {haveReportDialog() && (
+              <a onClick={() => showReportDialog()}>Tell us what happened</a>
+            )}
+          </div>
+        )}
+        <AVD />
+      </Provider>
+    )
+  }
 }
 
 ReactDOM.render(<App />, document.getElementById("root"))

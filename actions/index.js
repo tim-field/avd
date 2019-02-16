@@ -199,6 +199,22 @@ export const loadPlaylist = playlistId => dispatch => {
   }
 }
 
+export const setErrorMessage = (id, message) => {
+  return {
+    type: "set-message",
+    level: "error",
+    id,
+    message
+  }
+}
+
+export const clearMessage = id => {
+  return {
+    type: "clear-message",
+    id
+  }
+}
+
 export const loadListeners = trackId => dispatch => {
   dispatch({ type: "set-loading-listeners", value: true })
   api({ action: `avd/users?trackId=${trackId}` }).then(listeners => {

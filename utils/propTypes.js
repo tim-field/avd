@@ -27,3 +27,9 @@ export const userType = propTypes.shape({
     })
   )
 })
+
+export const messageType = propTypes.shape({
+  id: propTypes.string.isRequired,
+  level: propTypes.string.isRequired,
+  message: propTypes.string.isRequired
+})

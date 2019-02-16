@@ -167,12 +167,9 @@ Header.propTypes = {
   playlistsLoading: propTypes.bool
 }
 
-const mapStateToProps = state => {
-  const { playlists, playlistsLoading } = state
-  return {
-    playlists,
-    playlistsLoading
-  }
-}
+const mapStateToProps = ({ playlists, playlistsLoading }) => ({
+  playlists,
+  playlistsLoading
+})
 
 export default connect({ mapStateToProps })(Header)

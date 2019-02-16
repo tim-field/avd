@@ -3,6 +3,7 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 const request = require("request")
+const Sentry = require("@sentry/node")
 const { query } = require("./utils/db")
 const {
   saveUser,
@@ -17,15 +18,21 @@ const {
   getAVD
 } = require("./services/avd")
 
-const { PORT, URL, SPOTIFY_CLIENT_ID, SPOTIFY_SECRET } = process.env
+const { PORT, URL, SPOTIFY_CLIENT_ID, SPOTIFY_SECRET, SENTRY_DSN } = process.env
 const app = express()
+
+if (SENTRY_DSN) {
+  Sentry.init({ dsn: SENTRY_DSN })
+  // The request handler must be the first middleware on the app
+  app.use(Sentry.Handlers.requestHandler())
+
+  // The error handler must be before any other error middleware
+  app.use(Sentry.Handlers.errorHandler())
+}
+
 app.use(
   cors({
-    origin: [
-      "https://www.mohiohio.com",
-      "http://localhost:1234",
-      "http://www.djavd.com"
-    ]
+    origin: ["http://localhost:1234", "http://www.djavd.com"]
   })
 )
 app.use(bodyParser.json())
