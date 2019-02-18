@@ -32,7 +32,12 @@ export const initialState = {
   },
   havePlayer: true,
   listeners: [],
-  messages: []
+  messages: [],
+  loadingListeners: false,
+  currentTrack: undefined,
+  trackId: undefined,
+  trackLiked: undefined,
+  isPlaying: false
 }
 
 export function reducer(state, action) {
@@ -193,6 +198,16 @@ export function reducer(state, action) {
       return {
         ...state,
         messages: state.messages.filter(m => m.id !== action.id)
+      }
+    case "set-track-liked":
+      return {
+        ...state,
+        trackLiked: action.value
+      }
+    case "set-is-playing":
+      return {
+        ...state,
+        isPlaying: action.isPlaying
       }
     default:
       return state

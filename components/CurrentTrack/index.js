@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, Fragment, useRef } from "react"
+import React, { useEffect, useContext, Fragment, useRef } from "react"
 import propTypes from "prop-types"
 import { ColorExtractor } from "react-color-extractor"
 // import Favicon from 'react-favicon';
@@ -7,22 +7,22 @@ import api from "../../utils/api"
 import PlayControls from "../PlayControls"
 import LikeControls from "../LikeControls"
 import Listeners from "../Listeners"
-import Store from "../../store"
+import Store, { connect } from "../../store"
 
 import "./CurrentTrack.scss"
-import { setColors, setCurrentTrack, loadListeners } from "../../actions"
+import {
+  setColors,
+  setCurrentTrack,
+  setIsPlaying,
+  loadListeners
+} from "../../actions"
 import spotifyService from "../../spotify"
 import { trackType } from "../../utils/propTypes"
+import { captureError } from "../../utils/errors"
 
-function saveLiked(userId, trackId, isLiked) {
-  return api({ action: "avd/like", data: { userId, trackId, liked: isLiked } })
-}
-
-function CurrentTrack({ track, userId, arousal, valence, depth }) {
+function CurrentTrack({ track, userId, arousal, valence, depth, isPlaying }) {
   const { dispatch } = useContext(Store)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [liked, setLiked] = useState(null)
-  const [favIcon] = useState()
+  // const [favIcon] = useState()
   const timeoutRef = useRef()
   const debounceSaveRef = useRef()
   const trackId = track && track.id
@@ -60,13 +60,13 @@ function CurrentTrack({ track, userId, arousal, valence, depth }) {
       .then(spotifyTrack => {
         if (spotifyTrack.item) {
           dispatch(setCurrentTrack(spotifyTrack))
-          setIsPlaying(spotifyTrack.is_playing)
+          dispatch(setIsPlaying(spotifyTrack.is_playing))
         }
         // todo use track length here
         timeoutRef.current = setTimeout(doRequest, 5000)
       })
       .catch(e => {
-        console.error(e)
+        captureError(e)
         timeoutRef.current = setTimeout(doRequest, 5000)
       })
   }
@@ -87,7 +87,7 @@ function CurrentTrack({ track, userId, arousal, valence, depth }) {
           valence: res.valence || 0,
           depth: res.depth || 0
         })
-        setLiked(res.liked)
+        dispatch({ type: "set-track-liked", value: res.liked })
       })
       api({
         action: "track",
@@ -135,19 +135,20 @@ function CurrentTrack({ track, userId, arousal, valence, depth }) {
               }).then(() => doRequest())
             }
             onPlay={() => {
-              setIsPlaying(true)
+              dispatch(setIsPlaying(true))
               spotifyService({
                 action: "v1/me/player/play",
                 method: "PUT"
               }).then(() => doRequest())
+              // Todo need to catch these, will 404 when player isn't active
             }}
             onPause={() => {
-              setIsPlaying(false)
+              dispatch(setIsPlaying(false))
               clearTimeout(timeoutRef.current)
               spotifyService({ action: "v1/me/player/pause", method: "PUT" })
             }}
           />
-          <div className="coverWrap">
+          <div className="coverWrap" onMouseEnter={() => doRequest()}>
             <ColorExtractor getColors={colors => dispatch(setColors(colors))}>
               <img className="image" src={track.image.url} />
             </ColorExtractor>
@@ -174,6 +175,7 @@ function CurrentTrack({ track, userId, arousal, valence, depth }) {
                   <div className="albumLinkWrap">
                     <a
                       target="_blank"
+                      rel="noopener noreferrer"
                       className="albumLink"
                       href={track.raw.item.album.external_urls.spotify}
                     >
@@ -183,14 +185,7 @@ function CurrentTrack({ track, userId, arousal, valence, depth }) {
                 )}
             </div>
           </div>
-          <LikeControls
-            liked={liked}
-            setLiked={isLiked => {
-              const v = isLiked === liked ? null : isLiked
-              setLiked(v)
-              saveLiked(userId, trackId, v).then(({ liked }) => setLiked(liked))
-            }}
-          />
+          <LikeControls />
         </div>
         {1 === 1 && (
           <div className="title">
@@ -269,7 +264,24 @@ CurrentTrack.propTypes = {
   userId: propTypes.string.isRequired,
   arousal: propTypes.number,
   valence: propTypes.number,
-  depth: propTypes.number
+  depth: propTypes.number,
+  isPlaying: propTypes.bool.isRequired
 }
 
-export default CurrentTrack
+const mapStateToProps = ({
+  currentTrack: track,
+  userId,
+  arousal,
+  valence,
+  depth,
+  isPlaying
+}) => ({
+  track,
+  userId,
+  arousal,
+  valence,
+  depth,
+  isPlaying
+})
+
+export default connect({ mapStateToProps })(CurrentTrack)

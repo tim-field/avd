@@ -13,7 +13,8 @@ import {
   faCompressArrowsAlt,
   faList,
   faCaretDown,
-  faCaretUp
+  faCaretUp,
+  faSyncAlt
 } from "@fortawesome/free-solid-svg-icons"
 import { fetchToken, AUTH_URL } from "./utils/spotify"
 import CurrentTrack from "./components/CurrentTrack"
@@ -54,20 +55,13 @@ library.add(
   faCompressArrowsAlt,
   faList,
   faCaretDown,
-  faCaretUp
+  faCaretUp,
+  faSyncAlt
 )
 
 function AVD() {
   const { state, dispatch } = useContext(Store)
-  const {
-    token,
-    currentTrack,
-    userId,
-    loading,
-    arousal,
-    valence,
-    depth
-  } = state
+  const { token, userId, loading, arousal, valence, depth } = state
 
   useEffect(() => {
     const url = new URL(location)
@@ -123,13 +117,7 @@ function AVD() {
             valence={valence}
             depth={depth}
           />
-          <CurrentTrack
-            track={currentTrack}
-            userId={userId}
-            arousal={arousal}
-            valence={valence}
-            depth={depth}
-          />
+          <CurrentTrack />
           <PlayList />
           <Messages />
         </Fragment>

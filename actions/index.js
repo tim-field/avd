@@ -138,7 +138,7 @@ export const setCurrentTrack = spotifyTrack => {
 
 export const loadPlaylists = userId => dispatch => {
   dispatch({ type: "playlists-loading", value: true })
-  api({
+  return api({
     action: "playlists",
     data: {
       userId
@@ -176,7 +176,7 @@ export const loadPlaylist = playlistId => dispatch => {
       })
     })
 
-    spotifyService({
+    return spotifyService({
       action: `v1/playlists/${playlistId}`
     }).then(playlist => {
       dispatch({
@@ -217,9 +217,20 @@ export const clearMessage = id => {
 
 export const loadListeners = trackId => dispatch => {
   dispatch({ type: "set-loading-listeners", value: true })
-  api({ action: `avd/users?trackId=${trackId}` }).then(listeners => {
+  return api({ action: `avd/users?trackId=${trackId}` }).then(listeners => {
     dispatch({ type: "set-listeners", listeners })
   })
+}
+
+export const saveTrackLike = (userId, trackId, isLiked) => dispatch => {
+  dispatch({ type: "set-track-liked", value: isLiked })
+  api({ action: "avd/like", data: { userId, trackId, liked: isLiked } }).then(
+    ({ liked }) => dispatch({ type: "set-track-liked", value: liked })
+  )
+}
+
+export const setIsPlaying = isPlaying => {
+  return { type: "set-is-playing", isPlaying }
 }
 
 export const setTheme = theme => {

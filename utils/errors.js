@@ -18,6 +18,8 @@ export const captureError = (error, errorInfo) => {
       })
       Sentry.captureException(error)
     })
+  } else {
+    console.error(error)
   }
 }
 

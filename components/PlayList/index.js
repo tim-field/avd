@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef, useContext, useState } from "react"
+import React, { useEffect, useRef, useContext, useState } from "react"
 import propTypes from "prop-types"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import classNames from "classnames"
@@ -397,11 +397,9 @@ function PlayList({
             <div className="PlayListHeader">
               {tracks.length > 0 && (
                 <div className="PlayListPlay">
-                  <Fragment>
-                    <button onClick={playPlaylist}>
-                      <FontAwesomeIcon icon="play" />
-                    </button>
-                  </Fragment>
+                  <button onClick={playPlaylist}>
+                    <FontAwesomeIcon icon="play" />
+                  </button>
                 </div>
               )}
               <div className="PlayListTitle">
@@ -410,6 +408,9 @@ function PlayList({
                   {name && !saved ? "*" : ""}
                 </h2>
                 <p className="subTitle">{tracks.length} tracks</p>
+                <button onClick={() => dispatch(getTracks({}, true))}>
+                  <FontAwesomeIcon icon="sync-alt" />
+                </button>
               </div>
               <div className="PlayListActions">
                 {tracks.length > 0 && (
