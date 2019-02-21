@@ -20,6 +20,7 @@ import PlayListSelector from "../PlayListSelector"
 import "./PlayList.scss"
 import { trackType, playlistType } from "../../utils/propTypes"
 import spotifyService from "../../spotify"
+import SelectPreset from "./SelectPreset"
 
 function PlayList({
   userId,
@@ -298,6 +299,7 @@ function PlayList({
               </button>
             </div>
             <div className="PlayListControls">
+              <SelectPreset />
               <Control
                 label="Arousal"
                 min={arousal[0]}

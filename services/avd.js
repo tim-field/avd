@@ -137,12 +137,14 @@ async function getTracks({
 } = {}) {
   const avd = { arousal, valence, depth }
 
-  const avdWhere = Object.entries(avd).reduce((conditions, [field, value]) => {
-    if (value && value.indexOf(",")) {
-      const [min, max] = value
+  const avdWhere = Object.entries(avd).reduce((conditions, [field, v]) => {
+    const value = String(v)
+    if (value) {
+      const [min, max = 0] = value
         .split(",")
         .map(Number)
         .map(n => (isNaN(n) ? 0 : n))
+
       if (min && max && min !== max) {
         return conditions.concat(
           `coalesce(ut.${field}, t.${field}) between ${Math.min(

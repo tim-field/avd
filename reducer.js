@@ -37,7 +37,13 @@ export const initialState = {
   currentTrack: undefined,
   trackId: undefined,
   trackLiked: undefined,
-  isPlaying: false
+  isPlaying: false,
+  preset: undefined,
+  presets: [
+    { id: "classic", name: "Classic Slope", values: [6, 5, 3] },
+    { id: "theHorns", name: "The Horns", values: [8, 2, 8] },
+    { id: "theAscent", name: "The Ascent", values: [2, 8, 2] }
+  ]
 }
 
 export function reducer(state, action) {
@@ -208,6 +214,11 @@ export function reducer(state, action) {
       return {
         ...state,
         isPlaying: action.isPlaying
+      }
+    case "set-preset":
+      return {
+        ...state,
+        preset: action.preset
       }
     default:
       return state

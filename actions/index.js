@@ -10,15 +10,19 @@ export const getTracks = (query = {}, withCurrent = false) => {
       ...query
     }
     const {
-      arousal,
-      valence,
-      depth,
+      arousal: a,
+      valence: v,
+      depth: d,
       userFilter,
       filterLiked,
       filterUsers,
       trackId,
       ...rest
     } = apiQuery
+
+    const arousal = Array.isArray(a) ? a : [a]
+    const valence = Array.isArray(v) ? v : [v]
+    const depth = Array.isArray(d) ? d : [d]
 
     // Don't query unless we have some avd values
     if (
@@ -213,6 +217,18 @@ export const clearMessage = id => {
     type: "clear-message",
     id
   }
+}
+
+export const applyPreset = preset => dispatch => {
+  dispatch({ type: "set-preset", preset: preset.id })
+  const [a, v, d] = preset.values
+  dispatch(
+    getTracks({
+      arousal: [a - 1, a + 1],
+      valence: [v - 1, v + 1],
+      depth: [d - 1, d + 1]
+    })
+  )
 }
 
 export const loadListeners = trackId => dispatch => {

@@ -33,3 +33,9 @@ export const messageType = propTypes.shape({
   level: propTypes.string.isRequired,
   message: propTypes.string.isRequired
 })
+
+export const presetType = propTypes.shape({
+  id: propTypes.string.isRequired,
+  name: propTypes.string.isRequired,
+  values: propTypes.arrayOf(propTypes.number).isRequired
+})

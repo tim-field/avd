@@ -40,7 +40,7 @@ app.use(bodyParser.json())
 app.get("/authorize", (req, res) => {
   console.log(req.query.code)
   request.post(
-    `https://accounts.spotify.com/api/token`,
+    "https://accounts.spotify.com/api/token",
     {
       form: {
         grant_type: "authorization_code",
@@ -51,7 +51,8 @@ app.get("/authorize", (req, res) => {
       }
     },
     (err, response, body) => {
-      res.status(response.statusCode).json(JSON.parse(body))
+      res.setHeader("content-type", response.headers["content-type"])
+      res.status(response.statusCode).send(body)
     }
   )
 })
