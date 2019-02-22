@@ -168,7 +168,7 @@ function PlayList({
         : [0, 0]
     }
     dispatch({ type: "set-track-query", query: updated })
-    dispatch(getTracks(updated, true))
+    dispatch(getTracks(updated, { withCurrent: true }))
   }
 
   function setMin(key, value) {
@@ -410,7 +410,9 @@ function PlayList({
                   {name && !saved ? "*" : ""}
                 </h2>
                 <p className="subTitle">{tracks.length} tracks</p>
-                <button onClick={() => dispatch(getTracks({}, true))}>
+                <button
+                  onClick={() => dispatch(getTracks({}, { withCurrent: true }))}
+                >
                   <FontAwesomeIcon icon="sync-alt" />
                 </button>
               </div>

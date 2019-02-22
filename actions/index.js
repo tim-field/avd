@@ -2,7 +2,7 @@ import api from "../utils/api"
 import { hexToHsl } from "../utils/colors"
 import spotifyService from "../spotify"
 
-export const getTracks = (query = {}, withCurrent = false) => {
+export const getTracks = (query = {}, { withCurrent = false, name } = {}) => {
   return (dispatch, state) => {
     const apiQuery = {
       exclude: state.trackId,
@@ -56,8 +56,9 @@ export const getTracks = (query = {}, withCurrent = false) => {
                 : tracks
           })
           dispatch({ type: "set-loading-playlist", value: false })
-          if (withCurrent && currentTrack.name) {
-            dispatch({ type: "set-playlist-name", value: currentTrack.name })
+          const playlistName = name || (withCurrent && currentTrack.name)
+          if (playlistName) {
+            dispatch({ type: "set-playlist-name", value: playlistName })
           }
         })
         .catch(e => {
@@ -223,11 +224,14 @@ export const applyPreset = preset => dispatch => {
   dispatch({ type: "set-preset", preset: preset.id })
   const [a, v, d] = preset.values
   dispatch(
-    getTracks({
-      arousal: [a - 1, a + 1],
-      valence: [v - 1, v + 1],
-      depth: [d - 1, d + 1]
-    })
+    getTracks(
+      {
+        arousal: [a - 1, a + 1],
+        valence: [v - 1, v + 1],
+        depth: [d - 1, d + 1]
+      },
+      { name: preset.name }
+    )
   )
 }
 
